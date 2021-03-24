@@ -1,0 +1,317 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+library(ape)
+library(TreeTools)
+library(phangorn)
+library(randomcoloR)
+library(ggplot2)
+library(dplyr)
+library(uniqtag)
+library(phytools)
+library(ggstance)
+library(ggtree)
+library(grid)
+library(gtable)
+library(reshape2)
+```
+
+```{r}
+raw.data<-read.csv("../../misc/SummaryPlots/GAGA_SPEC_TUBE_ECOL-GlobalOverview-210322.tsv",sep="\t",strip.white = T,stringsAsFactors = F,dec = ",",na.strings = c("","#DIV/0!"),skip = 2)
+
+```
+
+```{r}
+# subset to entries with a Species name from the Assembly Overview
+data<-subset(raw.data,!is.na(Species..from.Assembly.Overview.) & !is.na(ENTRY.FROM.ASSEMBLY.OVERVIEW))
+
+# rename Myrmoxenus to Temnothorax as the former is no proper genus
+data$Species..from.Assembly.Overview.<-gsub("Myrmoxenus","Temnothorax",data$Species..from.Assembly.Overview.)
+
+# Extract genus information 
+data$genus<-gsub(" .*","",data$Species..from.Assembly.Overview.)
+
+# Rename duplicate genera to Genus-sp1, Genus-sp2, etc.
+data$taxID<-make_unique(data$genus,sep="-sp")
+
+# show which genera are duplicated
+table(gsub("-.*","",data$genus[duplicated(gsub(" .*","",data$Species..from.Assembly.Overview.))]))+1
+
+```
+
+
+```{r}
+# Downloaded ant tree from https://www.antwiki.org/wiki/Phylogeny_of_Formicidae
+## The tree contains a few typos that I corrected manually (e.g. Paratrachina instead of Paratrechina, Myrmecosystus instead of Myrmecocystus)
+treePaste<-paste(scan("../../misc/SummaryPlots/antTree.tre", what="character", sep=" "),collapse=" ")
+
+# expand the nodes for those species that we have multiple times
+expansions<-table(data$genus[duplicated(data$genus)])+1
+for (i in 1:length(expansions)){
+  treePaste<-gsub(paste("(",names(expansions)[i],":)",sep=""),paste("(",paste(rep("\\1",expansions[i]),collapse=":0,",sep=""),":0):",sep=""),treePaste)
+}
+
+# load manipulated tree as tree object
+raw.tree<-read.tree(text=treePaste)
+raw.tree$tip.label<-make_unique(raw.tree$tip.label,sep="-sp")
+```
+
+
+```{r}
+# show labels for figuring out subfamilies
+plot(raw.tree,show.tip.label = F)
+nodelabels(frame =  "none")
+```
+
+
+```{r}
+# subset to extant ants, Martialis has to be node 1
+tree<-Subtree(Preorder(raw.tree), 427)
+grep("Martialis",tree$tip.label)
+tree$tip.label<-gsub("some(.*[2-9])|some(.*)1","\\1\\2",tree$tip.label)
+```
+
+```{r}
+# plot with subfamilies
+
+p<-ggtree(tree,size=.1)+xlim(0,40)+geom_tiplab(align=T,size=1)+ geom_text(aes(label=node),size=1,col="darkred")
+```
+
+
+
+
+```{bash}
+# Download species counts for all genera and other info from antwiki
+#curl https://www.antwiki.org/wiki/images/a/ad/AntWiki_Valid_Genera.txt | LC_ALL=C sed 's/[^[:blank:][:print:]]//g'  > ../misc/SummaryPlots/AntWiki.clean.tsv
+```
+```{r}
+speciescount<-read.csv("../../misc/SummaryPlots/AntWiki.clean.tsv",sep="\t")
+speciescount$Tribe[speciescount$Tribe==""]<-paste("tr. ",speciescount$Subfamily[speciescount$Tribe==""],sep="")
+```
+```{r}
+dataMerge<-merge(data,speciescount,by.x="genus",by.y="TaxonName",all.x=T,all.y=T)
+
+dataMerge <- dataMerge %>%
+  select(taxID, everything())
+
+# give name to all unsequenced genera
+dataMerge$taxID[is.na(dataMerge$taxID)]<-dataMerge$genus[is.na(dataMerge$taxID)]
+# set species Count to NA for all multiple genera species
+dataMerge$SpeciesCount[grep("-sp[2-9]",dataMerge$taxID,value = F)]<-NA
+```
+
+
+ add data to tree
+```{r}
+p<-ggtree(tree,size=.2,layout = "circular")+xlim(0,40)
+#p$data$label<-make_unique(p$data$label,sep = "-sp")
+#p$data$label[grep("NA.",p$data$label,ignore.case = F)]<-NA
+dataMerge$DisplayName<-gsub(" \\(.*","",dataMerge$Species..from.Assembly.Overview.)
+p2<-p %<+% dataMerge 
+```
+
+
+
+```{r}
+
+p3 <- p2 +
+          geom_tiplab(aes(label=DisplayName,col=Tribe),align=T,size=1.8,offset = 8,linesize = 0)+
+          geom_tiplab(align=T,size=1.2,offset=.5,linesize=0)+
+          geom_tippoint(aes(size = SpeciesCount,fill=Tribe),pch=21,alpha=.5) + 
+          guides(fill="none",color="none")+
+          theme_tree()+
+          theme(legend.position = c(1.1,0.9))
+```
+```{r}
+p3
+ggsave("../../misc/SummaryPlots/antTree.pdf",height=10)
+sum(!is.na(dataMerge$DisplayName))
+```
+
+
+
+```{r}
+GAGA.tree<-keep.tip(tree,p3$data$node[!is.na(p3$data$DisplayName)])
+
+GAGA.tree.plot<-ggtree(GAGA.tree,size=.2) %<+% dataMerge 
+GAGA.tree.plot2<-GAGA.tree.plot+geom_tiplab(aes(label=DisplayName,col=ifelse(grepl("GAGA",ENTRY.FROM.ASSEMBLY.OVERVIEW),"GAGA","other")),size=1.5)+scale_color_manual(name="",values = c("black","grey60"))+guides(color="none")
+```
+
+```{r}
+GAGA.tree.plot2
+```
+
+
+```{r eval=FALSE, include=FALSE}
+
+# Add tribe info as clade highlights
+
+GAGA.tree.plot2$data$Tribe<-as.factor(GAGA.tree.plot2$data$Tribe)
+TribeNodes<-vector()
+
+tribes<-levels(GAGA.tree.plot2$data$Tribe)
+tribeCount<-table(GAGA.tree.plot2$data$Tribe)
+
+# loop over all tribes and extract the MRCA node of all genera for each tribe
+for (i in 1:length(tribes)){
+  nodes<-unlist(subset(GAGA.tree.plot2$data,Tribe==tribes[i],node,include.self=T))
+  if (length(nodes)==1){
+    TribeNodes[i]<-nodes
+  }else{
+    TribeNodes[i]<-mrca.phylo(GAGA.tree,nodes)
+  }
+}
+
+#define clade colors
+set.seed(1)
+cladeColor<-distinctColorPalette(length(TribeNodes))
+ 
+names(TribeNodes)<-tribes
+names(cladeColor)<-tribes
+
+
+GAGA.tree.plot3<-GAGA.tree.plot2
+
+# loop over each tribe and add a clade highlight. Label the highlight only for larger clades
+for (tribe in tribes){
+  if (tribeCount[tribe]>4){
+    GAGA.tree.plot3<-GAGA.tree.plot3+geom_cladelabel(node=TribeNodes[tribe],label= tribe,align = T, offset = 5, col=c(cladeColor[tribe],"black"),barsize = 1,angle = 90,fontsize = 2,offset.text = .5,hjust = .5)+xlim_tree(25)
+  }else{
+    GAGA.tree.plot3<-GAGA.tree.plot3+geom_cladelabel(node=TribeNodes[tribe],label= "",align = T, offset = 5, col=cladeColor[tribe],barsize = 1)+xlim_tree(30)
+  }
+}
+
+```
+
+```{r}
+GAGA.tree.plot3
+```
+
+```{r}
+# extract data from tree for facet plotting
+
+facetData<-as.data.frame(GAGA.tree.plot2$data[GAGA.tree.plot2$data$isTip==T,])
+facetData$id<-facetData$label
+
+# extract BUSCO scores
+facetData$BUSCO.hym.C<-as.numeric(gsub("C:(.*?)%.*","\\1",facetData$BUSCO.Hymenoptera))
+facetData$BUSCO.hym.F<-as.numeric(gsub(".*F:(.*?)%.*","\\1",facetData$BUSCO.Hymenoptera))
+facetData$BUSCO.hym.M<-as.numeric(gsub(".*M:(.*?)%.*","\\1",facetData$BUSCO.Hymenoptera))
+
+facetData$BUSCO.euk.C<-as.numeric(gsub("C:(.*?)%.*","\\1",facetData$BUSCO.Eukaryota))
+facetData$BUSCO.euk.F<-as.numeric(gsub(".*F:(.*?)%.*","\\1",facetData$BUSCO.Eukaryota))
+facetData$BUSCO.euk.M<-as.numeric(gsub(".*M:(.*?)%.*","\\1",facetData$BUSCO.Eukaryota))
+
+
+dd <- data.frame(id=facetData$label, GS=round(facetData$Genome.size/1000000),N50=facetData$Scaffold.N50,nscf=facetData$Number.of.scaffolds,B.hym.C=facetData$BUSCO.hym.C,B.hym.F=facetData$BUSCO.hym.F,B.hym.M=facetData$BUSCO.hym.M,B.euk.C=facetData$BUSCO.euk.C,B.euk.F=facetData$BUSCO.euk.F,B.euk.M=facetData$BUSCO.euk.M,tribe=facetData$Tribe,PacBio=facetData$PacBio.1,stLFR=facetData$stLFR.2,HiC=facetData$Hi.C.1,RNAseq=facetData$RNA..additional.samples.still.under.seq..,Finalized=facetData$Current.state,wgs=facetData$Short.reads..WGS..1)
+dd$tribeColor <- cladeColor[match(dd$tribe, names(cladeColor))]
+
+ddHeatmap<-dd[c("id","tribeColor","tribe","PacBio","stLFR","HiC","wgs","Finalized","RNAseq")]
+rownames(ddHeatmap)<-ddHeatmap$id
+ddHeatmap$PacBio[!is.na(ddHeatmap$PacBio)]<-1
+ddHeatmap$PacBio[is.na(ddHeatmap$PacBio)]<-0
+ddHeatmap$stLFR[!is.na(ddHeatmap$stLFR)]<-1
+ddHeatmap$stLFR[is.na(ddHeatmap$stLFR)]<-0
+ddHeatmap$HiC[!is.na(ddHeatmap$HiC)]<-1
+ddHeatmap$HiC[is.na(ddHeatmap$HiC)]<-0
+ddHeatmap$wgs[!is.na(ddHeatmap$wgs)]<-1
+ddHeatmap$wgs[is.na(ddHeatmap$wgs)]<-0
+
+ddHeatmap$RNAseq[!is.na(ddHeatmap$RNAseq)]<-3
+ddHeatmap$RNAseq[is.na(ddHeatmap$RNAseq)]<-0
+
+ddHeatmap$Finalized[grep("Final",ddHeatmap$Finalized)]<-2
+ddHeatmap$Finalized[ddHeatmap$Finalized!=2]<-0
+
+#GAGA.tree.plot4<-facet_plot(GAGA.tree.plot3, 'Genome Size', data = dd, geom=geom_barh, mapping = aes(x = GS,fill=tribeColor), 
+ #               stat='identity' )+ theme_tree2() + scale_fill_identity()
+```
+
+
+```{r}
+GAGA.tree.plot.heatmap<-gheatmap(GAGA.tree.plot3+ylim(0,165), ddHeatmap[,c(4:9)], offset=7, colnames=T, legend_title="Tech",  width = .25,colnames_position = "top", colnames_offset_y = 1,colnames_angle=65,hjust=0,font.size = 2.8)+
+                  scale_fill_manual(values = c("grey90","lightgreen","darkred","lightblue"))+
+                  theme(legend.position = "none")
+
+
+```
+```{r}
+GAGA.tree.plot.heatmap
+ggsave("../../misc/SummaryPlots/GAGA.tree.technique.pdf",GAGA.tree.plot.heatmap,width=6,height=10)
+```
+
+```{r}
+ddHeatmap2<-dd[c("id","tribeColor","tribe","B.hym.C","B.euk.C")]
+colnames(ddHeatmap2)[4:5]<-c("Hymenopt.","Eukaryota")
+row.names(ddHeatmap2)<-ddHeatmap2$id
+```
+
+```{r}
+heatcol <- c("steelblue","cyan", "red")
+GAGA.tree.plot.busco<-gheatmap(GAGA.tree.plot3+ylim(0,165), ddHeatmap2[,c(4:5)], offset=7, colnames=T, legend_title="Tech",  width = .25,colnames_position = "top", colnames_offset_y = 1,colnames_angle=65,hjust=0,font.size = 2.5)+scale_fill_gradientn(colours = rev(heatcol),na.value = "grey90",name="% comp. Busco")+theme(legend.position = c(.2,.8),legend.background = element_blank())
+```
+```{r}
+GAGA.tree.plot.busco
+ggsave("../../misc/SummaryPlots/GAGA.tree.busco.pdf",GAGA.tree.plot.busco,width=6,height=10)
+```
+
+
+```{r}
+library(ggnewscale)
+GAGA.tree.plot.N50<-facet_plot(GAGA.tree.plot.heatmap+new_scale("fill"), 'scf N50', data = dd, geom=geom_barh, mapping = aes(x = N50,fill=log(nscf,10)), 
+                stat='identity' )+ theme_tree2()+theme(legend.position = c(.8,.7),legend.background = element_blank())+scale_fill_gradientn(colours = rev(heatcol),na.value = "grey90",name="logscf")
+
+```
+
+
+```{r}
+# change rel_width of panels
+## see https://groups.google.com/g/bioc-ggtree/c/tZ0qkluBeGU/m/nkfWC9ixCwAJ
+
+gt = ggplot_gtable(ggplot_build(GAGA.tree.plot.N50))
+#gtable_show_layout(gt) # will show you the layout - very handy function
+#gt # see plot layout in table format
+gt$layout$l[grep('panel-1', gt$layout$name)] # you want to find the column specific to panel-2
+gt$widths[5] = 4*gt$widths[5] # in this case it was colmun 7 - reduce the width by a half
+#grid.draw(gt) # plot with grid draw
+```
+
+
+```{r}
+grid.draw(gt)
+ggsave("../../misc/SummaryPlots/GAGA.tree.n50.pdf",grid.draw(gt),width=8,height=8)
+
+```
+
+
+```{r}
+GAGA.tree.plot.QC2<-facet_plot(GAGA.tree.plot.QC1, 'scf N50', data = dd, geom=geom_barh, mapping = aes(x = N50), 
+                stat='identity' )+ theme_tree2()+scale_fill_viridis_b()
+
+
+
+```
+
+```{r}
+
+```
+
+```{r}
+#grid.draw(gt)
+
+```
+
+
+```{r}
+
+
+```
+```
+
