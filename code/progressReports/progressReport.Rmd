@@ -1,0 +1,267 @@
+---
+title: "GAGA Progress Report 2021"
+output:
+  bookdown::html_document2:
+    toc: false
+    toc_float: false
+    toc_depth: 2
+    collapsed: true
+    number_sections: true
+    df_print: paged
+  pdf_document: default
+---
+
+<style>
+p.caption {
+  font-size: 1.1em;
+  font-color: "grey50";
+}
+p {
+  line-height: 2em;
+}
+</style>
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+source("~/sciebo/librarySchrader.R")
+
+library(plotly)
+library(googlesheets4)
+library(kableExtra)
+library(knitr)
+library(ggplot2)
+library("ggmap")
+library(dplyr)
+library(lattice)
+library(tidyverse)
+#library(viridis)
+#library(viridisLite)
+library(ggrepel)
+library(plyr)
+library(cowplot)
+library(uniqtag)
+
+
+```
+
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+id<-"1e7Hj_BQ8rke5XW7j93YL6QVAGbcvsb2yw7oD86WnPJY"
+#submissions <- as.data.frame(read_sheet(id,sheet="GAGA Submissions",skip = 1,na = c(""," ","NA"),col_types = "c"),stringsAsFactors=T)
+#save(file = "../../misc/data/submissions.Robject",submissions)
+load(file = "../../misc/data/submissions.Robject")
+a<-submissions[-1,]
+a<-subset(a,!is.na(`GAGA ID (assigned based on row in this table)`))
+```
+
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+id<-"1e7Hj_BQ8rke5XW7j93YL6QVAGbcvsb2yw7oD86WnPJY"
+#GlobalOverview<-as.data.frame(read_sheet(id,sheet="GlobalOverview",skip = 2,na = c(""," ","NA","#DIV/0!"),col_types = "c"),stringsAsFactors=T)
+#save(file = "../../misc/data/globaloverview.Robject",submissions)
+load(file = "../../misc/data/globaloverview.Robject")
+
+# rename Myrmoxenus to Temnothorax as the former is no proper genus
+GlobalOverview$`Species (from Assembly Overview)`<-gsub("Myrmoxenus","Temnothorax",GlobalOverview$`Species (from Assembly Overview)`)
+
+# Extract genus information 
+GlobalOverview$genus<-gsub(" .*","",GlobalOverview$`Species (from Assembly Overview)`)
+
+# Rename duplicate genera to Genus-sp1, Genus-sp2, etc.
+GlobalOverview$taxID<-make_unique(GlobalOverview$genus,sep="-sp")
+```
+
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+# retrieve summary statistics to cite in text
+species<-length(unique(do.call(paste, as.data.frame(cbind(as.character(a$`Ant genus`),as.character(a$`Ant species/ morphospecies`))))))
+genera<-length(unique(as.character(a$`Ant genus`)))
+pacbio<-dim(subset(a,`PacBio data`!="",select = c(`Ant genus`, `Ant species/ morphospecies`)))[1]
+stLFR<-dim(subset(a,`stLFR,10X...40`!="",select = c(`Ant genus`, `Ant species/ morphospecies`)))[1]
+stLFRonly<-dim(subset(a,`stLFR,10X...40`!="" & is.na(`PacBio data`),select = c(`Ant genus`, `Ant species/ morphospecies`)))[1]
+HiC<-dim(subset(a,HiC!="",select = c(`Ant genus`, `Ant species/ morphospecies`)))[1]
+RNAseq<-dim(subset(a,RNAseq...36!="",select = c(`Ant genus`, `Ant species/ morphospecies`)))[1]
+shortread<-dim(subset(a,`WGS (small-insert BGIseq)...38`!="",select = c(`Ant genus`, `Ant species/ morphospecies`)))[1]
+
+subfamSequenced<-length(levels(as.factor(as.character((subset(a,`PacBio data`!="",select = Subfamily)[,1])))))
+a$Subfamily<-as.factor(a$Subfamily)
+collectors<-as.factor(apply(cbind(as.character(a$`Collector first name`),as.character(a$`Collector last name`)),1,paste,collapse=" "))
+gagaids<-length(levels(as.factor(a$`GAGA ID (assigned based on row in this table)`)))
+unSpec<-a[!duplicated(a$Species),]
+specPerSubfam<-count(unSpec, 'Subfamily')
+specPerSubfam$Subfamily<-as.character(specPerSubfam$Subfamily)
+specPerSubfamTot<-rbind(c("Total",sum(specPerSubfam$freq)),specPerSubfam)
+```
+# Overall progress
+GAGA aims to generate high quality genomic and other resources (i.e. reference genomes, gene expression data, phenotypic and life history records) for ca. 200 ant species, broadly covering genomic and phenotypic diversity of ants. We have made good progress over the last couple of months and are now approaching our first landmark of 100 sequenced genomes. We have the ambition to finish sequencing and assembly of all 100 genomes by the end of August and then start genome annotation and comparative analyses.
+
+In our first phase collection efforts, **`r gagaids` samples of `r species` species from `r genera` genera have been collected**. Sample collection has been a global effort, **involving `r length(levels(collectors))` collectors in `r length(levels(as.factor(a$Country)))` countries**. Table \@ref(tab:tab1) gives an overview of the number of species sampled per subfamily so far. [Antcat.org](http://Antcat.org) recognizes 337 genera in the Formicidae, so there is a substantial proportion of ant biodiversity that we could not include as of yet.
+
+```{R tab1, echo=FALSE, message=FALSE, warning=FALSE,results='asis'}
+#plot table1
+kable(specPerSubfamTot, caption="Number of species collected per subfamily.",align = "ll") %>% kable_styling(position = "left",font_size = 10,bootstrap_options = "condensed",full_width = F) %>% column_spec(1,width = "4in")
+```
+We are still eager to secure more samples, in particular from regions we have so far not covered properly (e.g. **Australia**, **Africa**, **Central Asia**). Figure \@ref(fig:fig1) gives an overview of the sampling localities we have accessed so far. Overall, however, we are approaching our goal to establish genomic resources for ants on a worldwide scale.
+
+
+```{R echo=FALSE, warning=FALSE, include=FALSE}
+#retrieve GPS data and plot
+coordinates<-subset(a,!is.na(Latitude) & !is.na(Longitude) ,c(`GAGA ID (assigned based on row in this table)`,Latitude,Longitude,`PacBio data`,Species,Subfamily))
+coordinates$Latitude<-as.numeric(as.character(coordinates$Latitude))
+coordinates$Longitude<-as.numeric(as.character(coordinates$Longitude))
+coordinates$`PacBio data`<-as.character(coordinates$`PacBio data`)
+coordinates$`PacBio data`[!is.na(coordinates$`PacBio data`)]<-"Y"
+coordinates$`PacBio data`[is.na(coordinates$`PacBio data`)]<-"N"
+world_map <- get_stamenmap(bbox = c(left = -180, bottom = -60, right = 179.9999, top = 70), zoom = 3, maptype = "toner-lite")
+
+g<-ggmap(world_map)
+
+```
+
+```{R fig1, echo=FALSE, message=FALSE, warning=FALSE,fig.cap="Sampling localities of all GAGA samples"}
+# plot Figure 1
+g + geom_jitter(data = coordinates, aes(x = Longitude, y = Latitude,fill=Subfamily),stroke=0,width = 1,height = 1, size = 3, alpha = .8,pch=25)+theme_bw()+theme(legend.position = "bottom",legend.margin  = unit(0,"cm"),legend.text=element_text(size=10),legend.title  =element_blank())
+dev.print(pdf,"../../misc/plots/GAGA.samples.map.pdf",width=10,height=8)
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+# Calculate coordinates for sequenced species only.
+coordinates<-subset(a,!is.na(Latitude) & !is.na(Longitude) ,c(`GAGA ID (assigned based on row in this table)`,Latitude,Longitude,`PacBio data`,`stLFR,10X...40`,Species,Subfamily))
+coordinates$Latitude<-as.numeric(as.character(coordinates$Latitude))
+coordinates$Longitude<-as.numeric(as.character(coordinates$Longitude))
+coordinates$`PacBio data`<-as.character(coordinates$`PacBio data`)
+coordinates$`PacBio data`[!is.na(coordinates$`PacBio data`)]<-"Y"
+coordinates$`PacBio data`[is.na(coordinates$`PacBio data`)]<-"N"
+coordinates$`stLFR,10X...40`<-as.character(coordinates$`stLFR,10X...40`)
+coordinates$`stLFR,10X...40`[!is.na(coordinates$`stLFR,10X...40`)]<-"Y"
+coordinates$`stLFR,10X...40`[is.na(coordinates$`stLFR,10X...40`)]<-"N"
+
+world_map <- get_stamenmap(bbox = c(left = -180, bottom = -60, right = 179.9999, top = 70), zoom = 3, maptype = "toner-lite")
+
+g<-ggmap(world_map)
+
+```
+# The first 100 GAGA ant genomes
+**So far, we could generate long-read PacBio data for `r pacbio` species**. Sample biomass, sample quality, and species specific issues in DNA extraction remain the main challenges that need to be overcome before we can attempt long read sequencing. We thus had to give up on a number of species on our preliminary target list and switch to a different species for genome sequencing.
+
+To be able to get genomes also for very rare species, we are now starting to generate assemblies from short-read stLFR/10X sequencing data only, allowing us to **tackle species where only very little biomass is available (e.g. *Leptanilla*)**. 
+
+To date, `r stLFRonly` species have been sequenced using stLFR sequencing only. Both, PacBio and stLFR sequencing have been applied to `r stLFR-stLFRonly` additional species. In addition, we have **short read sequencing data for `r shortread` species**, which is required for error correcting long-read assemblies. Further, we have **HiC data for `r HiC` species**, and **RNAseq data for `r RNAseq` species**. 
+
+The first 100 genomes that we have generated are biased towards myrmicine and formicine ants, well reflecting differences in species-richness between subfamilies. However, we aim to generate representative genomes for at least **12 of the 17 subfamilies** by the end of the first sequencing phase. Currently, we have genomes of species from `r subfamSequenced` different subfamilies, sampled across the world (see Figure \@ref(fig:fig2) for the sampling localities of all so far sequenced species). 
+
+```{R fig2, echo=FALSE, message=FALSE, warning=FALSE,fig.cap="Sampling localities of sequenced GAGA species"}
+# plot Figure 2
+g + geom_jitter(data = subset(coordinates,`PacBio data`=="Y"| `stLFR,10X...40` =="Y"), aes(x = Longitude, y = Latitude,fill=Subfamily),stroke=0,width = 1,height = 1, size = 3, alpha = .8,pch=25)+theme_bw()+theme(legend.position = "bottom",legend.margin  = unit(0,"cm"),legend.text=element_text(size=10),legend.title  =element_blank())
+dev.print(pdf,"../../misc/plots/GAGA.sequenced.map.pdf",width=10,height=8)
+```
+
+
+
+
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+assembly<-subset(GlobalOverview,!is.na(`Species (from Assembly Overview)`) & !is.na(`ENTRY FROM ASSEMBLY OVERVIEW`))
+b<-assembly[,c(21,22,26:45)]
+colnames(b)[c(3:9)]<-c("GAGAid","Species","PacBio","stLFR","wgs","HiC","RNAseq")
+colnames(b)[c(16:22)]<-c("genomesize","scfC","scfn50","ctgn50","largestScf","B.euk","B.hym")
+b$DisplayName<-gsub("\\(.*","",b$Species)
+b$genomesize<-as.numeric(b$genomesize)
+b$scfC<-as.numeric(b$scfC)
+
+b$DisplayName <- factor(b$DisplayName, levels = b$Species[rev(order(b$Subfamily,b$genomesize))])
+
+b$PacBio[!is.na(b$PacBio)]<-"Y"
+b$PacBio[is.na(b$PacBio)]<-"N"
+b$stLFR[!is.na(b$stLFR)]<-"Y"
+b$stLFR[is.na(b$stLFR)]<-"N"
+b$HiC[!is.na(b$HiC)]<-"Y"
+b$HiC[is.na(b$HiC)]<-"N"
+b$RNAseq[!is.na(b$RNAseq)]<-"Y"
+b$RNAseq[is.na(b$RNAseq)]<-"N"
+
+b$tech<-as.factor(paste(b$PacBio,b$stLFR,b$HiC,sep=""))
+```
+
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+levels(b$tech)[levels(b$tech)=="NNN"]<-"nonGAGA"
+levels(b$tech)[levels(b$tech)=="YNN"]<-"PacBio"
+levels(b$tech)[levels(b$tech)=="YYN"]<-"PacBio + stLFR"
+levels(b$tech)[levels(b$tech)=="YYY"]<-"PacBio + stLFR + HiC"
+levels(b$tech)[levels(b$tech)=="NYN"]<-"stLFR"
+levels(b$tech)[levels(b$tech)=="YNY"]<-"PacBio + HiC"
+
+b$scfN50<-as.numeric(b$scfn50)/1000000
+b$genomesizeMB<-b$genomesize/1000000
+```
+
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+g<- ggplot(b) + geom_point(aes(x=scfC,y=scfN50,size=genomesizeMB,fill=tech,col=RNAseq),stroke=.4,pch=21,alpha=.5) + theme_classic() + scale_x_log10() + scale_color_manual(values=c(rgb(1,1,1,0),"red"))
+g2<-g+ xlab("log10(# scaffolds)") + ylab("scaffold N50 (Mb)")+theme(legend.position = c(.8, .65), legend.spacing = unit(.1, 'cm'),legend.key.height = unit(0.3,"cm"),legend.text = element_text(margin = margin(t = 2)),legend.box.background = element_rect(colour = "black",fill=NA),legend.title = element_text(size=8),legend.background =  element_rect(colour = NA, fill = NA))+ylab("scaffold N50 (Mb)")
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+#prepare boxplots and calculate best/worst metrics
+gB<-ggplot(b,aes(y=scfN50,x=tech,fill=tech))+geom_boxplot(outlier.colour = NA)+geom_jitter(alpha=.2,width = 0.2)+scale_y_log10()+theme_classic()+theme(legend.position = c(.8, .2),axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+xlab("")+ylab("scaffold N50 (Mb)")
+best<-b[which.max(b$`contig N50 (bp)`),]
+worst<-b[which.min(b$`contig N50 (bp)`),]
+mcN50<-round(mean(assembly$'contig N50 (bp)')/1000000,2)
+msN50<-round(mean(assembly$'scaffold N50 (bp)')/1000000,2)
+bcN50<-round(best$`contig N50 (bp)`/1000000,2)
+
+minGenome<-round(min(b$`genome size (Mb)`)/1000000)
+minGspec<-b[which.min(b$`genome size (Mb)`),1]
+maxGenome<-round(max(b$`genome size (Mb)`)/1000000)
+maxGspec<-b[which.max(b$`genome size (Mb)`),1]
+
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+#compute genome size plot
+g2<-ggplot(b,aes(x=Species,y=genomesizeMB))
+g2<-g2+geom_col(aes(fill=Subfamily),col=1,size=.2) + coord_flip() + scale_fill_continuous("Subfamily") + theme_classic()+theme(legend.position = "bottom",axis.text.y=element_text(size=6.5))+
+     #geom_text(aes(label=status), position=position_dodge(width=0.9), hjust=-0.25)+
+       geom_point(aes(col=tech),size=1.5)+guides(col = guide_legend(ncol = 1, title.position = "top"),fill = guide_legend(ncol = 2, title.position = "top"))+theme(axis.text.y = element_text(face = "italic"))
+
+```
+
+## Genome sizes of all so far sequenced species
+The assembled genomes vary considerably in size, ranging from `r minGenome`  MB (*`r minGspec`*) to `r maxGenome` MB (*`r maxGspec`*). Overall, genome size tends to vary most in the Ponerinae and least in the Formicinae. Figure \@ref(fig:fig4) gives a complete overview of all so far sequenced species and the respective genome assembly size in Mb. 
+
+```{R fig4, echo=FALSE, fig.height=13, fig.width=10, message=FALSE, warning=FALSE, fig.cap="Genome assembly sizes for GAGA species."}
+#plot figure 4 (genome sizes)
+p1<-ggplotly(g2,tooltip = c("x","y")) %>%layout(legend = list(orientation = "h", x = 0, y =-0.1))
+
+# change legend info for plotly plot
+for (i in 1:length(p1$x$data)){
+  p1$x$data[[i]]$legendgroup<-gsub("\\((.*)\\,1\\)","\\1",p1$x$data[[i]]$legendgroup)
+  p1$x$data[[i]]$name<-gsub("\\((.*)\\,1\\)","\\1",p1$x$data[[i]]$name)
+}
+p1
+ggsave("../../misc/plots/GAGA.samples.assemblySize.pdf",g2,width=10,height=15)
+```
+## Preliminary quality of the assembled genomes
+
+Our sequencing strategy has evolved further, now **combining long-read PacBio data and linked-short-read stLFR data**. We expect that together, these data will yield **highly contiguous high quality genome assemblies that should be close to chromosome-resolution for most of the species**.
+
+Figure \@ref(fig:fig3) gives a rough overview of the quality of the genome assemblies we have so far. The majority of species have only been PacBio sequenced as of yet, which remained the principle bottleneck for GAGA, due to the challenges of extracting high quality, high molecular weight DNA in sufficient quantity. 
+
+```{R fig3, echo=FALSE, fig.width=10, message=FALSE, warning=FALSE,fig.cap="Quality statistics of GAGA genome assemblies "}
+#Plot figure 3
+plot_grid(g, gB, ncol=2,labels = c('A', 'B'),align="h")
+```
+
+**On average, scaffold N50 is `r msN50` mega bases (Mb) and contig N50 is `r mcN50` Mb.** Currently, the species with the highest contig N50 is `r best$Species[1]` with an N50 contig size of `r bcN50` MB. 
+
+A combination of PacBio and HiC data promises to generate the highest quality genomes. However, HiC library preparation is still too expensive and error-prone to perform for all GAGA species and we expect that stLFR sequencing can provide similar benefits at lower costs. 
+
+Table \@ref(tab:tab2) shows the current best and worst assembly according to contig N50.
+
+```{R tab2, echo=FALSE, message=FALSE, warning=FALSE}
+# plot best-worst table
+bestworst<-rbind(best,worst)[,c(1,2,3,12,13,14)]
+colnames(bestworst)[colnames(bestworst)=="Scaffolds"]<-"# scaffolds"
+kable(bestworst, caption="Best and worst genome assemblies produced by GAGA") %>% kable_styling()
+```
+
