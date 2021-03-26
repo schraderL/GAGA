@@ -1,0 +1,146 @@
+---
+title: "GAGA Collection Progress Report 2021"
+output:
+  bookdown::html_document2:
+    toc: false
+    toc_float: false
+    toc_depth: 2
+    collapsed: true
+    number_sections: true
+    df_print: paged
+  pdf_document: default
+---
+
+<style>
+p.caption {
+  font-size: 1.1em;
+  font-color: "grey50";
+}
+p {
+  line-height: 2em;
+}
+</style>
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+library(plotly)
+library(googlesheets4)
+library(kableExtra)
+library(knitr)
+library(ggplot2)
+library("ggmap")
+library(dplyr)
+library(lattice)
+library(tidyverse)
+library(ggrepel)
+library(plyr)
+library(cowplot)
+library(uniqtag)
+library(ape)
+library(TreeTools)
+library(phangorn)
+library(randomcoloR)
+library(phytools)
+library(ggstance)
+library(ggtree)
+library(grid)
+library(gtable)
+library(reshape2)
+library(ggnewscale)
+library(htmlwidgets)
+
+```
+
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+id<-"1e7Hj_BQ8rke5XW7j93YL6QVAGbcvsb2yw7oD86WnPJY"
+#submissions <- as.data.frame(read_sheet(id,sheet="GAGA Submissions",skip = 1,na = c(""," ","NA"),col_types = "c"),stringsAsFactors=T)
+#save(file = "../../misc/data/submissions.Robject",submissions)
+load(file = "../../misc/data/submissions.Robject")
+a<-submissions[-1,]
+a<-subset(a,!is.na(`GAGA ID (assigned based on row in this table)`))
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+# retrieve summary statistics to cite in text
+species<-length(unique(do.call(paste, as.data.frame(cbind(as.character(a$`Ant genus`),as.character(a$`Ant species/ morphospecies`))))))
+genera<-length(unique(as.character(a$`Ant genus`)))
+pacbio<-dim(subset(a,`PacBio data`!="",select = c(`Ant genus`, `Ant species/ morphospecies`)))[1]
+stLFR<-dim(subset(a,`stLFR,10X...40`!="",select = c(`Ant genus`, `Ant species/ morphospecies`)))[1]
+stLFRonly<-dim(subset(a,`stLFR,10X...40`!="" & is.na(`PacBio data`),select = c(`Ant genus`, `Ant species/ morphospecies`)))[1]
+HiC<-dim(subset(a,HiC!="",select = c(`Ant genus`, `Ant species/ morphospecies`)))[1]
+RNAseq<-dim(subset(a,RNAseq...36!="",select = c(`Ant genus`, `Ant species/ morphospecies`)))[1]
+shortread<-dim(subset(a,`WGS (small-insert BGIseq)...38`!="",select = c(`Ant genus`, `Ant species/ morphospecies`)))[1]
+
+subfamSequenced<-length(levels(as.factor(as.character((subset(a,`PacBio data`!="",select = Subfamily)[,1])))))
+a$Subfamily<-as.factor(a$Subfamily)
+collectors<-as.factor(apply(cbind(as.character(a$`Collector first name`),as.character(a$`Collector last name`)),1,paste,collapse=" "))
+gagaids<-length(levels(as.factor(a$`GAGA ID (assigned based on row in this table)`)))
+unSpec<-a[!duplicated(a$Species),]
+specPerSubfam<-count(unSpec, 'Subfamily')
+specPerSubfam$Subfamily<-as.character(specPerSubfam$Subfamily)
+specPerSubfamTot<-rbind(c("Total",sum(specPerSubfam$freq)),specPerSubfam)
+```
+# Overall progress
+GAGA aims to generate high quality genomic and other resources (i.e. reference genomes, gene expression data, phenotypic and life history records) for ca. 200 ant species, broadly covering genomic and phenotypic diversity of ants. We have made good progress over the last couple of months have finished sequencing and assembly of over 100 genomes and will now start genome annotation and comparative analyses.
+
+In our first phase collection efforts, **`r gagaids` samples of `r species` species from `r genera` genera have been collected**. Sample collection has been a global effort, **involving `r length(levels(collectors))` collectors in `r length(levels(as.factor(a$Country)))` countries**. Table \@ref(tab:tab1) gives an overview of the number of species sampled per subfamily so far. [Antwiki.org](http://Antwiki.org) recognizes 347 genera in the Formicidae, so there is a substantial proportion of ant biodiversity that we could not include as of yet.
+
+```{R tab1, echo=FALSE, message=FALSE, warning=FALSE,results='asis'}
+#plot table1
+kable(specPerSubfamTot, caption="Number of species collected per subfamily.",align = "ll") %>% kable_styling(position = "left",font_size = 10,bootstrap_options = "condensed",full_width = F) %>% column_spec(1,width = "4in")
+```
+We are still eager to secure more samples, in particular from regions we have so far not covered properly (e.g. **Australia**, **Africa**, **Central Asia**). Figure \@ref(fig:fig1) gives an overview of the sampling localities we have accessed so far. Overall, however, we are approaching our goal to establish genomic resources for ants on a worldwide scale.
+
+
+```{R echo=FALSE, warning=FALSE, include=FALSE}
+#retrieve GPS data and plot
+coordinates<-subset(a,!is.na(Latitude) & !is.na(Longitude) ,c(`GAGA ID (assigned based on row in this table)`,Latitude,Longitude,`PacBio data`,Species,Subfamily))
+coordinates$Latitude<-as.numeric(as.character(coordinates$Latitude))
+coordinates$Longitude<-as.numeric(as.character(coordinates$Longitude))
+coordinates$`PacBio data`<-as.character(coordinates$`PacBio data`)
+coordinates$`PacBio data`[!is.na(coordinates$`PacBio data`)]<-"Y"
+coordinates$`PacBio data`[is.na(coordinates$`PacBio data`)]<-"N"
+world_map <- get_stamenmap(bbox = c(left = -180, bottom = -60, right = 179.9999, top = 70), zoom = 3, maptype = "toner-lite")
+
+g<-ggmap(world_map)
+
+```
+
+```{R fig1, echo=FALSE, message=FALSE, warning=FALSE,fig.cap="Sampling localities of all GAGA samples"}
+# plot Figure 1
+g + geom_jitter(data = coordinates, aes(x = Longitude, y = Latitude,fill=Subfamily),stroke=0,width = 1,height = 1, size = 3, alpha = .8,pch=25)+theme_bw()+theme(legend.position = "bottom",legend.margin  = unit(0,"cm"),legend.text=element_text(size=10),legend.title  =element_blank())
+dev.print(pdf,"../../misc/plots/GAGA.samples.map.pdf",width=10,height=8)
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+# Calculate coordinates for sequenced species only.
+coordinates<-subset(a,!is.na(Latitude) & !is.na(Longitude) ,c(`GAGA ID (assigned based on row in this table)`,Latitude,Longitude,`PacBio data`,`stLFR,10X...40`,Species,Subfamily))
+coordinates$Latitude<-as.numeric(as.character(coordinates$Latitude))
+coordinates$Longitude<-as.numeric(as.character(coordinates$Longitude))
+coordinates$`PacBio data`<-as.character(coordinates$`PacBio data`)
+coordinates$`PacBio data`[!is.na(coordinates$`PacBio data`)]<-"Y"
+coordinates$`PacBio data`[is.na(coordinates$`PacBio data`)]<-"N"
+coordinates$`stLFR,10X...40`<-as.character(coordinates$`stLFR,10X...40`)
+coordinates$`stLFR,10X...40`[!is.na(coordinates$`stLFR,10X...40`)]<-"Y"
+coordinates$`stLFR,10X...40`[is.na(coordinates$`stLFR,10X...40`)]<-"N"
+
+world_map <- get_stamenmap(bbox = c(left = -180, bottom = -60, right = 179.9999, top = 70), zoom = 3, maptype = "toner-lite")
+
+g<-ggmap(world_map)
+
+```
+# The first 100 GAGA ant genomes
+**So far, we could generate long-read PacBio data for `r pacbio` species**. Sample biomass, sample quality, and species specific issues in DNA extraction remain the main challenges that need to be overcome before we can attempt long read sequencing. We thus had to give up on a number of species on our preliminary target list and switch to a different species for genome sequencing.
+
+To be able to get genomes also for very rare species, we are now starting to generate assemblies from short-read stLFR/10X sequencing data only, allowing us to **tackle species where only very little biomass is available (e.g. *Leptanilla*)**. 
+
+The first 100 genomes that we have generated are biased towards myrmicine and formicine ants, well reflecting differences in species-richness between subfamilies. However, we aim to generate representative genomes for as many subfamilies as possible. See Figure \@ref(fig:fig2) for the sampling localities of all so far sequenced species. 
+
+```{R fig2, echo=FALSE, message=FALSE, warning=FALSE,fig.cap="Sampling localities of sequenced GAGA species"}
+# plot Figure 2
+g + geom_jitter(data = subset(coordinates,`PacBio data`=="Y"| `stLFR,10X...40` =="Y"), aes(x = Longitude, y = Latitude,fill=Subfamily),stroke=0,width = 1,height = 1, size = 3, alpha = .8,pch=25)+theme_bw()+theme(legend.position = "bottom",legend.margin  = unit(0,"cm"),legend.text=element_text(size=10),legend.title  =element_blank())
+dev.print(pdf,"../../misc/plots/GAGA.sequenced.map.pdf",width=10,height=8)
+```
+
+
+
