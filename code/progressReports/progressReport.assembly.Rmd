@@ -47,6 +47,7 @@ library(gtable)
 library(reshape2)
 library(ggnewscale)
 library(htmlwidgets)
+library(ggpubr)
 
 ```
 
@@ -56,7 +57,8 @@ library(htmlwidgets)
 #gsheet<-read_sheet(id,sheet="GlobalOverview",skip = 2,na = c(""," ","NA","#DIV/0!"),col_types = "c",trim_ws=T)
 #GlobalOverview<-as.data.frame(gsheet,stringsAsFactors=F)
 
-#colnames(GlobalOverview)<-c("ENTRY.FROM.Species.ID.polished","original.species.ID","final.species.ID","ENTRY.FROM.SampleType","PacBIo","stLFR","HiC","Collector.Firstname","Collector.Name","Sample.ID","Species","PacBio.library","stLFR.library","Short.reads..WGS..library","RNAseq.library","PacBio","stLFR.1","Short.reads..WGS.","Hi.C","RNAseq","Subfamily","Country","Comment","ENTRY.FROM.GAGA.SUBMISSION","GAGA.ID","ENTRY.FROM.ASSEMBLY.OVERVIEW","Species..from.Assembly.Overview.","PacBio.1","stLFR.2","Short.reads..WGS..1","Hi.C.1","RNA..additional.samples.still.under.seq..","PacBio.assembly","PacBio.stLFR.WGS.polished.assembly","PacBio.stLFR.scaffolded","PacBio.Hi.C.scaffolded","stLFR.assembly","Current.state","Genome.size","Number.of.scaffolds","Scaffold.N50","Contig.N50","Longest.scaffold","BUSCO.Eukaryota","BUSCO.Hymenoptera","Duplicated.scaffolds","Total.length.of.duplicated.scaffolds","Percentage.of.duplication","Comments","Bacterial.scaffolds.count","Total.length.of.bacterial.scaffolds","Bacterial.scaffold.prevalence..","Top.bacterial.taxon","Putative.misassembly.count","Putative.misassemblies...100Kb..count","Genome.size.1","Number.of.scaffolds.1","Scaffold.N50.1","Contig.N50.1","Longest.scaffold.1","BUSCO.Eukaryota.1","BUSCO.Hymenoptera.1","Repeat.annotation","Gene.annotation")
+
+#colnames(GlobalOverview)<-c("RNAseqID","RNA.Comment","RNA.Worker","RNA.Large worker","RNA.Smallworker","RNA.Soldier","RNA.Gyne","RNA.Queen","RNA.Male","RNA.Larvae","RNA.Pupae","RNA.Brood","RNA.Mixed","ENTRY.FROM.Species.ID.polished","original.species.ID","final.species.ID","ENTRY.FROM.SampleType","PacBIo","stLFR","HiC","Collector.Firstname","Collector.Name","Sample.ID","Species","PacBio.library","stLFR.library","Short.reads..WGS..library","RNAseq.library","PacBio","stLFR.1","Short.reads..WGS.","Hi.C","RNAseq","Subfamily","Country","Comment","ENTRY.FROM.GAGA.SUBMISSION","GAGA.ID","ENTRY.FROM.ASSEMBLY.OVERVIEW","Species..from.Assembly.Overview.","PacBio.1","stLFR.2","Short.reads..WGS..1","Hi.C.1","RNA..additional.samples.still.under.seq..","PacBio.assembly","PacBio.stLFR.WGS.polished.assembly","PacBio.stLFR.scaffolded","PacBio.Hi.C.scaffolded","stLFR.assembly","Current.state","Genome.size","Number.of.scaffolds","Scaffold.N50","Contig.N50","Longest.scaffold","BUSCO.Eukaryota","BUSCO.Hymenoptera","Duplicated.scaffolds","Total.length.of.duplicated.scaffolds","Percentage.of.duplication","Comments","Bacterial.scaffolds.count","Total.length.of.bacterial.scaffolds","Bacterial.scaffold.prevalence..","Top.bacterial.taxon","Putative.misassembly.count","Putative.misassemblies...100Kb..count","Genome.size.1","Number.of.scaffolds.1","Scaffold.N50.1","Contig.N50.1","Longest.scaffold.1","BUSCO.Eukaryota.1","BUSCO.Hymenoptera.1","Repeat.annotation","Gene.annotation")
 
 #save(file = "../../misc/data/globaloverview.Robject",GlobalOverview)
 load(file = "../../misc/data/globaloverview.Robject")
@@ -184,7 +186,6 @@ sum(!is.na(dataMerge$DisplayName))
 ```
 
 
-
 ```{R message=FALSE, warning=FALSE, include=FALSE}
 GAGA.tree<-keep.tip(tree,antGenera.tree.w.GAGA$data$node[!is.na(antGenera.tree.w.GAGA$data$DisplayName)])
 
@@ -238,6 +239,15 @@ for (tribe in tribes){
 ```
 
 ```{R message=FALSE, warning=FALSE, include=FALSE}
+tribecolors2<-merge(tribecolors,speciescount[match(unique(speciescount$Tribe), speciescount$Tribe),],by.x="tribe",by.y="Tribe",all.x=T,all.y=F)
+tab<-ggtexttable(as.tibble(cbind("",tribecolors2$tribe)),rows = NULL,cols =NULL)
+for (i in 1:nrow(tribecolors2)){
+tab<-table_cell_bg(tab,fill=tribecolors2$color[i],row=i,column =1)
+}
+ggsave("/Users/lukas/sciebo/Projects/GAGA/misc/plots/tribeColors.pdf",tab,width = 4,height=10)
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
 GAGA.tree.plot3
 ```
 
@@ -261,7 +271,37 @@ facetData$BUSCO.euk.F<-as.numeric(gsub(".*F:(.*?)%.*","\\1",facetData$BUSCO.Euka
 facetData$BUSCO.euk.M<-as.numeric(gsub(".*M:(.*?)%.*","\\1",facetData$BUSCO.Eukaryota))
 
 
-dd <- data.frame(id=facetData$label, GS=round(facetData$Genome.size/1000000),N50=facetData$Scaffold.N50,nscf=facetData$Number.of.scaffolds,B.hym.C=facetData$BUSCO.hym.C,B.hym.F=facetData$BUSCO.hym.F,B.hym.M=facetData$BUSCO.hym.M,B.euk.C=facetData$BUSCO.euk.C,B.euk.F=facetData$BUSCO.euk.F,B.euk.M=facetData$BUSCO.euk.M,tribe=facetData$Tribe,PacBio=facetData$PacBio.1,stLFR=facetData$stLFR.2,HiC=facetData$Hi.C.1,RNAseq=facetData$RNA..additional.samples.still.under.seq..,Finalized=facetData$Current.state,wgs=facetData$Short.reads..WGS..1,Gid=facetData$GAGA.ID,status=facetData$Current.state)
+dd <- data.frame(id=facetData$label,
+ GS=round(facetData$Genome.size/1000000),
+N50=facetData$Scaffold.N50,
+nscf=facetData$Number.of.scaffolds,
+B.hym.C=facetData$BUSCO.hym.C,
+B.hym.F=facetData$BUSCO.hym.F,
+B.hym.M=facetData$BUSCO.hym.M,
+B.euk.C=facetData$BUSCO.euk.C,
+B.euk.F=facetData$BUSCO.euk.F,
+B.euk.M=facetData$BUSCO.euk.M,
+tribe=facetData$Tribe,
+PacBio=facetData$PacBio.1,
+stLFR=facetData$stLFR.2,
+HiC=facetData$Hi.C.1,
+RNAseq=facetData$RNA..additional.samples.still.under.seq..,
+Finalized=facetData$Current.state,
+wgs=facetData$Short.reads..WGS..1,
+Gid=facetData$GAGA.ID,
+status=facetData$Current.state,
+RNA.Worker=facetData$RNA.Worker,
+RNA.LW=facetData$`RNA.Large worker`,
+RNA.SW=facetData$RNA.Smallworker,
+RNA.Soldier=facetData$RNA.Soldier,
+RNA.Gyne=facetData$RNA.Gyne,
+RNA.Queen=facetData$RNA.Queen,
+RNA.Male=facetData$RNA.Male,
+RNA.Larvae=facetData$RNA.Larvae,
+RNA.Pupae=facetData$RNA.Pupae,
+RNA.Brood=facetData$RNA.Brood,
+RNA.Mixed=facetData$RNA.Mixed)
+
 dd$tribeColor <- cladeColor[match(dd$tribe, names(cladeColor))]
 
 dd$PacBio[!is.na(dd$PacBio)]<-1
@@ -291,9 +331,13 @@ levels(dd$tech)[levels(dd$tech)=="001"]<-"stLFR"
 levels(dd$tech)[levels(dd$tech)=="101"]<-"P/s"
 levels(dd$tech)[levels(dd$tech)=="110"]<-"P/H"
 levels(dd$tech)[levels(dd$tech)=="111"]<-"P/H/s"
+```
 
 
-ddHeatmap<-dd[c("id","tribeColor","tribe","PacBio","stLFR","HiC","wgs","Finalized","RNAseq")]
+```{R message=FALSE, warning=FALSE, include=FALSE}
+ddHeatmap<-dd[c("id","tribeColor","tribe","PacBio","stLFR","HiC","wgs","Finalized")]
+ddHeatmap$blank<-"-1"
+colnames(ddHeatmap)[colnames(ddHeatmap)=="blank"]<-"________________"
 
 #GAGA.tree.plot4<-facet_plot(GAGA.tree.plot3, 'Genome Size', data = dd, geom=geom_barh, mapping = aes(x = GS,fill=tribeColor), 
  #               stat='identity' )+ theme_tree2() + scale_fill_identity()
@@ -301,8 +345,8 @@ ddHeatmap<-dd[c("id","tribeColor","tribe","PacBio","stLFR","HiC","wgs","Finalize
 
 
 ```{R message=FALSE, warning=FALSE, include=FALSE}
-GAGA.tree.plot.heatmap<-gheatmap(GAGA.tree.plot3+ylim(0,165), ddHeatmap[,c(4:9)], offset=7, colnames=T, legend_title="Tech",  width = .25,colnames_position = "top", colnames_offset_y = 1,colnames_angle=65,hjust=0,font.size = 2.8)+
-                  scale_fill_manual(values = c("grey90","lightgreen","darkred","lightblue"))+
+GAGA.tree.plot.heatmap<-gheatmap(GAGA.tree.plot3+ylim(0,165), ddHeatmap[,c(4:7,9,8)], offset=7, colnames=T, legend_title="Tech",  width = .25,colnames_position = "top", colnames_offset_y = 1,colnames_angle=65,hjust=0,font.size = 2.8)+
+                  scale_fill_manual(values = c("white","grey90","lightgreen","darkred","lightblue"))+
                   theme(legend.position = "none")
 
 
@@ -310,6 +354,36 @@ GAGA.tree.plot.heatmap<-gheatmap(GAGA.tree.plot3+ylim(0,165), ddHeatmap[,c(4:9)]
 ```{R message=FALSE, warning=FALSE, include=FALSE}
 GAGA.tree.plot.heatmap
 ggsave("../../misc/plots/GAGA.tree.technique.pdf",GAGA.tree.plot.heatmap,width=6,height=10)
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+ddHeatmapRNA<-dd[c("id","tribeColor","tribe","RNA.Worker","RNA.LW","RNA.SW","RNA.Soldier","RNA.Gyne","RNA.Queen","RNA.Male","RNA.Larvae","RNA.Pupae","RNA.Brood","RNA.Mixed")]
+
+ddHeatmapRNA[!is.na(ddHeatmapRNA)]<-1
+ddHeatmapRNA[is.na(ddHeatmapRNA)]<-0
+ddHeatmapRNA$W<-0
+ddHeatmapRNA$B<-0
+
+ddHeatmapRNA$W[ddHeatmapRNA$RNA.Worker==1 |ddHeatmapRNA$RNA.LW==1 | ddHeatmapRNA$RNA.SW==1 |ddHeatmapRNA$RNA.Soldier == 1]<-1
+ddHeatmapRNA$B[ddHeatmapRNA$RNA.Larvae==1 |ddHeatmapRNA$RNA.Pupae==1 | ddHeatmapRNA$RNA.Brood==1 ]<-1
+
+```
+
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+colnames(ddHeatmapRNA)[c(15,16,8,9,10,14)]<-c("Workers","Brood","Gyne","Queen","Male","Mix")
+
+GAGA.tree.plot.heatmap.RNA<-gheatmap(GAGA.tree.plot3+ylim(0,165), ddHeatmapRNA[,c(15,16,8,9,10,14)], offset=7, colnames=T, legend_title="Tech",  width = .25,colnames_position = "top", colnames_offset_y = 1,colnames_angle=65,hjust=0,font.size = 2.8)+
+                  scale_fill_manual(values = c("grey90","lightblue"))+
+                  theme(legend.position = "none")
+
+
+```
+
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+GAGA.tree.plot.heatmap.RNA
+ggsave("../../misc/plots/GAGA.tree.RNAseq.pdf",GAGA.tree.plot.heatmap.RNA,width=6,height=10)
 ```
 
 ```{R message=FALSE, warning=FALSE, include=FALSE}
