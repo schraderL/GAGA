@@ -289,7 +289,7 @@ B.euk.M=facetData$BUSCO.euk.M,
 tribe=facetData$Tribe,
 PacBio=facetData$PacBio.1,
 stLFR=facetData$stLFR.2,
-HiC=facetData$Hi.C.1,
+HiC=facetData$PacBio.Hi.C.scaffolded,
 RNAseq=facetData$RNA..additional.samples.still.under.seq..,
 Finalized=facetData$Current.state,
 wgs=facetData$Short.reads..WGS..1,
@@ -313,7 +313,8 @@ dd$PacBio[!is.na(dd$PacBio)]<-1
 dd$PacBio[is.na(dd$PacBio)]<-0
 dd$stLFR[!is.na(dd$stLFR)]<-1
 dd$stLFR[is.na(dd$stLFR)]<-0
-dd$HiC[!is.na(dd$HiC)]<-1
+dd$HiC[dd$HiC=="X"]<-1
+dd$HiC[dd$HiC!=1]<-0
 dd$HiC[is.na(dd$HiC)]<-0
 dd$wgs[!is.na(dd$wgs)]<-1
 dd$wgs[is.na(dd$wgs)]<-0
