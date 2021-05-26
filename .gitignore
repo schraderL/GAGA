@@ -56,6 +56,7 @@ Temporary Items
 # History files
 .Rhistory
 .Rapp.history
+*_files
 
 # Session Data files
 .RData
