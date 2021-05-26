@@ -52,7 +52,7 @@ library(htmlwidgets)
 
 
 ```{R message=FALSE, warning=FALSE, include=FALSE}
-id<-"1e7Hj_BQ8rke5XW7j93YL6QVAGbcvsb2yw7oD86WnPJY"
+#id<-"1e7Hj_BQ8rke5XW7j93YL6QVAGbcvsb2yw7oD86WnPJY"
 #submissions <- as.data.frame(read_sheet(id,sheet="GAGA Submissions",skip = 1,na = c(""," ","NA"),col_types = "c"),stringsAsFactors=T)
 #save(file = "../../misc/data/submissions.Robject",submissions)
 load(file = "../../misc/data/submissions.Robject")

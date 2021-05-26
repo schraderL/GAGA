@@ -58,8 +58,11 @@ library(ggpubr)
 #GlobalOverview<-as.data.frame(gsheet,stringsAsFactors=F)
 
 
-#colnames(GlobalOverview)<-c("RNAseqID","RNA.Comment","RNA.Worker","RNA.Large worker","RNA.Smallworker","RNA.Soldier","RNA.Gyne","RNA.Queen","RNA.Male","RNA.Larvae","RNA.Pupae","RNA.Brood","RNA.Mixed","ENTRY.FROM.Species.ID.polished","original.species.ID","final.species.ID","ENTRY.FROM.SampleType","PacBIo","stLFR","HiC","Collector.Firstname","Collector.Name","Sample.ID","Species","PacBio.library","stLFR.library","Short.reads..WGS..library","RNAseq.library","PacBio","stLFR.1","Short.reads..WGS.","Hi.C","RNAseq","Subfamily","Country","Comment","ENTRY.FROM.GAGA.SUBMISSION","GAGA.ID","ENTRY.FROM.ASSEMBLY.OVERVIEW","Species..from.Assembly.Overview.","PacBio.1","stLFR.2","Short.reads..WGS..1","Hi.C.1","RNA..additional.samples.still.under.seq..","PacBio.assembly","PacBio.stLFR.WGS.polished.assembly","PacBio.stLFR.scaffolded","PacBio.Hi.C.scaffolded","stLFR.assembly","Current.state","Genome.size","Number.of.scaffolds","Scaffold.N50","Contig.N50","Longest.scaffold","BUSCO.Eukaryota","BUSCO.Hymenoptera","Duplicated.scaffolds","Total.length.of.duplicated.scaffolds","Percentage.of.duplication","Comments","Bacterial.scaffolds.count","Total.length.of.bacterial.scaffolds","Bacterial.scaffold.prevalence..","Top.bacterial.taxon","Putative.misassembly.count","Putative.misassemblies...100Kb..count","Genome.size.1","Number.of.scaffolds.1","Scaffold.N50.1","Contig.N50.1","Longest.scaffold.1","BUSCO.Eukaryota.1","BUSCO.Hymenoptera.1","Repeat.annotation","Gene.annotation")
+#rename.columns<-c("RNAseqID","RNA.Comment","RNA.Worker","RNA.Large worker","RNA.Smallworker","RNA.Soldier","RNA.Gyne","RNA.Queen","RNA.Male","RNA.Larvae","RNA.Pupae","RNA.Brood","RNA.Mixed","ENTRY.FROM.Species.ID.polished","original.species.ID","final.species.ID","ENTRY.FROM.SampleType","PacBIo","stLFR","HiC","Collector.Firstname","Collector.Name","Sample.ID","Species","PacBio.library","stLFR.library","Short.reads..WGS..library","RNAseq.library","PacBio","stLFR.1","Short.reads..WGS.","Hi.C","RNAseq","Subfamily","Country","Comment","ENTRY.FROM.GAGA.SUBMISSION","GAGA.ID","ENTRY.FROM.ASSEMBLY.OVERVIEW","Species..from.Assembly.Overview.","PacBio.1","stLFR.2","Short.reads..WGS..1","Hi.C.1","RNA..additional.samples.still.under.seq..","PacBio.assembly","PacBio.stLFR.WGS.polished.assembly","PacBio.stLFR.scaffolded","PacBio.Hi.C.scaffolded","stLFR.assembly","Current.state","Genome.size","Number.of.scaffolds","Scaffold.N50","Contig.N50","Longest.scaffold","BUSCO.Eukaryota","BUSCO.Hymenoptera","Duplicated.scaffolds","Total.length.of.duplicated.scaffolds","Percentage.of.duplication","Comments","Bacterial.scaffolds.count","Total.length.of.bacterial.scaffolds","Bacterial.scaffold.prevalence..","Top.bacterial.taxon","Putative.misassembly.count","Putative.misassemblies...100Kb..count","human.contamination","Genome.size.1","Number.of.scaffolds.1","Scaffold.N50.1","Contig.N50.1","Longest.scaffold.1","L50","L90","BUSCO.Eukaryota.1","BUSCO.Hymenoptera.1","wgs.mapping","Completeness","QV","RNA-seq.mapping","Repeat.annotation","Gene.annotation")
 
+#View(rbind(rename.columns,colnames(gsheet)))
+
+#colnames(GlobalOverview)<-rename.columns
 #save(file = "../../misc/data/globaloverview.Robject",GlobalOverview)
 load(file = "../../misc/data/globaloverview.Robject")
 ```
@@ -132,9 +135,11 @@ p<-ggtree(tree,size=.1)+xlim(0,40)+geom_tiplab(align=T,size=1)+ geom_text(aes(la
 ```{R message=FALSE, warning=FALSE, include=FALSE}
 speciescount<-read.csv("../../misc/data/AntWiki.clean.tsv",sep="\t")
 speciescount$Tribe[speciescount$Tribe==""]<-paste("tr. ",speciescount$Subfamily[speciescount$Tribe==""],sep="")
+
 ```
 ```{R message=FALSE, warning=FALSE, include=FALSE}
 dataMerge<-merge(data,speciescount,by.x="genus",by.y="TaxonName",all.x=T,all.y=T)
+
 
 dataMerge <- dataMerge %>%
   select(taxID, everything())
@@ -256,10 +261,10 @@ GAGA.tree.plot3
 
 facetData<-as.data.frame(GAGA.tree.plot2$data[GAGA.tree.plot2$data$isTip==T,])
 facetData$id<-facetData$label
-facetData$Genome.size<-as.numeric(facetData$Genome.size)
-facetData$Scaffold.N50<-as.numeric(facetData$Scaffold.N50)
-facetData$Contig.N50<-as.numeric(facetData$Contig.N50)
-facetData$Number.of.scaffolds<-as.numeric(facetData$Number.of.scaffolds)
+facetData$Genome.size<-as.numeric(gsub(",","",facetData$Genome.size.1))
+facetData$Scaffold.N50<-as.numeric(gsub(",","",facetData$Scaffold.N50.1))
+facetData$Contig.N50<-as.numeric(gsub(",","",facetData$Contig.N50))
+facetData$Number.of.scaffolds<-as.numeric(gsub(",","",facetData$Number.of.scaffolds))
 
 # extract BUSCO scores
 facetData$BUSCO.hym.C<-as.numeric(gsub("C:(.*?)%.*","\\1",facetData$BUSCO.Hymenoptera))
