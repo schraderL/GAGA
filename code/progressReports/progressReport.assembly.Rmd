@@ -53,18 +53,18 @@ library(ggpubr)
 
 
 ```{R message=FALSE, warning=FALSE, include=FALSE}
-#id<-"1e7Hj_BQ8rke5XW7j93YL6QVAGbcvsb2yw7oD86WnPJY"
-#gsheet<-read_sheet(id,sheet="GlobalOverview",skip = 2,na = c(""," ","NA","#DIV/0!"),col_types = "c",trim_ws=T)
-#GlobalOverview<-as.data.frame(gsheet,stringsAsFactors=F)
+id<-"1e7Hj_BQ8rke5XW7j93YL6QVAGbcvsb2yw7oD86WnPJY"
+gsheet<-read_sheet(id,sheet="GlobalOverview",skip = 2,na = c(""," ","NA","#DIV/0!"),col_types = "c",trim_ws=T)
+GlobalOverview<-as.data.frame(gsheet,stringsAsFactors=F)
 
 
-#rename.columns<-c("RNAseqID","RNA.Comment","RNA.Worker","RNA.Large worker","RNA.Smallworker","RNA.Soldier","RNA.Gyne","RNA.Queen","RNA.Male","RNA.Larvae","RNA.Pupae","RNA.Brood","RNA.Mixed","ENTRY.FROM.Species.ID.polished","original.species.ID","final.species.ID","ENTRY.FROM.SampleType","PacBIo","stLFR","HiC","Collector.Firstname","Collector.Name","Sample.ID","Species","PacBio.library","stLFR.library","Short.reads..WGS..library","RNAseq.library","PacBio","stLFR.1","Short.reads..WGS.","Hi.C","RNAseq","Subfamily","Country","Comment","ENTRY.FROM.GAGA.SUBMISSION","GAGA.ID","ENTRY.FROM.ASSEMBLY.OVERVIEW","Species..from.Assembly.Overview.","PacBio.1","stLFR.2","Short.reads..WGS..1","Hi.C.1","RNA..additional.samples.still.under.seq..","PacBio.assembly","PacBio.stLFR.WGS.polished.assembly","PacBio.stLFR.scaffolded","PacBio.Hi.C.scaffolded","stLFR.assembly","Current.state","Genome.size","Number.of.scaffolds","Scaffold.N50","Contig.N50","Longest.scaffold","BUSCO.Eukaryota","BUSCO.Hymenoptera","Duplicated.scaffolds","Total.length.of.duplicated.scaffolds","Percentage.of.duplication","Comments","Bacterial.scaffolds.count","Total.length.of.bacterial.scaffolds","Bacterial.scaffold.prevalence..","Top.bacterial.taxon","Putative.misassembly.count","Putative.misassemblies...100Kb..count","human.contamination","Genome.size.1","Number.of.scaffolds.1","Scaffold.N50.1","Contig.N50.1","Longest.scaffold.1","L50","L90","BUSCO.Eukaryota.1","BUSCO.Hymenoptera.1","wgs.mapping","Completeness","QV","RNA-seq.mapping","Repeat.annotation","Gene.annotation")
+rename.columns<-c("RNAseqID","RNA.Comment","RNA.Worker","RNA.Large worker","RNA.Smallworker","RNA.Soldier","RNA.Gyne","RNA.Queen","RNA.Male","RNA.Larvae","RNA.Pupae","RNA.Brood","RNA.Mixed","ENTRY.FROM.Species.ID.polished","original.species.ID","final.species.ID","ENTRY.FROM.SampleType","PacBIo","stLFR","HiC","Collector.Firstname","Collector.Name","Sample.ID","Species","PacBio.library","stLFR.library","Short.reads..WGS..library","RNAseq.library","PacBio","stLFR.1","Short.reads..WGS.","Hi.C","RNAseq","Subfamily","Country","Comment","ENTRY.FROM.GAGA.SUBMISSION","GAGA.ID","ENTRY.FROM.ASSEMBLY.OVERVIEW","Species..from.Assembly.Overview.","PacBio.1","stLFR.2","Short.reads..WGS..1","Hi.C.1","RNA..additional.samples.still.under.seq..","PacBio.assembly","PacBio.stLFR.WGS.polished.assembly","PacBio.stLFR.scaffolded","PacBio.Hi.C.scaffolded","stLFR.assembly","Current.state","Genome.size","Number.of.scaffolds","Scaffold.N50","Contig.N50","Longest.scaffold","BUSCO.Eukaryota","BUSCO.Hymenoptera","Duplicated.scaffolds","Total.length.of.duplicated.scaffolds","Percentage.of.duplication","Comments","Bacterial.scaffolds.count","Total.length.of.bacterial.scaffolds","Bacterial.scaffold.prevalence..","Top.bacterial.taxon","Putative.misassembly.count","Putative.misassemblies...100Kb..count","human.contamination","Genome.size.1","Number.of.scaffolds.1","Scaffold.N50.1","Contig.N50.1","Longest.scaffold.1","L50","L90","BUSCO.Eukaryota.1","BUSCO.Hymenoptera.1","wgs.mapping","Completeness","QV","RNA-seq.mapping","Repeat.annotation","Gene.annotation")
 
 #View(rbind(rename.columns,colnames(gsheet)))
 
-#colnames(GlobalOverview)<-rename.columns
-#save(file = "../../misc/data/globaloverview.Robject",GlobalOverview)
-load(file = "../../misc/data/globaloverview.Robject")
+colnames(GlobalOverview)<-rename.columns
+save(file = "../../misc/data/globaloverview.Robject",GlobalOverview)
+#load(file = "../../misc/data/globaloverview.Robject")
 ```
 
 ```{R message=FALSE, warning=FALSE, include=FALSE}
