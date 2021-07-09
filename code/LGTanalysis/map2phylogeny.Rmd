@@ -1,0 +1,144 @@
+---
+title: "GAGA phylogeny with LGT highlights"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    collapsed: true
+    number_sections: true
+    df_print: paged
+  pdf_document: default
+---
+<STYLE TYPE="text/css">
+<!--
+  td{
+    font-family: Arial; 
+    font-size: 8pt;
+    padding:0px;
+    cellpadding="0";
+    cellspacing="0"
+  }
+  th {
+    font-family: Arial; 
+    font-size: 8pt;
+    height: 20px;
+    font-weight: bold;
+    text-align: right;
+    background-color: #ccccff;
+  }
+  table { 
+    border-spacing: 0px;
+    border-collapse: collapse;
+  }
+--->
+</STYLE>
+
+
+Load the necessary R libraries
+```{r}
+library(treeio)
+library(ggtree)
+library(phytools)
+library(viridisLite)
+library(ggplot2)
+library(googlesheets4)
+
+```
+
+Load data from google spreadsheet
+```{r}
+id<-"1e7Hj_BQ8rke5XW7j93YL6QVAGbcvsb2yw7oD86WnPJY"
+gsheet<-read_sheet(id,sheet="GlobalOverview",skip = 2,na = c(""," ","NA","#DIV/0!"),col_types = "c",trim_ws=T)
+GlobalOverview<-as.data.frame(gsheet,stringsAsFactors=F)
+
+
+rename.columns<-c("RNAseqID","RNA.Comment","RNA.Worker","RNA.Large worker","RNA.Smallworker","RNA.Soldier","RNA.Gyne","RNA.Queen","RNA.Male","RNA.Larvae","RNA.Pupae","RNA.Brood","RNA.Mixed","ENTRY.FROM.Species.ID.polished","original.species.ID","final.species.ID","ENTRY.FROM.SampleType","PacBIo","stLFR","HiC","Collector.Firstname","Collector.Name","Sample.ID","Species","PacBio.library","stLFR.library","Short.reads..WGS..library","RNAseq.library","PacBio","stLFR.1","Short.reads..WGS.","Hi.C","RNAseq","Subfamily","Country","Comment","ENTRY.FROM.GAGA.SUBMISSION","GAGA.ID","ENTRY.FROM.ASSEMBLY.OVERVIEW","Species..from.Assembly.Overview.","PacBio.1","stLFR.2","Short.reads..WGS..1","Hi.C.1","RNA..additional.samples.still.under.seq..","PacBio.assembly","PacBio.stLFR.WGS.polished.assembly","PacBio.stLFR.scaffolded","PacBio.Hi.C.scaffolded","stLFR.assembly","Current.state","Genome.size","Number.of.scaffolds","Scaffold.N50","Contig.N50","Longest.scaffold","BUSCO.Eukaryota","BUSCO.Hymenoptera","Duplicated.scaffolds","Total.length.of.duplicated.scaffolds","Percentage.of.duplication","Comments","Bacterial.scaffolds.count","Total.length.of.bacterial.scaffolds","Bacterial.scaffold.prevalence..","Top.bacterial.taxon","Putative.misassembly.count","Putative.misassemblies...100Kb..count","human.contamination","Genome.size.1","Number.of.scaffolds.1","Scaffold.N50.1","Contig.N50.1","Longest.scaffold.1","L50","L90","BUSCO.Eukaryota.1","BUSCO.Hymenoptera.1","wgs.mapping","Completeness","QV","RNA-seq.mapping","Repeat.annotation","Gene.annotation")
+
+#View(rbind(rename.columns,colnames(gsheet)))
+
+colnames(GlobalOverview)<-rename.columns
+```
+
+
+```{r}
+
+data2add<-data.frame(GAGA.id = GlobalOverview$GAGA.ID, GlobalOverview)
+```
+
+Load the tree file and the `FAS.genes.and.names.tsv`.
+```{r}
+tree <- read.iqtree("../../misc/data/hymenoptera_psc98_partition_b1000_40threads_msubnucl.treefile")
+```
+
+Create a very quick and dirty plot of the phylogeny
+```{r}
+plot(tree@phylo,show.node.label = T,show.tip.label = T,cex=.5)
+nodelabels(bg=rgb(0,0,0,0),col="red",frame = "none")
+
+```
+
+check the FAS.rawplot.pdf to see where the root should be. Here we root the tree between FASN2 and FASN3
+```{r}
+
+tree.rooted<-treeio::root(tree,node=166)
+tree.rooted.subset<-treeio::drop.tip(tree.rooted,tip=c("NCBI-0018_Amel","NCBI-0019_Nvit"))
+
+```
+
+Plot basic tree
+```{r}
+tp<-ggtree(tree.rooted.subset,ladderize = T)+geom_rootedge(.01)
+```
+
+Add the species identity from `FAS.genes.and.names.tsv`
+```{r}
+tp$data$label[tp$data$isTip==T]<-gsub("_.*","",tp$data$label[tp$data$isTip==T])
+
+tp2<-tp %<+% data2add
+```
+
+Make complex tree
+```{r}
+tp3<-tp2 + 
+  geom_tiplab(aes(label=paste(label,Species,sep=" ")),size=2,align = T,linesize = .1)+    #add the tip labels
+  geom_nodepoint(aes(fill=UFboot),stroke=0.5,pch=21,size=2)+       #add the info about bootstrapping success as points of different colors to the nodes
+  scale_fill_viridis_c()+                                          #change the color of the node points to a viridis color scale
+  theme(legend.position = c(0.1,.9))+
+  coord_cartesian(xlim=c(0,.4))
+```
+
+```{r}
+tp3 #plot the tree
+ggsave("../../misc/plots/GAGA.phylogeny.pdf",width = 8,height=12) #save the tree in a pdf
+```
+
+# read LGT data
+```{r}
+library(readxl)
+library(dplyr)
+```
+```{r}
+LGTs.raw<-read_excel("../../misc/data/GAGA.LGT.162.filtered.good.candidates.taxonomy.xlsx")
+
+```
+
+```{r}
+LGTs<-LGTs.raw
+LGTs$GAGAid<-gsub("\\..*","",LGTs$.id)
+LGT.tally<-as.data.frame(table(select(LGTs,c(GAGAid))))
+
+LGTs.digested<-LGTs %>% 
+     group_by(GAGAid) %>% 
+     summarise(types = paste0(predicted_protein, collapse = ","), min_delay = min(nr_predicted_loci))
+```
+
+
+```{r}
+tp4<-tp3 %<+% LGT.tally
+```
+
+```{r}
+tp4+geom_tippoint(aes(size=Freq),col="red",alpha=.5)
+```
+
