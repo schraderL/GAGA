@@ -516,16 +516,16 @@ GAGA.tree.plot.N50
 ## see https://groups.google.com/g/bioc-ggtree/c/tZ0qkluBeGU/m/nkfWC9ixCwAJ
 
 gt = ggplot_gtable(ggplot_build(GAGA.tree.plot.N50))
-gtable_show_layout(gt) # will show you the layout - very handy function
+#gtable_show_layout(gt) # will show you the layout - very handy function
 #gt # see plot layout in table format
 gt$layout$l[grep('panel-1', gt$layout$name)] # you want to find the column specific to panel-2
-gt$widths[5] = 1.5*gt$widths[5] # in this case it was colmun 7 - reduce the width by a half
+#gt$widths[5] = 1.5*gt$widths[5] # in this case it was colmun 7 - reduce the width by a half
 #grid.draw(gt) # plot with grid draw
 ```
 
 ```{R message=FALSE, warning=FALSE, include=FALSE}
-grid.draw(gt)
-ggsave("../../misc/plots/GAGA.tree.n50.pdf",grid.draw(gt),width=10,height=9)
+p.gt<-grid.draw(gt)
+ggsave("../../misc/plots/GAGA.tree.n50.pdf",GAGA.tree.plot.N50,width=10,height=12)
 
 ```
 
