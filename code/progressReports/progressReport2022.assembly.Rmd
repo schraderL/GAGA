@@ -1,0 +1,701 @@
+---
+title: "GAGA Assembly Progress Report 2021"
+output:
+  bookdown::html_document2:
+    toc: false
+    toc_float: false
+    toc_depth: 2
+    collapsed: true
+    number_sections: true
+    df_print: paged
+  pdf_document: default
+---
+
+```{=html}
+<style>
+p.caption {
+  font-size: 1.1em;
+  font-color: "grey50";
+}
+p {
+  line-height: 2em;
+}
+</style>
+```
+
+
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+require(plotly)
+require(googlesheets4)
+require(kableExtra)
+require(knitr)
+require(ggplot2)
+require("ggmap")
+require(dplyr)
+require(lattice)
+require(tidyverse)
+require(ggrepel)
+require(plyr)
+require(cowplot)
+require(uniqtag)
+require(ape)
+require(TreeTools)
+require(phangorn)
+require(randomcoloR)
+require(phytools)
+require(ggstance)
+require(ggtree)
+require(grid)
+require(gtable)
+require(reshape2)
+require(ggnewscale)
+require(htmlwidgets)
+require(ggpubr)
+require(ggthemes)
+require(ggbeeswarm)
+
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+colSelection<-gdocs_pal()(20)
+theme_set(theme_cowplot(font_size=8))
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+id<-"1e7Hj_BQ8rke5XW7j93YL6QVAGbcvsb2yw7oD86WnPJY"
+gsheet<-read_sheet(id,sheet="GlobalOverview",skip = 2,na = c(""," ","NA","#DIV/0!"),trim_ws=T,col_types = "c")
+gsheet2<-read_sheet(id,sheet="GlobalOverview",skip = 0,na = c(""," ","NA","#DIV/0!"),trim_ws=T) %>% head(1)
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+#Fill up colnames to create human-readable colnames
+for (i in 1:length(colnames(gsheet2))){
+  if(grepl("[A-z]+",colnames(gsheet2)[i])){next}
+  colnames(gsheet2)[i]<-colnames(gsheet2)[i-1]
+}
+
+colnames(gsheet)<-paste(colnames(gsheet2),colnames(gsheet),sep=".")
+
+save(file = "../../misc/data/globaloverview.Robject",gsheet)
+#load(file = "../../misc/data/globaloverview.Robject")
+```
+
+```{R cleanup.gsheet, message=FALSE, warning=FALSE, include=FALSE}
+gsheet$`Assembly Overview.Assembled genome size`[grepl("[^0-9]",gsheet$`Assembly Overview.Assembled genome size`)]<-NA
+```
+
+
+```{R cleanup, message=FALSE, warning=FALSE, include=FALSE}
+# subset to entries with a Species name from the Assembly Overview
+data<-subset(gsheet,!is.na(`Assembly Overview.ENTRY FROM ASSEMBLY OVERVIEW`) & !is.na(`Assembly Overview.Species (from Assembly Overview)`))
+
+# rename Myrmoxenus to Temnothorax as the former is no proper genus
+data$`Assembly Overview.Species (from Assembly Overview)`<-gsub("Myrmoxenus","Temnothorax",data$`Assembly Overview.Species (from Assembly Overview)`)
+
+# Extract genus information 
+data$genus<-gsub(" .*","",data$`Assembly Overview.Species (from Assembly Overview)`)
+
+# Rename duplicate genera to Genus-sp1, Genus-sp2, etc.
+data$taxID<-make_unique(data$genus,sep="-sp")
+
+# show which genera are duplicated
+table(gsub("-.*","",data$genus[duplicated(gsub(" .*","",data$`Assembly Overview.Species (from Assembly Overview)`))]))+1
+
+
+# resolve non numeric entries in some columns
+
+```
+
+
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+# Downloaded ant tree from https://www.antwiki.org/wiki/Phylogeny_of_Formicidae
+## The tree contains a few typos that I corrected manually (e.g. Paratrachina instead of Paratrechina, Myrmecosystus instead of Myrmecocystus)
+treePaste.raw<-paste(scan("../../misc/data/antTree.tre", what="character", sep=" "),collapse=" ")
+tree.raw<-read.tree(text=paste(treePaste.raw))
+
+treePaste<-paste(scan("../../misc/data/antTree.tre", what="character", sep=" "),collapse=" ")
+
+# expand the nodes for those species that we have multiple times
+expansions<-table(data$genus[duplicated(data$genus)])+1
+for (i in 1:length(expansions)){
+  treePaste<-gsub(paste("(",names(expansions)[i],":)",sep=""),paste("(",paste(rep("\\1",expansions[i]),collapse=":0,",sep=""),":0):",sep=""),treePaste)
+}
+
+# load manipulated tree as tree object
+raw.tree<-read.tree(text=treePaste)
+raw.tree$tip.label<-make_unique(raw.tree$tip.label,sep="-sp")
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+# show labels for figuring out subfamilies
+plot(raw.tree,show.tip.label = F)
+nodelabels(frame =  "none")
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+# subset to extant ants, Martialis has to be node 1
+tree<-Subtree(Preorder(raw.tree), 427)
+grep("Martialis",tree$tip.label)
+tree$tip.label<-gsub("some(.*[2-9])|some(.*)1","\\1\\2",tree$tip.label)
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+# plot with subfamilies
+
+p<-ggtree(tree,size=.1)+xlim(0,40)+geom_tiplab(align=T,size=1)+ geom_text(aes(label=node),size=1,col="darkred")
+```
+
+```{bash message=FALSE, warning=FALSE, include=FALSE}
+# Download species counts for all genera and other info from antwiki
+#curl https://www.antwiki.org/wiki/images/a/ad/AntWiki_Valid_Genera.txt | LC_ALL=C sed 's/[^[:blank:][:print:]]//g'  > ../misc/data/AntWiki.clean.tsv
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+speciescount<-read.csv("../../misc/data/AntWiki.clean.tsv",sep="\t")
+speciescount$Tribe[speciescount$Tribe==""]<-paste("tr. ",speciescount$Subfamily[speciescount$Tribe==""],sep="")
+
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+dataMerge<-merge(data,speciescount,by.x="genus",by.y="TaxonName",all.x=T,all.y=T)
+
+
+dataMerge <- dataMerge %>%
+  select(taxID, everything())
+
+# give name to all unsequenced genera
+dataMerge$taxID[is.na(dataMerge$taxID)]<-dataMerge$genus[is.na(dataMerge$taxID)]
+# set species Count to NA for all multiple genera species
+dataMerge$SpeciesCount[grep("-sp[2-9]",dataMerge$taxID,value = F)]<-NA
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+p<-ggtree(tree,size=.2,layout = "circular")+xlim(0,40)
+#p$data$label<-make_unique(p$data$label,sep = "-sp")
+#p$data$label[grep("NA.",p$data$label,ignore.case = F)]<-NA
+dataMerge$DisplayName<-gsub(" \\(.*","",dataMerge$`Assembly Overview.Species (from Assembly Overview)`)
+p2<-p %<+% dataMerge 
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+
+antGenera.tree <- p2 +
+          geom_tiplab(align=T,size=1.2,offset=.5,linesize=0)+
+          geom_tippoint(aes(size = SpeciesCount,fill=Tribe),pch=21,alpha=.5) + 
+          guides(fill="none",color="none")+
+          theme_tree()+
+          theme(legend.position = c(.9,.85),legend.background = element_blank())
+
+antGenera.tree.w.GAGA <- p2 +
+          geom_tiplab(aes(label=DisplayName,col=Tribe,alpha=ifelse(is.na(DisplayName),0,1)),align=T,size=1.8,offset = 8,linesize = 0)+
+          geom_tiplab(align=T,size=1.2,offset=.5,linesize=0)+
+          geom_tippoint(aes(size = SpeciesCount,fill=Tribe),pch=21,alpha=.5) + 
+          guides(fill="none",color="none",alpha="none")+
+          theme_tree()+
+          theme(legend.position = c(.9,.85),legend.background = element_blank())
+
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+antGenera.tree
+ggsave("../../misc/plots/antTree.pdf",height=10)
+
+antGenera.tree.w.GAGA
+ggsave("../../misc/plots/antTree.GAGA.pdf",height=10)
+# How many GAGA species are shown?
+sum(!is.na(dataMerge$DisplayName))
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+# reorder dataMerge to have GAGA-id at the front
+dataMerge2 <- dataMerge %>% subset(!is.na(`Assembly Overview.ENTRY FROM ASSEMBLY OVERVIEW`)) %>%
+  select(`Assembly Overview.ENTRY FROM ASSEMBLY OVERVIEW`, everything())
+
+
+
+#GAGA.tree<-keep.tip(tree,antGenera.tree.w.GAGA$data$node[!is.na(antGenera.tree.w.GAGA$data$DisplayName)])
+GAGA.tree<-read.tree("/Users/lukas/sciebo/Projects/GAGA/misc/data/orthofinder.SpeciesTree_rooted_at_outgroup_12.txt")
+GAGA.tree.plot<-ggtree(GAGA.tree,size=.2) %<+% dataMerge2 
+GAGA.tree.plot2<-GAGA.tree.plot+geom_tiplab(aes(label=DisplayName,col=ifelse(grepl("GAGA",label),"GAGA","other")),size=1.5,show.legend=F)+scale_color_manual(name="",values = c("black","grey40"))+geom_rootedge(.005,size=.2)
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+GAGA.tree.plot2
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+
+# Add tribe info as clade highlights
+
+GAGA.tree.plot2$data$Tribe<-as.factor(GAGA.tree.plot2$data$Tribe)
+TribeNodes<-vector()
+
+tribes<-levels(GAGA.tree.plot2$data$Tribe)
+tribeCount<-table(GAGA.tree.plot2$data$Tribe)
+
+# loop over all tribes and extract the MRCA node of all genera for each tribe
+for (i in 1:length(tribes)){
+  nodes<-unlist(subset(GAGA.tree.plot2$data,Tribe==tribes[i],node,include.self=T))
+  if (length(nodes)==1){
+    TribeNodes[i]<-nodes
+  }else{
+    TribeNodes[i]<-mrca.phylo(GAGA.tree,nodes)
+  }
+}
+
+#define clade colors
+set.seed(100);cladeColor<-distinctColorPalette(length(TribeNodes))
+ 
+names(TribeNodes)<-tribes
+names(cladeColor)<-tribes
+tribecolors<-data.frame(tribe=names(cladeColor),color=cladeColor)
+#write.table(tribecolors,file="../../misc/data/tribeColors.tsv",sep="\t",quote=F, row.names=F)
+GAGA.tree.plot3<-GAGA.tree.plot2
+
+# loop over each tribe and add a clade highlight. Label the highlight only for larger clades
+for (tribe in tribes){
+  if (tribeCount[tribe]>4){
+    GAGA.tree.plot3<-GAGA.tree.plot3+geom_cladelabel(node=TribeNodes[tribe],label= tribe,align = T, offset = .086, col=c(cladeColor[tribe],"black"),barsize = 1,angle = 90,fontsize = 1.5,offset.text = .004,hjust = 'center')+xlim_tree(.1)
+  }else{
+    GAGA.tree.plot3<-GAGA.tree.plot3+geom_cladelabel(node=TribeNodes[tribe],label= "",align = T, offset = .086, col=cladeColor[tribe],barsize = 1)+xlim_tree(.1)
+  }
+}
+
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+tribecolors2<-merge(tribecolors,speciescount[match(unique(speciescount$Tribe), speciescount$Tribe),],by.x="tribe",by.y="Tribe",all.x=T,all.y=F)
+tab<-ggtexttable(as.tibble(cbind("",tribecolors2$tribe)),rows = NULL,cols =NULL)
+for (i in 1:nrow(tribecolors2)){
+tab<-table_cell_bg(tab,fill=tribecolors2$color[i],row=i,column =1)
+}
+#ggsave("/Users/lukas/sciebo/Projects/GAGA/misc/plots/tribeColors.pdf",tab,width = 4,height=10)
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+GAGA.tree.plot3
+```
+
+```{R Define-DD, message=FALSE, warning=FALSE, include=FALSE}
+# extract data from tree for facet plotting
+
+facetData<-as.data.frame(GAGA.tree.plot2$data[GAGA.tree.plot2$data$isTip==T,])
+
+dd<-data.frame(id=facetData$label,
+  GS=as.numeric(gsub(",","",facetData$`Assembly Overview.Genome size...71`))/1000000,
+  N50=as.numeric(gsub(",","",facetData$`Assembly Overview.Scaffold N50...73`)),
+  cN50=as.numeric(gsub(",","",facetData$`Assembly Overview.Contig N50...74`)),
+  nscf = as.numeric(gsub(",","",facetData$`Assembly Overview.Number of scaffolds...72`)),
+
+  # extract BUSCO scores
+  B.hym.C=as.numeric(gsub("C:(.*?)%.*","\\1",facetData$`Assembly Overview.BUSCO Hymenoptera...58`)),
+  B.hym.F=as.numeric(gsub(".*F:(.*?)%.*","\\1",facetData$`Assembly Overview.BUSCO Hymenoptera...58`)),
+  B.hym.M=as.numeric(gsub(".*M:(.*?)%.*","\\1",facetData$`Assembly Overview.BUSCO Hymenoptera...58`)),
+  
+  B.euk.C=as.numeric(gsub("C:(.*?)%.*","\\1",facetData$`Assembly Overview.BUSCO Eukaryota...57`)),
+  B.euk.F=as.numeric(gsub(".*F:(.*?)%.*","\\1",facetData$`Assembly Overview.BUSCO Eukaryota...57`)),
+  B.euk.M=as.numeric(gsub(".*M:(.*?)%.*","\\1",facetData$`Assembly Overview.BUSCO Eukaryota...57`)),
+  
+  # extract BUSCO scores for gene annotation
+  B.hym.C.prot=as.numeric(gsub("C:(.*?)%.*","\\1",facetData$`Assembly Overview.Final gene BUSCO`)),
+  B.hym.F.prot=as.numeric(gsub(".*F:(.*?)%.*","\\1",facetData$`Assembly Overview.Final gene BUSCO`)),
+  B.hym.M.prot=as.numeric(gsub(".*M:(.*?)%.*","\\1",facetData$`Assembly Overview.Final gene BUSCO`)),
+
+  
+  #Merqury completeness
+  mCompl=facetData$`Assembly Overview.Completeness`,
+  QV=facetData$`Assembly Overview.QV`,
+  
+  # mitochondria
+  mitoSize=as.numeric(facetData$`Assembly Overview.Assembled genome size`),
+  mitoSize=as.numeric(facetData$`Assembly Overview.Number of scaffolds...90`),
+  mitoGenes=as.numeric(facetData$`Assembly Overview.Number of canonical protein coding genes annotated (total 13)`),
+  mitoCompleteness=facetData$`Assembly Overview.Assembly completeness`,
+  
+  # get final gene counts, etc.
+  genecount=as.numeric(facetData$`Assembly Overview.Final Gene number`),
+  isoformcount=as.numeric(facetData$`Assembly Overview.Final Protein number (isoforms)`),
+
+
+  tribe=facetData$Tribe,
+  Subfamily=facetData$Subfamily,
+  PacBio=facetData$`Assembly Overview.PacBio...41`,
+  stLFR=facetData$`Assembly Overview.stLFR...42`,
+  HiC=facetData$`Assembly Overview.Hi-C...44`,
+  wgs=facetData$`Assembly Overview.Short-reads (WGS)...43`,
+  RNAseq=facetData$`Assembly Overview.RNA`,
+  Finalized=facetData$`Assembly Overview.Current state`,
+  RNA.Worker=facetData$RNAseq.Worker,
+  RNA.LW=facetData$`RNAseq.Large worker`,
+  RNA.SW=facetData$`RNAseq.Small worker`,
+  RNA.Soldier=facetData$RNAseq.Soldier,
+  RNA.Gyne=facetData$RNAseq.Gyne,
+  RNA.Queen=facetData$RNAseq.Queen,
+  RNA.Male=facetData$RNAseq.Male,
+  RNA.Larvae=facetData$RNAseq.Larvae,
+  RNA.Pupae=facetData$RNAseq.Pupae,
+  RNA.Brood=facetData$RNAseq.Brood,
+  RNA.Mixed=facetData$RNAseq.Mixed,
+  tribeColor=cladeColor[match(facetData$Tribe, names(cladeColor))],
+  DisplayName=facetData$DisplayName,
+  comment=facetData$`Assembly Overview.Comments`)
+
+
+rownames(dd)<-dd$id
+
+# define RNAseq as factor
+dd$RNAseq[!is.na(dd$RNAseq)]<-3
+dd$RNAseq[is.na(dd$RNAseq)]<-0
+
+#
+dd$Finalized<-as.factor(gsub("Final.*","Final",dd$Finalized))
+#dd$Finalized[dd$Finalized!=2]<-0
+
+dd$PacBio[!is.na(dd$PacBio)]<-1
+dd$PacBio[is.na(dd$PacBio)]<-0
+dd$stLFR[!is.na(dd$stLFR)]<-1
+dd$stLFR[is.na(dd$stLFR)]<-0
+dd$HiC[dd$HiC=="X"]<-1
+dd$HiC[dd$HiC!=1]<-0
+dd$HiC[is.na(dd$HiC)]<-0
+dd$wgs[!is.na(dd$wgs)]<-1
+dd$wgs[is.na(dd$wgs)]<-0
+
+dd$tech<-as.factor(paste(dd$PacBio,dd$HiC,dd$stLFR,sep=""))
+levels(dd$tech)[levels(dd$tech)=="000"]<-"non-GAGA"
+levels(dd$tech)[levels(dd$tech)=="100"]<-"PacBio"
+levels(dd$tech)[levels(dd$tech)=="001"]<-"stLFR"
+levels(dd$tech)[levels(dd$tech)=="101"]<-"P/s"
+levels(dd$tech)[levels(dd$tech)=="110"]<-"P/H"
+levels(dd$tech)[levels(dd$tech)=="111"]<-"P/H/s"
+
+
+
+```
+
+
+```{R create-seq-heatmap, message=FALSE, warning=FALSE, include=FALSE}
+ddHeatmap<-dd[c("id","tribeColor","tribe","PacBio","stLFR","HiC","wgs","Finalized")]
+ddHeatmap$blank<-"-1"
+# color non-GAGA as NA
+ddHeatmap[grep("GAGA",ddHeatmap$id,invert = T),c(4:7)]<- -1
+colnames(ddHeatmap)[colnames(ddHeatmap)=="blank"]<-" "
+
+#GAGA.tree.plot4<-facet_plot(GAGA.tree.plot3, 'Genome Size', data = dd, geom=geom_barh, mapping = aes(x = GS,fill=tribeColor), 
+ #               stat='identity' )+ theme_tree2() + scale_fill_identity()
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+GAGA.tree.plot.heatmap<-gheatmap(GAGA.tree.plot3+ylim(0,165), ddHeatmap[,c(4:7)], offset=.1, colnames=T, legend_title="Tech",  width = .15,colnames_position = "top", colnames_offset_y = 1,colnames_angle=90,hjust=0,font.size = 2.5)+
+                  scale_fill_manual(values = c("white","grey95",colSelection[1]))+
+                  scale_alpha_manual(values = .4)+
+                  theme(legend.position = "none")
+
+
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+GAGA.tree.plot.heatmap
+ggsave("../../misc/plots/GAGA.tree.technique.pdf",GAGA.tree.plot.heatmap,width=4.5,height=10)
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+ddHeatmapRNA<-dd[c("id","tribeColor","tribe","RNA.Worker","RNA.LW","RNA.SW","RNA.Soldier","RNA.Gyne","RNA.Queen","RNA.Male","RNA.Larvae","RNA.Pupae","RNA.Brood","RNA.Mixed")]
+
+ddHeatmapRNA[!is.na(ddHeatmapRNA)]<-1
+ddHeatmapRNA[is.na(ddHeatmapRNA)]<-0
+ddHeatmapRNA$W<-0
+ddHeatmapRNA$B<-0
+
+ddHeatmapRNA$W[ddHeatmapRNA$RNA.Worker==1 |ddHeatmapRNA$RNA.LW==1 | ddHeatmapRNA$RNA.SW==1 |ddHeatmapRNA$RNA.Soldier == 1]<-1
+ddHeatmapRNA$B[ddHeatmapRNA$RNA.Larvae==1 |ddHeatmapRNA$RNA.Pupae==1 | ddHeatmapRNA$RNA.Brood==1 ]<-1
+ddHeatmapRNA$F<-0
+ddHeatmapRNA$F[ddHeatmapRNA$Queen==1 |ddHeatmapRNA$Gyne==1 ]<-1
+
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+colnames(ddHeatmapRNA)[c(15,16,17,10,14)]<-c("Workers","Brood","Female (Q/G)","Male","Mix")
+
+GAGA.tree.plot.heatmap.RNA<-gheatmap(GAGA.tree.plot3+ylim(0,165), ddHeatmapRNA[,c(15,16,17,10,14)], offset=.1, colnames=T, legend_title="Tech",  width = .15,colnames_position = "top", colnames_offset_y = 1,colnames_angle=90,hjust=0,font.size = 1.5)+
+                  scale_fill_manual(values = c("grey95","lightblue"))+
+                  theme(legend.position = "none")
+
+
+```
+
+```{R plot-insets-for-tech-plot, message=FALSE, warning=FALSE, include=FALSE}
+geneCount.plot<-ggplot(dd,aes(x=genecount/1000,y=isoformcount/1000,col=RNAseq))+
+  geom_point(size=.2)+
+  xlab("# genes (1000)")+
+  ylab("# isoforms (1000)")+
+  scale_color_manual(values=c("grey80","lightblue"),labels=c("N","Y"))+
+  theme(legend.position = "top")
+
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+
+GAGA.tree.plot.heatmap.RNA.inset <-
+  ggdraw() +
+  draw_plot(GAGA.tree.plot.heatmap.RNA) +
+  draw_plot(geneCount.plot, x = 0.01, y = .8, width = .4, height = .18)
+
+GAGA.tree.plot.heatmap.RNA.inset
+ggsave("../../misc/plots/GAGA.tree.RNAseq.pdf",GAGA.tree.plot.heatmap.RNA.inset,width=4.5,height=10)
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+ddHeatmap2<-dd[c("id","tribeColor","tribe","B.hym.C","B.euk.C","B.hym.C.prot")]
+colnames(ddHeatmap2)[4:6]<-c("genome-Hym","genome-Euk","protein-Hym")
+row.names(ddHeatmap2)<-ddHeatmap2$id
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+heatcol <- c("steelblue","cyan", "red")
+GAGA.tree.plot.busco<-gheatmap(GAGA.tree.plot3+ylim(0,165), ddHeatmap2[,c(4:6)], offset=0.1, colnames=T, legend_title="Tech",  width = .1,colnames_position = "top", colnames_offset_y = 1,colnames_angle=65,hjust=0,font.size = 1.5)+
+  scale_fill_gradientn(colours = rev(heatcol),na.value = "grey90",name="%")+
+  theme(legend.position = c(.25,.96),legend.background = element_blank(),legend.text=element_text(size=6),legend.title = element_text(size=10),legend.key.height  = unit(.2, 'cm'),legend.direction = "horizontal")
+
+```
+
+```{R simple-plots-of-Busco, message=FALSE, warning=FALSE, include=FALSE}
+busco.cor<-ggplot(dd,aes(x=B.hym.C,y=B.hym.C.prot,fill=B.hym.C.prot))+
+  geom_point(alpha=1,size=1,pch=21,stroke=.1)+
+  xlab("genome (%)")+ylab("proteome (%)")+scale_fill_gradientn(colours = rev(heatcol),na.value = "grey90")+theme(legend.position = "none")+
+  geom_smooth(col="red2",linetype=2,size=.2,se = F)
+
+busco.cor2<-ggplot(dd,aes(y=B.hym.C,x=tech))+
+  geom_boxplot(size=.1,outlier.shape = NA,width=.1,fill="white")+
+  geom_quasirandom(aes(col=tech),size=.1,alpha=.5)+
+  scale_fill_gdocs()+
+  scale_color_gdocs()+
+  theme(legend.position = "")+
+  xlab(NULL)+ylab("proteome (%)")+coord_flip()
+
+
+
+```
+
+```{R plot-tree-with-inset, message=FALSE, warning=FALSE, include=FALSE}
+GAGA.tree.plot.busco.inset <-
+  ggdraw() +
+  draw_plot(GAGA.tree.plot.busco) +
+  draw_plot(plot_grid(busco.cor+theme(axis.title.y = element_text(vjust=-15)),busco.cor2,nrow=2,align="v"), x = -0.025, y = .63, width = .45, height = .3)
+GAGA.tree.plot.busco.inset
+ggsave("../../misc/plots/GAGA.tree.busco.pdf",GAGA.tree.plot.busco.inset,width=4.5,height=10)
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+
+GAGA.tree.plot.N50<-facet_plot(GAGA.tree.plot.heatmap+new_scale("color"), 'scfN50 (Mb)', data = dd, geom=geom_point, mapping = aes(x = N50/1000000,color=tech),size=2,alpha=.5)+ 
+  theme_tree2()+
+  scale_color_gdocs(guide = guide_legend(nrow=2,label.position = "top"))+
+  theme(legend.position = c(.9,.9),
+        legend.background = element_rect(color="black",fill=rgb(0,0,0,0)),
+        legend.margin = margin(0,2,2,2,"mm"),
+        legend.spacing = unit(0,"mm"),
+        legend.title = element_blank(),
+        legend.key.height = unit(0,"mm"),
+        legend.key.width = unit(0,"mm"),
+        legend.box.spacing = unit(0,"mm"))+
+        guides(fill="none")+
+  ylim(0,170)
+
+
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+GAGA.tree.plot.N50
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+# change rel_width of panels
+## see https://groups.google.com/g/bioc-ggtree/c/tZ0qkluBeGU/m/nkfWC9ixCwAJ
+
+gt = ggplot_gtable(ggplot_build(GAGA.tree.plot.N50))
+gtable_show_layout(gt) # will show you the layout - very handy function
+#gt # see plot layout in table format
+gt$layout$l[grep('panel-1', gt$layout$name)] # you want to find the column specific to panel-2
+gt$widths[5] = 1.5*gt$widths[5] # in this case it was colmun 7 - reduce the width by a half
+#grid.draw(gt) # plot with grid draw
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+grid.draw(gt)
+ggsave("../../misc/plots/GAGA.tree.n50.pdf",grid.draw(gt),width=10,height=9)
+
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+dd$RNAseq<-as.factor(dd$RNAseq)
+dd$N50mb<-round(dd$N50/1000000,2)
+levels(dd$RNAseq)<-c("N","Y")
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+assembly.quality.plot1<- ggplot(dd) + 
+                        geom_point(aes(x=nscf,y=N50mb,size=GS,fill=tech,col=RNAseq,species=DisplayName),stroke=.9,pch=21,alpha=.5) +
+                        theme_classic() + 
+                        scale_x_log10(labels=c("10","100","1k","10k","20k"),breaks=c(10,100,1000,10000,200000)) + 
+                        scale_color_manual(values=c(rgb(1,1,1,0),"red"))+
+                        guides(fill=guide_legend(title="Sequencing"),size=guide_legend(title="Genome Size (Mb)"))
+
+
+assembly.quality.plot2<-assembly.quality.plot1+ 
+                        xlab("# scaffolds") + 
+                        ylab("scaffold N50 (Mb)")+
+                        theme(legend.position = c(.8, .65), 
+                              legend.spacing = unit(.1, 'cm'),
+                              legend.key.height = unit(0.3,"cm"),
+                              legend.text = element_text(margin = margin(t = 2)),
+                              legend.box.background = element_rect(colour = "black",fill=NA),
+                              legend.title = element_text(size=8),
+                              legend.background =  element_rect(colour = NA, fill = NA))
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+ggsave("../../misc/plots/GAGA.assemblyQuality.pdf",assembly.quality.plot2,width=6,height=6)
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+p.assemblyQual.raw<-ggplotly(assembly.quality.plot2,tooltip = c("N50mb","DisplayName")) %>%
+  layout(legend = list(orientation = "h", x = 0, y =-0.1))
+p.assemblyQual<-ggplotly(assembly.quality.plot2,tooltip = c("N50mb","DisplayName")) %>%
+  layout(legend = list(orientation = "h", x = 0, y =-0.1))
+
+# change legend info for plotly plot
+for (i in 1:length(p.assemblyQual$x$data)){
+  p.assemblyQual$x$data[[i]]$legendgroup<-gsub(".*","",p.assemblyQual$x$data[[i]]$legendgroup)
+  p.assemblyQual$x$data[[i]]$name<-gsub("\\(|\\)","",p.assemblyQual$x$data[[i]]$name)
+}
+
+saveWidget(as_widget(p.assemblyQual), "../../misc/plots/GAGA.assemblyQuality.html")
+
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+#prepare boxplots and calculate best/worst metrics
+GAGA.quality.boxplots<-ggplot(dd,aes(y=N50mb,x=tech,fill=tech))+
+  geom_boxplot(outlier.colour = NA)+
+  geom_jitter(alpha=.2,width = 0.2)+
+  scale_y_log10()+
+  theme_classic()+
+  theme(legend.position = c(.8, .2),axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),legend.title = element_blank())+
+  xlab("")+
+  ylab("scaffold N50 (Mb)")+
+  scale_fill_gdocs()
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+ggsave("../../misc/plots/GAGA.assemblyQuality.boxplots.pdf",GAGA.quality.boxplots,width=6,height=6)
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+
+dd$DisplayNameU<-make_unique(dd$DisplayName,sep="")
+dd$DisplayNameU<- factor(dd$DisplayNameU, levels = dd$DisplayNameU[rev(order(dd$Subfamily,dd$GS))])
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+#compute genome size plot
+dd.tmp<-dd
+dd.tmp$Subfamily[dd.tmp$Subfamily=="Pseudomyrmecinae"]<-"Pseudomyrm."
+chromosomeLevel<-ifelse(grepl("Chromosome",dd$comment),"red","black")
+GAGA.GenomeSize<-ggplot(subset(dd.tmp,!is.na(GS)),aes(x=DisplayNameU,y=GS))
+
+GAGA.GenomeSize2<-GAGA.GenomeSize+
+  geom_col(aes(fill=Subfamily),col=1,size=.2) + 
+  coord_flip() + 
+  scale_fill_viridis_d("Subfamily") + 
+  ylab("Genome Size (Mb)")+
+  xlab("Species")+
+  theme_classic()+
+  theme(legend.position = "bottom",axis.text.y=element_text(size=6.5,color=chromosomeLevel))+
+  geom_point(aes(col=B.hym.C),size=1.5)+
+  scale_color_gradientn(colours = rev(heatcol),na.value = "grey90")+
+  guides(col = guide_legend(ncol = 1, title.position = "top",title = "Hym. BUSCO %"),
+        fill = guide_legend(ncol = 4, title.position = "top"))+
+  theme(axis.text.y = element_text(face = "italic"))
+
+```
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+ggsave("../../misc/plots/GAGA.genomesize.pdf",GAGA.GenomeSize2,width=8,height=15)
+```
+
+
+# Overview of GAGA assemblies
+
+## Taxon sampling
+```{r calculate-stats, message=FALSE, warning=FALSE, include=FALSE}
+tribeTable<-sort(table(as.factor(dd$tribe)),decreasing = T)
+subfamTable<-sort(table(as.factor(dd$Subfamily)),decreasing = T)
+```
+
+We so far have genomic data for `r sum(!is.na(GAGA.tree.plot2$data$DisplayName))` species distributed across the `r length(tree.raw$tip.label)` genera of ants (Fig \@ref(fig:figGenera)), covering `r length(table(as.factor(dd$tribe)))` tribes in `r length(table(as.factor(dd$Subfamily)))` subfamilies. `r names(subfamTable)[1]` are represented by `r subfamTable[1]` genomes, followed by `r names(subfamTable)[2]` and `r names(subfamTable)[3]` with `r subfamTable[2]` and  `r subfamTable[3]` genomes sequenced, respectively.  With regard to the tribe,  `r names(tribeTable)[1]` make up the largest group with `r tribeTable[1]` genomes, followed by `r names(tribeTable)[2]` and `r names(tribeTable)[3]` with `r tribeTable[2]` and  `r tribeTable[3]` genomes sequenced, respectively.  
+
+```{R figGenera, echo=FALSE, fig.width=8,fig.height=8, message=FALSE, warning=FALSE,fig.cap="**Ant genera targeted so far by GAGA.** The Figure shows all extant genera of the Formicidae with the corresponding species sequenced by GAGA for the different genera."}
+antGenera.tree.w.GAGA
+```
+
+## Sequencing techniques
+
+Most (n= `r sum(dd$PacBio==1)`) of the species have been sequenced with PacBio, while some rare species (e.g. *Leptanilla*) could only be sequenced with stLFR (n= `r sum(dd$tech=="stLFR")`), commonly due to lack of sufficient biomass (Fig. \@ref(fig:figN50)). HiC sequencing was so far done for `r sum(dd$HiC==1)` species, allowing us to assemble chromosome-scale genomes for `r length(dd$comment[grep("Chromosome",dd$comment)])` species. Species highlighted in grey in the phylogeny were not assembled by GAGA but included in our comparative analyses as they met our quality criteria. 
+
+```{R figN50, echo=FALSE, fig.width=12,fig.height=15, message=FALSE, warning=FALSE,fig.cap="Sequencing techniques for different species. The left panel shows the techniques combined for genome sequencing of the different species. The right panel shows the coverage of RNAseq data, divided by caste, sex, and developmental stage."}
+plot_grid(GAGA.tree.plot.heatmap,GAGA.tree.plot.heatmap.RNA.inset,ncol=2)
+```
+
+## Genome completeness
+
+Most genomes reach high BUSCO scores (Fig \@ref(fig:figBUSCO)), both against Hymenoptera (median `r round(median(dd$B.hym.C,na.rm=T))` %) and Eukaryota (median `r round(median(dd$B.euk.C,na.rm=T))` %). A few stLFR-only genomes however are incomplete, with BUSCO scores as low as \~70 % (e.g. `r dd[order(dd$B.hym.C),"DisplayName"][1]` with `r dd[order(dd$B.hym.C),"B.hym.C"][1]` % complete Hymenoptera BUSCOs).
+
+We have now also finalized the gene annotations for all species. On average, we annotated `r as.character(median(dd$genecount))` genes (range `r as.character(min(dd$genecount))` to `r as.character(max(dd$genecount))`). BUSCO scores for the protein annotations were highly correlated with scores for the unannotated genome, indicating that our gene annotation approach is working well. 
+
+```{R figBUSCO, echo=FALSE, fig.width=6,fig.height=12, message=FALSE, warning=FALSE,fig.cap="BUSCO scores for all target species. The first column shows completeness scores for genome assemblies against Hymenoptera BUSCOs, the second column  shows completeness scores for genome assemblies against Eukaryota BUSCOs, the third column shows completeness scores for protein coding gene annotations against Hymenoptera BUSCOs. The top inset plot shows the correlation of BUSCO scores for 'genome' and 'protein' mode. The bottom inset shows the annotation completeness by sequencing technique. P=PacBio, H=HiC, s=short-read (stLFR or wgs)."}
+GAGA.tree.plot.busco.inset
+
+```
+
+## Genome sizes of all so far sequenced species
+
+The assembled genomes vary considerably in size, ranging from `r round(dd[order(dd$GS),"GS"][1],2)` MB (*`r dd[order(dd$GS),"DisplayName"][1]`*) to `r round(dd[order(dd$GS,decreasing=T),"GS"][1],2)` MB (*`r dd[order(dd$GS,decreasing=T),"DisplayName"][1]`*). Overall, genome size tends to vary most in the Ponerinae and least in the Formicinae. Figure \@ref(fig:figGS) gives a complete overview of all so far sequenced species and the respective genome assembly size in Mb.
+
+```{R figGS, echo=FALSE, fig.width=10,fig.height=15, message=FALSE, warning=FALSE,fig.cap="Genome sizes of GAGA genome assemblies"}
+p.GAGA.GenomeSize2<-ggplotly(GAGA.GenomeSize2,tooltip = c("x","y")) %>%layout(legend = list(orientation = "h", x = 0, y =-0.1))
+p.GAGA.GenomeSize2
+```
+
+## Preliminary quality of the assembled genomes
+
+Our sequencing strategy has evolved further, now **combining long-read PacBio data, linked-short-read stLFR data and if possible HiC data**. We expect that together, these data will yield **highly contiguous high quality genome assemblies that should be close to chromosome-resolution for most of the species**.
+
+Figure \@ref(fig:fig2) gives a rough overview of the quality of the genome assemblies we have so far.
+
+
+**On average, scaffold N50 is `r median(dd$N50mb,na.rm=T)` mega bases (Mb)** Currently, the species with the highest scaffold N50 is *`r dd[order(dd$N50,decreasing=T),"DisplayName"][1]`* with `r dd[order(dd$N50,decreasing=T),"N50mb"][1]` MB.
+
+
+```{R fig2, echo=FALSE, fig.height=8, fig.width=10, message=FALSE, warning=FALSE, fig.cap="Genome assembly quality for GAGA species."}
+p.assemblyQual
+```
+
+```{R fig3, echo=FALSE, fig.height=5, fig.width=6, message=FALSE, warning=FALSE, fig.cap="Genome assembly quality overview for GAGA species."}
+GAGA.quality.boxplots
+```
+
+## Overview Table
+
+Table \@ref(tab:tabOverview) gives an overview of all so far sequenced species.
+
+```{R tabOverview, echo=FALSE, message=FALSE, warning=FALSE,results='asis'}
+#plot table1
+dd$N50Mb<-round(dd$N50/1000000,2)
+ddTable<-subset(dd,select=c("id","DisplayName","tribe","Subfamily","tech","GS","B.hym.C","B.euk.C","N50Mb","Finalized"))
+colnames(ddTable)<-c("GAGA-id","Taxon","Tribe","Subfamily","Sequencing Technique","Genome Size","%BUSCO (Hym)","%BUSCO (Euk)","N50scf","Assembly Status")
+row.names(ddTable)<-c()
+kable(ddTable, caption="Overview of sequenced species",align = "ll") %>% kable_styling(position = "left",font_size = 10,bootstrap_options = "condensed",full_width = F) %>% column_spec(1,width = "1in")
+```

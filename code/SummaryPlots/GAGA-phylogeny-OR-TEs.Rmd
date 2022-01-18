@@ -1,0 +1,249 @@
+---
+title: "GAGA phylogeny with LGT highlights"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    collapsed: true
+    number_sections: true
+    df_print: paged
+  pdf_document: default
+---
+<STYLE TYPE="text/css">
+<!--
+  td{
+    font-family: Arial; 
+    font-size: 8pt;
+    padding:0px;
+    cellpadding="0";
+    cellspacing="0"
+  }
+  th {
+    font-family: Arial; 
+    font-size: 8pt;
+    height: 20px;
+    font-weight: bold;
+    text-align: right;
+    background-color: #ccccff;
+  }
+  table { 
+    border-spacing: 0px;
+    border-collapse: collapse;
+  }
+--->
+</STYLE>
+
+
+Load the necessary R libraries
+```{r}
+#devtools::install_github("GuangchuangYu/ggtree")
+library(treeio)
+library(ggtree)
+library(phytools)
+library(viridisLite)
+library(ggplot2)
+library(googlesheets4)
+library(dplyr)
+library(phangorn)
+library(randomcoloR)
+```
+
+Load data from google spreadsheet (I already stored this in an R object that you can just load)
+```{r}
+load("/Users/lukas/sciebo/Projects/GAGA/misc/data/gsheet.GlobalOverview.21-09-22.Robj")
+
+```
+
+Create a dataframe where the first row is the GAGA id (e.g. GAGA-0002), which are also used as the tip labels in the phylogeny
+```{r}
+data2add<-data.frame(GAGA.id = GlobalOverview$`GAGA ID`, GlobalOverview)
+```
+
+Create a column with clean species IDs for all species. 
+
+This has to be done, because the database of all the sequenced species is a bit convoluted.
+```{r}
+data2add$cleanSpeciesID<-dplyr::coalesce(data2add$Species,data2add$Species..from.Assembly.Overview.)
+```
+
+
+Load the tree file of all the GAGA genomes.
+```{r}
+tree <- read.iqtree("/Users/lukas/sciebo/Projects/GAGA/misc/data/hymenoptera_psc98_partition_b1000_40threads_msubnucl.treefile")
+```
+
+Create a very quick and dirty plot of the phylogeny
+```{r}
+plot(tree@phylo,show.node.label = T,show.tip.label = T,cex=.5)
+nodelabels(bg=rgb(0,0,0,0),col="red",frame = "none")
+
+```
+
+check the plot to see where the root should be. Here we root the tree at node 166 that separates the outgroups, the honeybee "Amel" (Apis mellifera) and the parasitoid wasp Nasonia (Nvit), from ants.
+```{r}
+
+tree.rooted<-treeio::root(tree,node=166)
+tree.rooted.subset<-treeio::drop.tip(tree.rooted,tip=c("NCBI-0018_Amel","NCBI-0019_Nvit"))
+tree.rooted.subset@phylo$tip.label<-gsub("_.*","",tree.rooted.subset@phylo$tip.label)
+```
+
+```{r}
+ORs<-read.csv("/Users/lukas/sciebo/Projects/GAGArep/0_data/OR_annot_GAGA_summary_v2modf.tsv",sep="\t",dec = ",")
+TEs<-read.csv("/Users/lukas/sciebo/Projects/GAGArep/0_data/GAGA_SPEC_TUBE_ECOL - Repeat annotation.tsv",skip=1,sep="\t")
+```
+
+
+# ancestral state reconstruction: ORs
+
+```{r}
+tree.rooted.subset2<-treeio::drop.tip(tree.rooted.subset,tip=ORs$GAGA.ID[ORs$Final.retained.complete.ORs<10 | ORs$Scaffold.N50<1000000])
+```
+
+
+```{r}
+traitvector<-ORs$Complete.with.domain[ORs$Final.retained.complete.ORs>10 & ORs$Scaffold.N50>1000000]
+names(traitvector)<-ORs$GAGA.ID[ORs$Final.retained.complete.ORs>10 & ORs$Scaffold.N50>1000000]
+fit<-anc.ML(tree.rooted.subset2@phylo,traitvector,model="EB")
+```
+
+```{r}
+traitvector2 <- data.frame(node = ggtree::nodeid(tree.rooted.subset2, names(traitvector)),
+               trait = traitvector)
+
+traitfit <- data.frame(node = names(fit$ace), trait = fit$ace)
+traitfit2 <- rbind(traitvector2, traitfit)
+traitfit2$node<-as.numeric(traitfit2$node)
+tree2 <- as.treedata(tidytree::full_join(as_tibble(tree.rooted.subset2), traitfit2, by = 'node'))
+
+```
+
+# ancestral state reconstruction: TEs
+```{r}
+#tree.rooted.subset3<-treeio::drop.tip(tree.rooted.subset,tip=TEs$GAGA.ID)
+```
+
+```{r}
+traitvector<-TEs$Total.repeats
+names(traitvector)<-TEs$GAGA.ID
+fit<-anc.ML(tree.rooted.subset@phylo,traitvector,model="EB")
+```
+
+```{r}
+traitvector2 <- data.frame(node = ggtree::nodeid(tree.rooted.subset, names(traitvector)),
+               trait = traitvector)
+
+traitfit <- data.frame(node = names(fit$ace), trait = fit$ace)
+traitfit2 <- rbind(traitvector2, traitfit)
+traitfit2$node<-as.numeric(traitfit2$node)
+tree.TE <- as.treedata(tidytree::full_join(as_tibble(tree.rooted.subset), traitfit2, by = 'node'))
+
+```
+
+Plot basic tree
+```{r}
+tp.TE<-ggtree(tree.TE,ladderize = T, aes(color=trait), continuous = "color", size=1,
+        lineend='square')+geom_rootedge(.01)
+```
+
+
+Plot basic tree
+```{r}
+tp<-ggtree(tree2,ladderize = T, aes(color=trait), continuous = "color", size=1,
+        lineend='square')+geom_rootedge(.01)
+```
+
+
+```{r}
+tp2<-tp %<+% data2add
+tp2<-tp.TE %<+% data2add
+```
+
+Make complex tree
+```{r}
+tp3<-tp2 + 
+  geom_tiplab(aes(label=paste(label,cleanSpeciesID,sep=" ")),size=2,align = T,linesize = .1)+    #add the tip labels
+  geom_nodepoint(aes(fill=UFboot),stroke=0.5,pch=21,size=1)+       #add the info about bootstrapping success as points of different colors to the nodes
+  scale_fill_viridis_c()+                                          #change the color of the node points to a viridis color scale
+  theme(legend.position = c(0.1,.9))+
+  coord_cartesian(xlim=c(0,.4))
+```
+
+```{r}
+tp3 #plot the tree
+```
+
+# read OR&TE data
+
+
+```{r}
+df<-merge(ORs,TEs,by="GAGA.ID",all=T) %>% subset(.,Orco>0 )
+df$Subfam<-df$Subfamily
+df$Subfam[!df$Subfam %in% c("Formicinae","Myrmicinae","Ponerinae")]<-"other"
+df$Genome.Size<-as.numeric(gsub(",","",df$Genome.Size))
+colnames(df)[1]<-"GAGAid"
+```
+
+
+Add the LGT.tally dataframe to the phylogeny object as additional data.
+```{r}
+tp4<-tp3 %<+% df
+# see tp4$data$LGT.count
+```
+
+Plot the phylogeny and add red dot to the tip, where the size of the red dot represents the number of identified LGTs
+```{r}
+#tp5<-tp4#+geom_tippoint(aes(size=Complete),col="red",alpha=.5)
+tp5<-tp4+scale_color_gradientn(limits = c(80,700),colours=c("steelblue", "yellow"),na.value = "grey80")
+tp5<-tp4+scale_color_gradientn(colours=c("steelblue", "yellow"),na.value = "grey80")
+tp5
+#ggsave("GAGA.phylogeny.LGTs.pdf",width = 8,height=12) #save the tree in a pdf
+```
+
+```{r HighlightSubfamily}
+
+
+# Add tribe info as clade highlights
+tp5$data$Subfamily<-tp5$data$Subfamily.y
+tp5$data$Subfamily<-as.factor(tp5$data$Subfamily)
+SubfamilyNodes<-vector()
+
+Subfamilies<-levels(tp5$data$Subfamily)
+SubfamilyCount<-table(tp5$data$Subfamily)
+
+# loop over all Subfamilies and extract the MRCA node of all genera for each Subfamily
+for (i in 1:length(Subfamilies)){
+  nodes<-unlist(subset(tp5$data,Subfamily==Subfamilies[i],node,include.self=T))
+  if (length(nodes)==1){
+    SubfamilyNodes[i]<-nodes
+  }else{
+    SubfamilyNodes[i]<-MRCA(tp5,nodes) #mrca.phylo from library phangorn (https://rdrr.io/cran/phangorn/man/Ancestors.html)
+  }
+}
+
+#define clade colors
+set.seed(1)
+cladeColor<-distinctColorPalette(length(SubfamilyNodes)) #distinctColorPalette from randomcoloR
+ 
+names(SubfamilyNodes)<-Subfamilies
+names(cladeColor)<-Subfamilies
+Subfamilycolors<-data.frame(Subfamily=names(cladeColor),color=cladeColor)
+#write.table(Subfamilycolors,file="../../misc/data/SubfamilyColors.tsv",sep="\t",quote=F, row.names=F)
+
+tp6<-tp5
+# loop over each Subfamily and add a clade highlight. Label the highlight only for larger clades
+for (Subfamily in Subfamilies){
+  if (SubfamilyCount[Subfamily]>7){
+    tp6<-tp6+geom_cladelabel(node=SubfamilyNodes[Subfamily],label= Subfamily,align = T, offset = 0.1, col=c(cladeColor[Subfamily],"black"),barsize = 1,angle = 90,fontsize = 2,offset.text = .0001,hjust=.5)
+  }else{
+    tp6<-tp6+geom_cladelabel(node=SubfamilyNodes[Subfamily],label= Subfamily,align = T, offset = 0.1, col=c(cladeColor[Subfamily],"black"),barsize = 1,angle = 45,fontsize = 2,offset.text = .0001)
+  }
+}
+
+```
+
+```{r}
+tp6+coord_cartesian(xlim=c(0,.41))
+#ggsave("/Users/lukas/Downloads/GAGA-tree.ORs.pdf",width=8,height=10)
+ggsave("/Users/lukas/Downloads/GAGA-tree.TEs.pdf",width=8,height=10)
+```
