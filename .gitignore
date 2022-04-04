@@ -1,8 +1,8 @@
 ### ignore data and results
-results/
-data/
+3.results/
+0.data/
 tmp/
-
+2.pipeline/
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,r,linux

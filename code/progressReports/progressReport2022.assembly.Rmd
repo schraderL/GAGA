@@ -412,7 +412,7 @@ ddHeatmapRNA$B<-0
 ddHeatmapRNA$W[ddHeatmapRNA$RNA.Worker==1 |ddHeatmapRNA$RNA.LW==1 | ddHeatmapRNA$RNA.SW==1 |ddHeatmapRNA$RNA.Soldier == 1]<-1
 ddHeatmapRNA$B[ddHeatmapRNA$RNA.Larvae==1 |ddHeatmapRNA$RNA.Pupae==1 | ddHeatmapRNA$RNA.Brood==1 ]<-1
 ddHeatmapRNA$F<-0
-ddHeatmapRNA$F[ddHeatmapRNA$Queen==1 |ddHeatmapRNA$Gyne==1 ]<-1
+ddHeatmapRNA$F[ddHeatmapRNA$RNA.Queen==1 |ddHeatmapRNA$RNA.Gyne==1 ]<-1
 
 ```
 
@@ -583,7 +583,7 @@ GAGA.quality.boxplots<-ggplot(dd,aes(y=N50mb,x=tech,fill=tech))+
   geom_jitter(alpha=.2,width = 0.2)+
   scale_y_log10()+
   theme_classic()+
-  theme(legend.position = c(.8, .2),axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),legend.title = element_blank())+
+  theme(legend.position = "none",axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),legend.title = element_blank())+
   xlab("")+
   ylab("scaffold N50 (Mb)")+
   scale_fill_gdocs()
@@ -645,20 +645,17 @@ antGenera.tree.w.GAGA
 
 Most (n= `r sum(dd$PacBio==1)`) of the species have been sequenced with PacBio, while some rare species (e.g. *Leptanilla*) could only be sequenced with stLFR (n= `r sum(dd$tech=="stLFR")`), commonly due to lack of sufficient biomass (Fig. \@ref(fig:figN50)). HiC sequencing was so far done for `r sum(dd$HiC==1)` species, allowing us to assemble chromosome-scale genomes for `r length(dd$comment[grep("Chromosome",dd$comment)])` species. Species highlighted in grey in the phylogeny were not assembled by GAGA but included in our comparative analyses as they met our quality criteria. 
 
-```{R figN50, echo=FALSE, fig.width=12,fig.height=15, message=FALSE, warning=FALSE,fig.cap="Sequencing techniques for different species. The left panel shows the techniques combined for genome sequencing of the different species. The right panel shows the coverage of RNAseq data, divided by caste, sex, and developmental stage."}
-plot_grid(GAGA.tree.plot.heatmap,GAGA.tree.plot.heatmap.RNA.inset,ncol=2)
-```
-
-## Genome completeness
-
 Most genomes reach high BUSCO scores (Fig \@ref(fig:figBUSCO)), both against Hymenoptera (median `r round(median(dd$B.hym.C,na.rm=T))` %) and Eukaryota (median `r round(median(dd$B.euk.C,na.rm=T))` %). A few stLFR-only genomes however are incomplete, with BUSCO scores as low as \~70 % (e.g. `r dd[order(dd$B.hym.C),"DisplayName"][1]` with `r dd[order(dd$B.hym.C),"B.hym.C"][1]` % complete Hymenoptera BUSCOs).
 
 We have now also finalized the gene annotations for all species. On average, we annotated `r as.character(median(dd$genecount))` genes (range `r as.character(min(dd$genecount))` to `r as.character(max(dd$genecount))`). BUSCO scores for the protein annotations were highly correlated with scores for the unannotated genome, indicating that our gene annotation approach is working well. 
 
-```{R figBUSCO, echo=FALSE, fig.width=6,fig.height=12, message=FALSE, warning=FALSE,fig.cap="BUSCO scores for all target species. The first column shows completeness scores for genome assemblies against Hymenoptera BUSCOs, the second column  shows completeness scores for genome assemblies against Eukaryota BUSCOs, the third column shows completeness scores for protein coding gene annotations against Hymenoptera BUSCOs. The top inset plot shows the correlation of BUSCO scores for 'genome' and 'protein' mode. The bottom inset shows the annotation completeness by sequencing technique. P=PacBio, H=HiC, s=short-read (stLFR or wgs)."}
-GAGA.tree.plot.busco.inset
 
+```{R figN50, echo=FALSE, fig.width=20,fig.height=15, message=FALSE, warning=FALSE,fig.cap="Sequencing techniques for different species. The left panel shows the techniques combined for genome sequencing of the different species. The right panel shows the coverage of RNAseq data, divided by caste, sex, and developmental stage."}
+plot_grid(GAGA.tree.plot.heatmap,GAGA.tree.plot.heatmap.RNA.inset,GAGA.tree.plot.busco.inset,ncol=3)
 ```
+
+
+
 
 ## Genome sizes of all so far sequenced species
 
@@ -697,5 +694,21 @@ dd$N50Mb<-round(dd$N50/1000000,2)
 ddTable<-subset(dd,select=c("id","DisplayName","tribe","Subfamily","tech","GS","B.hym.C","B.euk.C","N50Mb","Finalized"))
 colnames(ddTable)<-c("GAGA-id","Taxon","Tribe","Subfamily","Sequencing Technique","Genome Size","%BUSCO (Hym)","%BUSCO (Euk)","N50scf","Assembly Status")
 row.names(ddTable)<-c()
-kable(ddTable, caption="Overview of sequenced species",align = "ll") %>% kable_styling(position = "left",font_size = 10,bootstrap_options = "condensed",full_width = F) %>% column_spec(1,width = "1in")
+fullTable<-kable(ddTable, caption="Overview of sequenced species",align = "ll") %>% kable_styling(position = "left",font_size = 10,bootstrap_options = "condensed",full_width = F) %>% column_spec(1,width = "1in")
+fullTable
+```
+
+
+```{R save-plot-objects, message=FALSE, warning=FALSE, include=FALSE}
+save(antGenera.tree.w.GAGA,
+GAGA.tree.plot.heatmap,
+GAGA.tree.plot.heatmap.RNA.inset,
+GAGA.tree.plot.busco.inset,
+p.GAGA.GenomeSize2,
+p.assemblyQual,
+GAGA.quality.boxplots,
+fullTable,
+dd,
+tree.raw,
+file = "/Users/lukas/sciebo/Projects/GAGA/misc/data/plotObjects.Robj")
 ```

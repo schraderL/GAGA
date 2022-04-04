@@ -1,0 +1,159 @@
+---
+title: "GAGA 2022"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+    social: menu
+---
+
+```{=html}
+<style>
+p.caption {
+  font-size: 1.1em;
+  font-color: "grey50";
+}
+p {
+  line-height: 1.2em;
+}
+</style>
+```
+
+
+
+```{R message=FALSE, warning=FALSE, include=FALSE}
+require(flexdashboard)
+require(plotly)
+require(kableExtra)
+require(knitr)
+require(ggplot2)
+require(tidyverse)
+require(cowplot)
+require(grid)
+require(gtable)
+require(reshape2)
+library(ggthemes)
+
+```
+
+```{r}
+colSet <- gdocs_pal()(10)
+```
+
+```{r}
+load("/Users/lukas/sciebo/Projects/GAGA/misc/data/plotObjects.Robj")
+```
+
+Overview {data-icon="fa-bar-chart"}
+=============================
+Row {data-height=200}
+-----------------------------------------------------------------------
+
+### Number of genera
+```{r}
+valueBox(value = length(unique(gsub(" .*","",dd$DisplayName))),icon = "fa-bar-chart",caption = "Number of genera",color = colSet[1])
+```
+
+
+### Included genomes
+```{r}
+valueBox(value = nrow(dd),icon = "fa-bar-chart",caption = "Included genomes",color = colSet[2])
+```
+
+### *De novo* sequenced genomes
+```{r}
+valueBox(value = length(grep("GAGA",dd$id)),icon = "fa-bar-chart",caption = "*de novo* sequenced",color = colSet[3])
+```
+
+### Species with transcriptomes
+```{r}
+valueBox(value = sum(dd$RNAseq=="Y"),icon = "fa-bar-chart",caption = "Species with transcriptomes",color = colSet[4])
+```
+
+
+Row {.tabset}
+----------------------------------
+
+### Taxon sampling
+```{r calculate-stats, message=FALSE, warning=FALSE, include=FALSE}
+tribeTable<-sort(table(as.factor(dd$tribe)),decreasing = T)
+subfamTable<-sort(table(as.factor(dd$Subfamily)),decreasing = T)
+```
+
+#### 
+We so far have genomic data for `r sum(!is.na(dd$DisplayName))` species distributed across the `r length(tree.raw$tip.label)` genera of ants, covering `r length(table(as.factor(dd$tribe)))` tribes in `r length(table(as.factor(dd$Subfamily)))` subfamilies. `r names(subfamTable)[1]` are represented by `r subfamTable[1]` genomes, followed by `r names(subfamTable)[2]` and `r names(subfamTable)[3]` with `r subfamTable[2]` and  `r subfamTable[3]` genomes sequenced, respectively.  With regard to the tribe,  `r names(tribeTable)[1]` make up the largest group with `r tribeTable[1]` genomes, followed by `r names(tribeTable)[2]` and `r names(tribeTable)[3]` with `r tribeTable[2]` and  `r tribeTable[3]` genomes sequenced, respectively.  
+
+#### 
+```{R figGenera, echo=FALSE, fig.width=8,fig.height=8, message=FALSE, warning=FALSE,fig.cap="**Ant genera so far covered by GAGA.** The Figure shows all extant genera of the Formicidae with the corresponding species sequenced by GAGA for the different genera."}
+
+antGenera.tree.w.GAGA
+```
+
+
+### Sequencing techniques
+
+####
+Most (n= `r sum(dd$PacBio==1)`) of the species have been sequenced with PacBio, while some rare species (e.g. *Leptanilla*) could only be sequenced with stLFR (n= `r sum(dd$tech=="stLFR")`), commonly due to lack of sufficient biomass. HiC sequencing was so far done for `r sum(dd$HiC==1)` species, allowing chromosome-scale assemblies. Species highlighted in grey in the phylogeny were not assembled by GAGA but are included in our comparative analyses as they met our quality criteria. 
+
+####
+```{R figN50, echo=FALSE, fig.width=12,fig.height=12, message=FALSE, warning=FALSE,fig.cap="Sequencing techniques for different species. The left panel shows the techniques combined for genome sequencing of the different species. The right panel shows the coverage of RNAseq data, divided by caste, sex, and developmental stage."}
+plot_grid(GAGA.tree.plot.heatmap,GAGA.tree.plot.heatmap.RNA.inset,ncol=2)
+```
+
+
+
+### BUSCO
+####
+Most genomes reach high BUSCO scores, both against Hymenoptera (median `r round(median(dd$B.hym.C,na.rm=T))` %) and Eukaryota (median `r round(median(dd$B.euk.C,na.rm=T))` %). A few stLFR-only genomes however are incomplete, with BUSCO scores as low as \~70 % (e.g. `r dd[order(dd$B.hym.C),"DisplayName"][1]` with `r dd[order(dd$B.hym.C),"B.hym.C"][1]` % complete Hymenoptera BUSCOs).
+
+We have now also finalized the gene annotations for all species. On average, we annotated `r as.character(median(dd$genecount))` genes (range `r as.character(min(dd$genecount))` to `r as.character(max(dd$genecount))`). BUSCO scores for the protein annotations were highly correlated with scores for the unannotated genome, indicating that our gene annotation approach is working well. 
+
+####
+```{R figBUSCO, echo=FALSE, fig.width=6,fig.height=12, message=FALSE, warning=FALSE,fig.cap="BUSCO scores for all target species. The first column shows completeness scores for genome assemblies against Hymenoptera BUSCOs, the second column  shows completeness scores for genome assemblies against Eukaryota BUSCOs, the third column shows completeness scores for protein coding gene annotations against Hymenoptera BUSCOs. The top inset plot shows the correlation of BUSCO scores for 'genome' and 'protein' mode. The bottom inset shows the annotation completeness by sequencing technique. P=PacBio, H=HiC, s=short-read (stLFR or wgs)."}
+GAGA.tree.plot.busco.inset
+
+```
+
+### Genome sizes
+####
+The assembled genomes vary considerably in size, ranging from `r round(dd[order(dd$GS),"GS"][1],2)` MB (*`r dd[order(dd$GS),"DisplayName"][1]`*) to `r round(dd[order(dd$GS,decreasing=T),"GS"][1],2)` MB (*`r dd[order(dd$GS,decreasing=T),"DisplayName"][1]`*). Overall, genome size tends to vary most in the Ponerinae and least in the Formicinae. Figure \@ref(fig:figGS) gives a complete overview of all so far sequenced species and the respective genome assembly size in Mb.
+
+####
+```{R figGS, echo=FALSE, fig.width=10,fig.height=20, message=FALSE, warning=FALSE}
+p.GAGA.GenomeSize2
+```
+
+### Quality of the assembled genomes
+####
+Our sequencing strategy has evolved further, now **combining long-read PacBio data, linked-short-read stLFR data and if possible HiC data**. We expect that together, these data will yield **highly contiguous high quality genome assemblies that should be close to chromosome-resolution for most of the species**.
+
+Figure \@ref(fig:fig2) gives a rough overview of the quality of the genome assemblies we have so far.
+
+
+**On average, scaffold N50 is `r median(dd$N50mb,na.rm=T)` mega bases (Mb)** Currently, the species with the highest scaffold N50 is *`r dd[order(dd$N50,decreasing=T),"DisplayName"][1]`* with `r dd[order(dd$N50,decreasing=T),"N50mb"][1]` MB.
+
+####     
+```{R fig2, echo=FALSE, fig.height=8, fig.width=6, message=FALSE, warning=FALSE, fig.cap="Genome assembly quality for GAGA species."}
+p.assemblyQual
+```
+
+#### 
+```{R fig3, echo=FALSE, fig.height=6, fig.width=6, message=FALSE, warning=FALSE, fig.cap="Genome assembly quality overview for GAGA species."}
+GAGA.quality.boxplots
+```
+
+
+Table {data-icon="fa-table"}
+=============================
+
+
+This table gives an overview of all so far sequenced species.
+
+```{R tabOverview, echo=FALSE, message=FALSE, warning=FALSE,results='asis'}
+#plot table1
+dd$N50Mb<-round(dd$N50/1000000,2)
+ddTable<-subset(dd,select=c("id","DisplayName","tribe","Subfamily","tech","GS","B.hym.C","B.euk.C","N50Mb","Finalized"))
+colnames(ddTable)<-c("GAGA-id","Taxon","Tribe","Subfamily","Sequencing Technique","Genome Size","%BUSCO (Hym)","%BUSCO (Euk)","N50scf","Assembly Status")
+row.names(ddTable)<-c()
+kable(ddTable, caption="Overview of sequenced species",align = "ll") %>% kable_styling(position = "left",font_size = 10,bootstrap_options = "condensed",full_width = F) %>% column_spec(1,width = "1in")
+```

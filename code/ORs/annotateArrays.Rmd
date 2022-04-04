@@ -1,0 +1,182 @@
+---
+title: "GAGA: OR tandem array evolution"
+author:
+   - name: Lukas Schrader
+date: "`r lubridate::today()`"
+abstract: |
+ OR tandem arrays annotation in GAGA genomes<br><br><br>
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    number_sections: true
+    code_folding: hide
+    theme: readable
+---
+```{r}
+ #grep "\tgene\t" GAGA-0080tmp.gff3|perl -pe 's/(ID=.*?);.*/$1/g' |bedtools merge -d 30000 -c 9 -o collapse|egrep "ID=.*ID="|perl -pe 's/ID=//g' > GAGA-0080.merge.bed
+```
+
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+#library(gggenomes)
+library("systemPipeR")
+library("GenomicFeatures")
+library(rtracklayer)
+```
+
+```{r}
+input<-"/Users/lukas/sciebo/Projects/GAGA/0.data/Final_OR_annots/"
+id<-"GAGA-0099"
+gffFile<-paste(input,id,"_ABCENTH_clean_OR_renamed_all.gff3",sep="")
+gffOut1<-paste("/Users/lukas/sciebo/Projects/GAGA/2.pipeline/",id,"tmp.gff3",sep="")
+bedOut<-paste("/Users/lukas/sciebo/Projects/GAGA/2.pipeline/",id,".ORarrays.bed",sep="")
+```
+
+
+```{r}
+genes <-readGFF(gffFile)
+genes$gene_id<-genes$ID
+genes$transcript_id<-paste(genes$ID,gsub(".*-","-",genes$transcript_id),sep="")
+export(genes,gffOut1,format="GFF3")
+```
+
+```{r}
+# create txdb file
+txdb <- makeTxDbFromGFF(file=gffOut1, format="gff3")
+feat <- genFeatures(txdb, featuretype="all", reduce_ranges=TRUE)
+intergenicRegions <- as.data.frame(feat$intergenic, stringsAsFactors=FALSE)
+#Gene <- as.data.frame(feat$gene, stringsAsFactors=FALSE)
+
+#Take out all genes with intergenic content longer than 30000 bp
+intergenicRegions.30k <- subset(intergenicRegions, width <= 30000)
+
+#split according to chromosomes/scaffolds 
+intergenicRegions.30k.split <- split(intergenicRegions.30k,intergenicRegions.30k$seqnames)
+
+# 
+prepFeats<-function(listElement){
+    listElement %>% 
+    remove_rownames %>% 
+    column_to_rownames(var="feature_by") %>%
+    as.data.frame()
+}
+
+intergenicRegions.30k.split.clean<-lapply(intergenicRegions.30k.split,prepFeats)
+
+intergenicRegions.30k.split.clean.filtered<-intergenicRegions.30k.split.clean[sapply(intergenicRegions.30k.split.clean, nrow)>1]
+
+SeperateGeneNames<- function(listElement){separate(data = listElement, col = featuretype_id, into = c("Gene1", "Gene2"), sep = "__")}
+
+intergenicRegions.30k.split.clean.filtered.genesplit<- lapply(intergenicRegions.30k.split.clean.filtered, SeperateGeneNames)
+
+getPrevious <- function(listElement){listElement %>% mutate(GenePrevious=lag(Gene2))}
+
+intergenicRegions.30k.split.clean.filtered.genesplit.wPrevious<- lapply(intergenicRegions.30k.split.clean.filtered.genesplit, getPrevious)
+```
+
+
+```{r}
+intergenic.full <- do.call(rbind.data.frame, intergenicRegions.30k.split.clean.filtered.genesplit.wPrevious)
+```
+
+
+```{r}
+intergenic.full$isArray<-NA
+intergenic.full$GenePrevious[is.na(intergenic.full$GenePrevious)] <- "None"
+
+# check if there is a gene in <30 kb distance
+for (i in 1:nrow(intergenic.full)) {
+  if (intergenic.full$Gene1[i]==intergenic.full$GenePrevious[i]){
+    intergenic.full$isArray[i]="y"
+  } else{
+    intergenic.full$isArray[i]="n"}
+}
+
+#remove all where Gene2 is NA
+intergenic.full<-subset(intergenic.full,!is.na(Gene2))
+
+```
+
+
+```{r}
+intergenic.full$Array.type<-NA
+for (i in 1:nrow(intergenic.full)) {
+  if (intergenic.full$isArray[i]=="n"){
+    intergenic.full$Array.type[i]="Start"
+  } else {intergenic.full$Array.type[i]="Continuation"}
+}
+```
+
+
+```{r}
+# Remove arrays with one gene
+#intergenic.full <- intergenic.full %>%
+#  dplyr::group_by(Array.index) %>%
+#  dplyr::filter(n()>1)
+
+# give index number (1:100) to each array 
+n=0
+for (i in 1:nrow(intergenic.full)) {
+  if (intergenic.full$Array.type[i]=="Continuation"){
+      intergenic.full$Array.index[i]=n
+  } else {
+      intergenic.full$Array.index[i]=n+1
+      n=n+1}
+}
+```
+
+
+
+
+```{r}
+#ArraysList10 <- split(FullORArrays,FullORArrays$Array3)
+
+g<-subset(genes,type=="gene") %>% as.tibble()%>% dplyr::rename(start.gene=start, end.gene=end)
+# merge gff info with array annotation, based on "Gene1" (to get start coordinate of array)
+genes.array1 <-  base::merge(g, intergenic.full, by.x="gene_id", by.y="Gene1") %>% dplyr::rename(start.intergenic=start, end.intergenic=end)
+# merge gff info with array annotation, based on "Gene2" (to get end coordinate of array)
+genes.array2 <- base::merge(g, genes.array1, by.x="gene_id", by.y="Gene2")#  %>% dplyr::rename(start.gene2=start, end.gene2=end)
+
+# extract relevant columns, including start of Gene1 and end of Gene2
+genes.array <- genes.array2[c("seqid.x", "gene_id", "gene_id.y","start.gene.y","end.gene.x", "Array.index")]
+
+#array.list <- split(genes.array,genes.array$Array.index)
+#genes.array$sum<-genes.array$end.y-genes.array$start.x
+
+
+GeneArray <- genes.array %>%
+  dplyr::group_by(Array.index) %>%
+  dplyr::slice(c(which.min(start.gene.y))) 
+
+GeneArray.stop <- genes.array %>%
+  dplyr::group_by(Array.index) %>%
+  dplyr::slice(c(which.max(end.gene.x))) 
+
+GeneArray$Begin<-GeneArray$start.gene.y-1
+GeneArray$End<-GeneArray.stop$end.gene.x-1
+#GeneArray.start$Begin<-GeneArray.start$Begin-1
+#GeneArray.start$End<-GeneArray.start$End-1
+
+GeneArray$Array.id<-paste("Array",GeneArray$Array.index)
+BedArray<-GeneArray[c("seqid.x","Begin","End","Array.id")] %>% 
+  dplyr::rename(
+    chrom = seqid.x,
+    chromStart = Begin,
+    chromEnd = End,
+    name = Array.id
+  )
+#ArrayNumber <- as.data.frame(lengths(BedArray))
+#GeneNumber <- as.data.frame(nrow(genes.array1))
+#GeneNumber$Arrays<-ArrayNumber$`lengths(BedArray)`[1]
+#GeneNumber$mean<-GeneNumber$`nrow(GeneArray)`/GeneNumber$Arrays
+
+write.table(BedArray, bedOut, row.names = FALSE, sep="\t", quote = FALSE,col.names = FALSE)
+export(BedArray, bedOut, format="bed")
+intergenic.full
+
+```
+
