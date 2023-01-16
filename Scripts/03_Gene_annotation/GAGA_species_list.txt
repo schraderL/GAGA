@@ -1,0 +1,173 @@
+GAGA ID	Species	Subfamily	Shortname	Final species name
+GAGA-0001	Acromyrmex ameliae	Myrmicinae	Aame	Acromyrmex ameliae
+GAGA-0002	Acromyrmex subterraneus	Myrmicinae	Acsu	Acromyrmex subterraneus
+GAGA-0003	Acromyrmex lobicornis	Myrmicinae	Alob	Acromyrmex lobicornis
+GAGA-0004	Messor barbarus	Myrmicinae	Mbar	Messor barbarus
+GAGA-0014	Acromyrmex echinatior	Myrmicinae	Aech	Acromyrmex echinatior
+GAGA-0020	Lasius flavus sp.2 (prev. umbratus)	Formicinae	Lfl2	Lasius flavus s2
+GAGA-0024	Lasius flavus	Formicinae	Lfla	Lasius flavus s1
+GAGA-0025	Megaponera analis	Ponerinae	Mana	Megaponera analis
+GAGA-0026	Myrmecocystus cf. mendax	Formicinae	Mmen	Myrmecocystus cf. mendax
+GAGA-0028	Myrmica rubra	Myrmicinae	Mrub	Myrmica rubra
+GAGA-0055	Gigantiops destructor	Formicinae	Gdes	Gigantiops destructor
+GAGA-0063	Neoponera goeldii	Ponerinae	Ngoe	Neoponera goeldii
+GAGA-0074	Odontomachus hastatus	Ponerinae	Ohas	Odontomachus hastatus
+GAGA-0080	Pheidole pallidula	Myrmicinae	Ppal	Pheidole pallidula
+GAGA-0082	Pristomyrmex punctatus	Myrmicinae	Prpu	Pristomyrmex punctatus
+GAGA-0083	Diacamma cf. indicum (prev. Diacamma sp.)	Ponerinae	Dind	Diacamma cf. indicum
+GAGA-0084	Aphaenogaster subterranea	Myrmicinae	Apsu	Aphaenogaster subterranea
+GAGA-0085	Tetramorium caespitum	Myrmicinae	Tcae	Tetramorium caespitum
+GAGA-0087	Myrmica scabrinodis	Myrmicinae	Msca	Myrmica scabrinodis
+GAGA-0090	Platythyrea punctata	Ponerinae	Plpu	Platythyrea punctata
+GAGA-0098	Harpagoxenus sublaevis	Myrmicinae	Hsub	Harpagoxenus sublaevis
+GAGA-0099	Leptothorax acervorum	Myrmicinae	Lace	Leptothorax acervorum
+GAGA-0103	Myrmecina graminicola	Myrmicinae	Mgra	Myrmecina graminicola
+GAGA-0106	Iberoformica subrufa	Formicinae	Isub	
+GAGA-0109	Stenamma debile	Myrmicinae	Sdeb	Stenamma debile
+GAGA-0114	Manica rubida	Myrmicinae	Maru	Manica rubida
+GAGA-0165	Eutetramorium mocquerysi 	Myrmicinae	Emoc	Eutetramorium mocquerysi
+GAGA-0177	Lasius niger	Formicinae	Lnig	Lasius niger
+GAGA-0187	Plagiolepis pygmaea	Formicinae	Ppyg	Plagiolepis pygmaea
+GAGA-0198	Paratrechina longicornis	Formicinae	Palo	Paratrechina longicornis
+GAGA-0199	Anoplolepis gracilipes	Formicinae	Agra	Anoplolepis gracilipes
+GAGA-0200	Camponotus japonicus	Formicinae	Cjap	Camponotus japonicus
+GAGA-0220	Acromyrmex octospinosus	Myrmicinae	Aoct	Acromyrmex octospinosus
+GAGA-0221	Camponotus fellah	Formicinae	Cfel	Camponotus fellah
+GAGA-0222	Temnothorax rugatulus	Myrmicinae	Trug	Temnothorax rugatulus
+GAGA-0223	Temnothorax longispinosus	Myrmicinae	Tlon	Temnothorax longispinosus
+GAGA-0224	Temnothorax americanus	Myrmicinae	Tame	Temnothorax americanus
+GAGA-0229	Cephalotes minutus	Myrmicinae	Cmin	Cephalotes minutus
+GAGA-0231	Mayaponera constricta	Ponerinae	Mcon	
+GAGA-0234	Typhlomyrmex rogenhoferi	Ectatomminae	Trog	Typhlomyrmex rogenhoferi
+GAGA-0241	Hylomyrma cf. transversa	Myrmicinae	Htra	
+GAGA-0245	Monomorium pharaonis	Myrmicinae	Mpha	Monomorium pharaonis
+GAGA-0246	Pseudoneoponera rufipes	Ponerinae	Pruf	Pseudoneoponera rufipes
+GAGA-0256	Acanthomyrmex cf. ferox	Myrmicinae	Afer	Acanthomyrmex ferox
+GAGA-0266	Ectomomyrmex cf. javanus sp2 (prev. astatus)	Ponerinae	Ecfj	Ectomomyrmex cf. javanus
+GAGA-0275	Euprenolepis procera	Formicinae	Epro	Euprenolepis procera
+GAGA-0288	Temnothorax unifasciatus	Myrmicinae	Tuni	Temnothorax unifasciatus
+GAGA-0300	Ectomomyrmex cf. javanus sp1	Ponerinae	Ejav	Ectomomyrmex javanus
+GAGA-0301	Anochetus risii	Ponerinae	Aris	Anochetus risii
+GAGA-0302	Ochetellus glaber	Dolichoderinae	Ogla	Ochetellus glaber
+GAGA-0303	Harpegnathos venator	Ponerinae	Hven	Harpegnathos venator
+GAGA-0304	Proformica sp. (prev. mongolica)	Formicinae	Pros	Proformica cf. mongolica
+GAGA-0306	Gnamptogenys cf. bicolor	Ectatomminae	Gbic	Stictoponera bicolor
+GAGA-0307	Hypoponera opacior GAGA-307-26	Ponerinae	Hopa	Hypoponera opacior
+GAGA-0323	ABANDONED Hypoponera opacior	Ponerinae	Hopa	
+GAGA-0328	Carebara diversa	Myrmicinae	Cdiv	Carebara diversa
+GAGA-0330	Crematogaster cf. rogenhoferi	Myrmicinae	Crog	Crematogaster cf. rogenhoferi
+GAGA-0331	Carebara bengalensis	Myrmicinae	Csp2	Carebara sp. s2
+GAGA-0332	Pseudolasius sp. (prev. similus)	Formicinae	Pssp	Pseudolasius sp.
+GAGA-0333	Tetramorium bicarinatum	Myrmicinae	Tbic	Tetramorium bicarinatum
+GAGA-0334	Rossomyrmex cf. quandratinodum	Formicinae	Rqua	Rossomyrmex quandratinodus
+GAGA-0335	Meranoplus bicolor	Myrmicinae	Mbic	Meranoplus bicolor
+GAGA-0336	Oecophylla smaragdina	Formicinae	Osma	Oecophylla smaragdina
+GAGA-0337	Tapinoma melanocephalum	Dolichoderinae	Tmel	Tapinoma melanocephalum
+GAGA-0338	Lepisiota rothneyi	Formicinae	Lrot	Lepisiota rothneyi
+GAGA-0340	Tapinoma sp. (formerly Dolichoderus flatidorsus )	Dolichoderinae	Tcfm	Tapinoma cf. melanocephalum
+GAGA-0341	Nylanderia fulva	Formicinae	Nful	Nylanderia fulva
+GAGA-0343	Pseudomyrmex spinicola	Pseudomyrmecinae	Pspi	Pseudomyrmex spinicola
+GAGA-0346	Megalomyrmex milenae	Myrmicinae	Mmil	Megalomyrmex milenae
+GAGA-0350	Formica fusca	Formicinae	Ffus	Formica cf. japonica
+GAGA-0351	Diacamma rugosum	Ponerinae	Drug	Diacamma rugosum
+GAGA-0352	Leptogenys diminuta	Ponerinae	Ldim	Leptogenys diminuta
+GAGA-0353	Odontomachus monticola var. formosae 	Ponerinae	Omon	Odontomachus cf. monticola
+GAGA-0354	Cataglyphis aenescens	Formicinae	Caen	Cataglyphis aenescens
+GAGA-0356	Aphaenogaster exasperata	Myrmicinae	Aexa	Aphaenogaster exasperata
+GAGA-0358	Pheidole nodus	Myrmicinae	Pnod	Pheidole nodus
+GAGA-0359	Formica cf. japonica	Formicinae	Fjap	Formica japonica
+GAGA-0360	Colobopsis sp.	Formicinae	Cosp	Colobopsis minus
+GAGA-0361	Camponotus cf. fedtschenkoi	Formicinae	Cfed	Camponotus fedtschenkoi
+GAGA-0362	Camponotus sp. (prev. nicobarensis)	Formicinae	Casp	Camponotus sp.
+GAGA-0363	Iridomyrmex anceps	Dolichoderinae	Ianc	Iridomyrmex anceps
+GAGA-0364	Lasius cf. spathepus (prev. fuliginosus)	Formicinae	Lspa	Lasius cf. spathepus
+GAGA-0365	Tetraponera rufonigra	Pseudomyrmecinae	Truf	Tetraponera rufonigra
+GAGA-0366	Lasius neglectus	Formicinae	Lneg	Lasius neglectus
+GAGA-0374	Polyrhachis illaudata	Formicinae	Pill	Polyrhachis illaudata
+GAGA-0376	Pheidole capellinii	Myrmicinae	Pcap	Pheidole capellinii
+GAGA-0378	Carebara altinoda	Myrmicinae	Calt	Carebara altinodus
+GAGA-0379	Cerapachys sulcinodis	Dorylinae	Csul	Cerapachys sulcinodis
+GAGA-0380	Leptogenys kitteli	Ponerinae	Lkit	Leptogenys kitteli
+GAGA-0382	Carebara trechideros	Myrmicinae	Ctre	Carebara trechideros
+GAGA-0384	Pheidole selathorax (prev. zoceana)	Myrmicinae	Psel	Pheidole selathorax
+GAGA-0386	Euponera pilosior	Ponerinae	Epil	Euponera pilosior
+GAGA-0387	Leptogenys binghamii	Ponerinae	Lbin	Leptogenys cf. binghamii
+GAGA-0389	Proceratium itoi	Proceratiinae	Pito	Proceratium itoi
+GAGA-0391	Stigmatomma sp. (prev. rubiginoum)	Amblyoponinae	Stsp	Stigmatomma sp.
+GAGA-0392	Leptanilla sp.	Leptanillinae	Lesp	Leptanilla sp.
+GAGA-0393	Crematogaster biroi	Myrmicinae	Cos2	Crematogaster cf. osakensis
+GAGA-0395	Crematogaster osakensis	Myrmicinae	Cosa	Crematogaster osakensis
+GAGA-0396	Camponotus singularis	Formicinae	Csin	Camponotus singularis
+GAGA-0401	Myrmica sp.	Myrmicinae	Mysp	Myrmica angulata
+GAGA-0404	Mystrium camillae	Amblyoponinae	Mcam	Mystrium camillae
+GAGA-0405	Tetramorium polymorphum	Myrmicinae	Tpol	Tetramorium polymorphum
+GAGA-0406	Myrmoteras binghamii	Formicinae	Mbin	Myrmoteras binghamii
+GAGA-0407	Kartidris nyos	Myrmicinae	Kasp	Kartidris nyos
+GAGA-0408	Buniapone amblyops	Ponerinae	Bamb	Buniapone amblyops
+GAGA-0413	Messor capitatus	Myrmicinae	Mcap	Messor capitatus
+GAGA-0414	Discothyrea	Proceratiinae	Disp	Discothyrea kamiteta
+GAGA-0454	Solenopsis fugax (formerly Strongylognathus testaceus)	Myrmicinae	Sfug	Solenopsis fugax
+GAGA-0463	Formicoxenus nitidulus	Myrmicinae	Fnit	Formicoxenus nitidulus
+GAGA-0484	ABANDONED Formica aquilonia x polyctena	Formicinae	Faqu	
+GAGA-0485	Formica sanguinea	Formicinae	Fsan	Formica sanguinea
+GAGA-0491	Formica fusca (European)	Formicinae	Lfu2	Lasius fuliginosus s2
+GAGA-0494	Rossomyrmex minuchae	Formicinae	Rmin	Rossomyrmex minuchae
+GAGA-0495	Proformica longiseta	Formicinae	Ffu2	Formica fusca
+GAGA-0502	Iberoformica subrufa	Formicinae	Isub	Iberoformica subrufa
+GAGA-0503	Oxyopomyrmex saulcyi	Myrmicinae	Osau	Oxyopomyrmex cf. saulcyi
+GAGA-0505	Goniomma hispanicum	Myrmicinae	Ghis	Goniomma hispanicum
+GAGA-0510	Temnothorax nylanderi	Myrmicinae	Tnyl	Temnothorax nylanderi
+GAGA-0511	Tmnothorax ravouxi	Myrmicinae	Trav	Temnothorax ravouxi
+GAGA-0512	Temnothorax pilagens	Myrmicinae	Tpil	Temnothorax pilagens
+GAGA-0513	Temnothorax ambiguus	Myrmicinae	Tamb	Temnothorax ambiguus
+GAGA-0514	ABANDONED Diacamma sp. nov. from Japan	Ponerinae	Djap	
+GAGA-0515	Cardiocondyla obscurior	Myrmicinae	Cobs	Cardiocondyla obscurior
+GAGA-0517	Myrmecia pilosula	Myrmeciinae	Mpil	Myrmecia pilosula
+GAGA-0520	Melissotarsus emeryi	Myrmicinae	Meme	Melissotarsus emeryi
+GAGA-0521	Myrmecia croslandi 2n=2	Myrmeciinae	Mcro	Myrmecia croslandi 2n2
+GAGA-0522	Myrmecia croslandi 2n=4	Myrmeciinae	Mcr2	Myrmecia croslandi 2n4
+GAGA-0524	Lasius sp.3	Formicinae	Lfu1	Lasius fuliginosus s1
+GAGA-0527	"Tetramorium ""Anergates"" atratulus"	Myrmicinae	Tatr	Tetramorium atratulum
+GAGA-0528	Liometopum microcephalum	Dolichoderinae	Lmic	Liometopum microcephalum
+GAGA-0530	Pheidole yeensis	Myrmicinae	Pyee	Pheidole yeensis
+GAGA-0531	Aphaenogaster cf. smythiesii	Myrmicinae	Asmy	Aphaenogaster smythiesii
+GAGA-0532	Lasius alienus	Formicinae	Lali	Lasius alienus
+GAGA-0533	Carebara sp. (prev. lignata)	Myrmicinae	Cas2	Carebara sp. s1
+GAGA-0534	Dorylus orientalis	Dorylinae	Dori	Dorylus orientalis
+GAGA-0535	Discothyrea kamiteta	Proceratiinae	Dkam	Discothyrea kamiteta
+GAGA-0536	Prionopelta kraepelini	Amblyoponinae	Pkra	Prionopelta kraepelini
+GAGA-0537	Proceratium bruelheidei	Proceratiinae	Pbru	Proceratium cf. bruelheidei
+GAGA-0538	Sericomyrmex mayri	Myrmicinae	Smay	Sericomyrmex mayri
+GAGA-0539	Mycetophylax morschi	Myrmicinae	Mmor	Mycetophylax morschi
+GAGA-0540	Myrmicocrypta uncinata	Myrmicinae	Munc	Myrmicocrypta squomosa uncinata
+GAGA-0541	Mycetosoritis hartmanni	Myrmicinae	Mhar	Mycetosoritis hartmanni
+GAGA-0543	Kalathomyrmex emeryi	Myrmicinae	Keme	Kalathomyrmex emeryi
+GAGA-0550	Xerolitor explicatus	Myrmicinae	Xexp	Xerolitor explicatus
+GAGA-0552	Paraponera clavata	Paraponerinae	Pcla	Paraponera clavata
+GAGA-0553	Tetramorium sp. S1	Myrmicinae	Tesp	Tetramorium cf. nipponense
+GAGA-0554	Strumigenys mutica	Myrmicinae	Smut	Strumigenys mutica
+GAGA-0577	Parasyscia sp.	Dorylinae	Pasp	Parasyscia sp.
+GAGA-0578	Carebara capreola	Myrmicinae	Ccap	Carebara cf. capreola
+GAGA-0579	Carebara melesolena 	Myrmicinae	Cmel	Carebara melasolena
+GAGA-0580	Probolomyrmex sp. (prev longiscapus)	Proceratiinae	Prsp	Probolomyrmex sp.
+NCBI-0001	Ooceraea biroi	Dorylinae	Obir	Ooceraea biroi
+NCBI-0002	Solenopsis invicta	Myrmicinae	Sinv	Solenopsis invicta
+NCBI-0003	Atta cephalotes	Myrmicinae	Acep	Atta cephalotes
+NCBI-0004	Atta colombica	Myrmicinae	Acol	Atta colombica
+NCBI-0005	Camponotus floridanus	Formicinae	Cflo	Camponotus floridanus
+NCBI-0006	Cyphomyrmex costatus	Myrmicinae	Ccos	Cyphomyrmex costatus
+NCBI-0007	Dinoponera quadriceps	Ponerinae	Dqua	Dinoponera quadriceps
+NCBI-0008	Formica exsecta	Formicinae	Fexs	Formica exsecta
+NCBI-0009	Harpegnathos saltator	Ponerinae	Hsal	Harpegnathos saltator
+NCBI-0010	Linepithema humile	Dolichoderinae	Lhum	Linepithema humile
+NCBI-0011	Odontomachus brunneus	Ponerinae	Obru	Odontomachus brunneus
+NCBI-0012	Pogonomyrmex barbatus	Myrmicinae	Pbar	Pogonomyrmex barbatus
+NCBI-0013	Vollenhovia emeryi	Myrmicinae	Vene	Vollenhovia emeryi
+NCBI-0014	Wasmannia auropunctata	Myrmicinae	Waur	Wasmannia auropunctata
+NCBI-0015	Trachymyrmex zeteki	Myrmicinae	Tzet	Mycetomoellerius zeteki
+NCBI-0016	Trachymyrmex septentrionalis	Myrmicinae	Tsep	Trachymyrmex septentrionalis
+NCBI-0017	Trachymyrmex cornetzi	Myrmicinae	Tcor	Paratrachymyrmex cornetzi
+OUT-0001	Formica selysi	Formicinae	Fsel	Formica selysis
+OUT-0002	Formica cinerea	Formicinae	Fcin	Formica cinerea
+NCBI-0018	Apis mellifera	Outgroup	Amel	Apis mellifera
+NCBI-0019	Nasonia vitripennis	Outgroup	Nvit	Nasonia vitripennis
