@@ -16,7 +16,7 @@ Pending from here: Zijun
 3. Stringtie to generate RNA-seq based annotations
 4. Augustus to get de-novo annotations
 5. Script to combine all annotations
-6. Script to generate a gff3 with one representative isoform (longer) per gene
+6. Script to generate a gff3 with one representative isoform (longest) per gene
 
 
 7. Script to filter all transposable and repeat proteins from the gene annotation
