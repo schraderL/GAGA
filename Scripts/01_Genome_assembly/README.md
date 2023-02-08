@@ -11,3 +11,7 @@ Folder with the scripts used to conduct the genome assembly and quality evaluati
 We generated HiC libraries for about 20 ant species, and the scripts used are in "HiC_scaffolding" folder
 
 ## 
+
+Include steps of removing bacterial sequences
+Purge_dups to purge heterozygosity
+
