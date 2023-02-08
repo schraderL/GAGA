@@ -40,11 +40,11 @@ CHRNUMBER="26" # Number of expected chromosomes
 
 
 # tmp files names
-INBAM="combined.bam"
-GENOME="GAGA-0026_assembly_hic_corrected.fasta"
+INBAM="combined.bam" # output bam from mapping Hi-C data into the initial genome assembly
+GENOME="GAGA-0026_assembly_hic_corrected.fasta" # Genome assembly after being corrected using the Hi-C mapping
 
 # output bam
-OUTCLEANBAM="sample.clean.bam"
+OUTCLEANBAM="sample.clean.bam" # output bam from mapping Hi-C data into the Hi-C corrected genome assembly
 OUTCLEAN="sample.clean"
 
 #Use precomputed bam file, skip then the mapping step in lines: 62-71
@@ -54,7 +54,7 @@ OUTCLEAN="sample.clean"
 # Script directory from AllHiC: 
 ALLHICDIR="/home/projects/ku_00039/people/joeviz/hic_scaffolding/allhic/ALLHiC/"
 export PATH=$PATH:"$ALLHICDIR"/bin:"$ALLHICDIR"/scripts
-# Script directory from https://github.com/ArimaGenomics/mapping_pipeline 
+# Scripts from https://github.com/esrice/hic-pipeline
 HICDIR="/home/projects/ku_00039/people/joeviz/hic_scaffolding/salsa2/hic-pipeline/"
 export PATH=$PATH:$HICDIR
 
@@ -78,7 +78,7 @@ samtools index $INBAM
 
 # Run corrector, to split putative mis-joined scaffolds using Hi-C mapping data
 
-/home/projects/ku_00039/people/joeviz/hic_scaffolding/allhic/ALLHiC//bin/ALLHiC_corrector -m $INBAM -r $FIRSTGENOME -o $GENOME -t 40
+"$ALLHICDIR"/bin/ALLHiC_corrector -m $INBAM -r $FIRSTGENOME -o $GENOME -t 40
 
 
 # Index the Hi-C corrected assembly

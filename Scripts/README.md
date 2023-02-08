@@ -1,2 +1,8 @@
 # GAGA
-Folder with the scripts used in GAGA
+Folder with the scripts and methodologies used in GAGA
+
+- [Genome assembly and quality evaluation](01_Genome_assembly)
+- [Repeat annotation](02_Repeat_annotation)
+- [General gene annotation](03_Gene_annotation)
+- [Gene and gene family re-annotation](04_Gene_re-annotation)
+- [Comparative genomics analyses](05_Analyses)

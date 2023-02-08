@@ -5,18 +5,7 @@ NTHREADS=1
 
 # Create array job to submit
 
-#FILES=/home/projects/ku_00039/people/joeviz/GAGA_genomes/Genome_assemblies/*/*fasta
-#FILES=/home/projects/ku_00039/people/joeviz/GAGA_genomes/Genome_assemblies/Polished_assemblies_slavemaker_subproject/*fasta
-#FILES=/home/projects/ku_00039/people/joeviz/GAGA_genomes/Genome_assemblies/Polished_assemblies_thirdbatch/*fasta
-#FILES=/home/projects/ku_00039/people/joeviz/GAGA_genomes/Genome_assemblies/Polished_assemblies_8batch/*fasta
-FILES=/home/projects/ku_00039/people/joeviz/GAGA_genomes/Genome_assemblies/tmpcheck/*_final.fasta
-#FILES=/home/projects/ku_00039/people/joeviz/GAGA_genomes/Genome_assemblies/stLFR_assemblies_2batch/*fasta
-#FILES=/home/projects/ku_00039/people/joeviz/GAGA_genomes/Genome_assemblies/Fix_duplicated_busco_assemblies/assemblies_tocheck_busco/*fasta
-#FILES=/home/projects/ku_00039/people/joeviz/GAGA_genomes/Genome_assemblies/Polished_assemblies_stLFRscaffolding/*fasta
-#FILES=/home/projects/ku_00039/people/joeviz/GAGA_genomes/Genome_assemblies/Polished_assemblies_SLRscaffolder_3batch/*fasta
-#FILES=/home/projects/ku_00039/people/joeviz/GAGA_genomes/Genome_assemblies/Final_PacBio_assemblies/*fasta
-#FILES=/home/projects/ku_00039/people/joeviz/GAGA_genomes/Genome_assemblies/Final_PacBio_assemblies/temp/newbatch8/*final.fasta
-#FILES=/home/projects/ku_00039/people/joeviz/GAGA_genomes/Genome_assemblies/Chr_level_assemblies/new_2batch_final/*final.fasta
+FILES=/home/projects/ku_00039/people/joeviz/GAGA_genomes/Genome_assemblies/Final_genomes/*fasta
 
 i=0
 

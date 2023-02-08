@@ -25,7 +25,7 @@ module load masurca/3.3.0
 # Make sure that this script is not bigger than 64kb ~ 150 lines, otherwise put in seperat script and execute from here
 
 
-# First run masurca on the config file: masurca config.txt
+# First run masurca on the config file: masurca config.txt, then submit this job.
 
 bash assemble.sh
 

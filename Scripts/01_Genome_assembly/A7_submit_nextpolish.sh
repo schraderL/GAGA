@@ -33,8 +33,7 @@ module load ngs
 module load anaconda/4.4.0
 
  
-# This is where the work is done
-# Make sure that this script is not bigger than 64kb ~ 150 lines, otherwise put in seperat script and execute from here
+# Code
 
 #First create inputs:
 #ls reads1_R1.fq reads1_R2.fq reads2_R1.fq reads2_R2.fq > sgs.fofn

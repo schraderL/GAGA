@@ -42,7 +42,7 @@ READ2="/home/projects/ku_00039/people/joeviz/data/GAGA-0014/Hi-C/CL100158752_L01
 
 # Directory to salsa and scripts
 SALSADIR="/home/projects/ku_00039/people/joeviz/hic_scaffolding/salsa2/SALSA-2.2/"
-# Scripts from https://github.com/ArimaGenomics/mapping_pipeline
+# Scripts from https://github.com/esrice/hic-pipeline
 HICDIR="/home/projects/ku_00039/people/joeviz/hic_scaffolding/salsa2/hic-pipeline/"
 export PATH=$PATH:$HICDIR
 

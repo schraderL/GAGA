@@ -10,16 +10,17 @@ use warnings;
 #####
 
 # Usage
-# perl filter_bacterial_scaffolds.pl folder_with_final_assemblies
+# perl filter_bacterial_scaffolds.pl folder_with_final_assemblies_infasta Directory_with_output_from_bacterial_pipeline
 
 ## Input variables
 
 my $genomedir = $ARGV[0];
-my $contdir = "/home/projects/ku_00039/people/dinghe/working_dr/metagenome_lgt/GAGA";
+my $contdir= $ARGV[1];
+#my $contdir = "/home/projects/ku_00039/people/dinghe/working_dr/metagenome_lgt/GAGA";
 
 ## Start
 
-open (Outtable, ">", "GAGA_bacterial_human_scaffolds_stats_20210420.tsv");
+open (Outtable, ">", "GAGA_bacterial_andhuman_scaffolds_stats_20210420.tsv");
 print Outtable "GAGA-ID\tBacterial scaffolds\tTotal length of bacterial scaffolds\tHuman scaffolds\tTotal length of human scaffolds\t List of discarded scaffolds\tBacterial taxa\n";
 
 system("ls $genomedir\/*fasta > Input_genomes.txt");

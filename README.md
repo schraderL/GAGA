@@ -4,7 +4,7 @@ Code repository for the Global Ant Genomics Alliance.
 ## Contents
 
 ### Methods and scripts used in GAGA
-- Methodology and scripts used from genome assembly, annotation and analyses generated in the project. Described in [Scripts](Scripts)
+- Methodology and scripts used from genome assembly, annotation and analyses generated in the project: [Scripts](Scripts)
 
 ### Basic plots summarizing the progress of GAGA
 - Code for creating progress reports on sampling based on the google doc: [code/progressReports/progressReport.collection.Rmd](code/progressReports/progressReport.collection.Rmd)
