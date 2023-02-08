@@ -6,7 +6,7 @@ We generated Hi-C libraries for 15 ant species, and we evaluated the library qua
 - Salsa: https://github.com/marbl/SALSA and https://github.com/esrice/hic-pipeline
 
 
-We then evaluated the quality of the assemblies and manually curated the assemblies using JuiceBox.
+We then evaluated the quality of the assemblies by visualiazing the Hi-C contact maps and manually curated the best ones using JuiceBox.
 
 
 Note - Missing 3D-DNA pipeline: Zijun

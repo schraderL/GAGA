@@ -2,9 +2,9 @@
 Folder with the scripts used to conduct the genome assembly and quality evaluation.
 
 ## Genome assembly
-We aimed to generate both long-read PacBio and single-tube long fragment read (stLFR) sequencing data for all of the ant genomes generated in the project. However, stringent DNA-quality requirements and limited biomass availability were challenging, preventing us to generate PacBio reads in 19 species for which we only have stLFR short-reads (and one with 10X genomics). In addition, some species were sequenced by subprojects under the GAGA project, and WGS Illumina reads were generated instead of stLFR. The sequencing data used for each species can be checked in our [summary table](GAGA_genomes_stats.xlsx). Then, we classify the genome assembly procedures into three pipelines according to the sequencing data available:  
+We aimed to generate both long-read PacBio and single-tube long fragment read (stLFR) sequencing data for all of the ant genomes generated in the project. However, stringent DNA-quality requirements and limited biomass availability were challenging, preventing us to generate PacBio reads in 19 species for which we only have stLFR short-reads (and one with 10X genomics). In addition, some species were sequenced by subprojects under the GAGA project, and WGS Illumina reads were generated instead of stLFR. The sequencing data used for each species can be checked in our [summary table](GAGA_genome_stats.xlsx). Then, we classify the genome assembly procedures into three pipelines according to the sequencing data available:  
 
-- A: Genomes generated with both PacBio long- and stLFR short-reads NOTE: Zijun add the scripts with a prefix of the name with the step (for instance A1_filter_pacbio_reads.sh)
+- **A: Genomes generated with both PacBio long- and stLFR short-reads NOTE: Zijun add the scripts with a prefix of the name with the step (for instance A1_filter_pacbio_reads.sh)**
    - A.1. The PacBio SMRT-Analysis package was used for processing polymerase reads, removing sequencing adapters and filtering reads with low quality and short length (parameters: minSubReadLength:500). 
    - A.2. The clean reads are then assembled using Wtdbg2 v2.5.
    - A.3. The assembled contigs from Wtdbg2 were then scaffolded using SSPACE-LongRead. SSPACE-LongRead employs the BLASR aligner, which is used to align the long read set to the contig assembly and link the contigs to scaffolds. 
@@ -14,18 +14,18 @@ We aimed to generate both long-read PacBio and single-tube long fragment read (s
    - A.7. Finally, the polished scaffolds were further scaffolded using the barcoding information from stLFR reads with [SLR-superscaffolder pipeline](https://github.com/BGI-Qingdao/SLR-superscaffolder).
 
 
-- B: Genomes generated with both PacBio long- and WGS Illumina short-reads
+- **B: Genomes generated with both PacBio long- and WGS Illumina short-reads**
    - The same steps were used as those mentioned in A, except for A.7. (additional scaffolding using stLFR data).
 
-- C: Genomes generated with only stLFR short-reads
+- **C: Genomes generated with only stLFR short-reads**
    - C.1. Raw stLFR reads were first cleaned from adaptors and PCR duplicates, and the barcode IDs were assigned in the read names using [stlfr2supernova_pipeline](https://github.com/BGI-Qingdao/stlfr2supernova_pipeline). 
    - C.2. We used two different genome assembly pipelines and evaluated the genome assembly quality, given the low contiguity metrics retrieved in these short-read genome assemblies:
    - C.2a. MaSuRCa-SLRsuperscaffolder pipeline
       - C.2a.1 The clean reads were then assembled using MaSuRCA v3.3.0 (“JF_SIZE = 2500000000”). 
       - C.2a.2 The resulting assembly was further scaffolded using the barcoding information from stLFR reads to assemble contigs into scaffolds with [SLR-superscaffolder pipeline](https://github.com/BGI-Qingdao/SLR-superscaffolder). 
    - C.2b. Supernova pipeline
-      C.2b.1 The clean reads were assembled and scaffolded using Supernova pipelines (Zijun, version and parameters here?).
-      C.2b.2 Scaffolding using slr-superscaffolder or scaf10X? (Zijun please check what was used here, for GAGA-0220 it is used scaf10x)
+      - C.2b.1 The clean reads were assembled and scaffolded using Supernova pipelines (Zijun, version and parameters here?).
+      - C.2b.2 Scaffolding using slr-superscaffolder or scaf10X? (Zijun please check what was used here, for GAGA-0220 it is used scaf10x)
    - C.3. Then, both assemblies were compared to retrieve the most contiguous and complete genome assembly (see quality evaluation below).
    - C.4. In some cases, we used [ntJoin](https://github.com/bcgsc/ntJoin) to further scaffold the final genome assembly from MaSuRCa pipeline using the Supernova assembly, generating the final version. 
 
