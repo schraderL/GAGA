@@ -5,10 +5,12 @@ General genome annotation was conducted by combining gene annotation from severa
 # RNA-seq available
 
 1.  First, RNA-seq is aligned to the reference repeat soft-masked genome assembly using STAR v2.7.2b default options. Then, we retrieved the publicly available gene annotations from the fruit fly Drosophila melanogaster, the red flour beetle Tribolium castaneum, the parasitoid wasp Nasonia vitripennis, the honeybee Apis mellifera, the clonal raider ant Ooceraea biroi and the Florida carpenter ant Camponotus floridanus, that can be found in the file "Gemoma_input/Whole_genomes.zip" in [here](https://sid.erda.dk/sharelink/EJZrYWKPrj). The annotations from these insect species are used to conduct homology-based gene predictions using GeMoMa v1.7.1, which also incorporates the RNA-seq evidences for splice site prediction.
+	
 	**01_run_gemoma_annotation_andRNAmapping.pl** Script generates the submission commands for each species (using our GAGA-IDs [file](GAGA-ID_all.txt)).
 
 
 2. The independent RNA-seq alignments are merged creating a consensus GTF (Gene transfer format) using Stringtie v2.1.5.
+	
 	**02_run_stringtie_bam_to_gtf.pl**
 
 **Pending from here: Zijun**
@@ -23,12 +25,14 @@ General genome annotation was conducted by combining gene annotation from severa
 
 
 7. Transposon-related proteins were identified and filtered using a BLASTP search against Swissprot database and the transposable element protein database from RepeatMasker. Script to filter all transposable and repeat proteins from the gene annotation:
+	
 	**07_run_gene_annotation_filtering_all.pl** Script will search for all genome files and run the main script. See the script to individually run this step in one genome: "07a_run_gene_annotation_filtering.pl" 
 
 
 # No RNA-seq available
 
 1. We run GeMoMa including the gene annotations from the closest species with RNA-seq available. 
+	
 	**01_run_gemoma_annotation_noRNAspecies_with_close_relative.pl**
 
 Step 2 and 3 are skipped because the absence of RNA-seq; and Step 4, 5, 6 and 7 are the same as above.
