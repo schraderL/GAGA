@@ -1,4 +1,4 @@
-# GAGA
+# GAGA Genome assembly
 Folder with the scripts used to conduct the genome assembly and quality evaluation.
 
 ## Genome assembly
@@ -22,7 +22,7 @@ We aimed to generate both long-read PacBio and single-tube long fragment read (s
    - C.2. We used two different genome assembly pipelines and evaluated the genome assembly quality, given the low contiguity metrics retrieved in these short-read genome assemblies:
    - C.2a. MaSuRCa-SLRsuperscaffolder pipeline
       - C.2a.1 The clean reads were then assembled using MaSuRCA v3.3.0 (“JF_SIZE = 2500000000”). 
-      - C.2a.2 The resulting assembly was further scaffolded using the barcoding information from stLFR reads to assemble contigs into scaffolds with [SLR-superscaffolder pipeline](https://github.com/BGI-Qingdao/SLR-superscaffolder). 
+      - C.2a.2 The resulting assembly was further scaffolded using the barcoding information from stLFR reads to assemble contigs into scaffolds with [SLR-superscaffolder pipeline](https://github.com/BGI-Qingdao/SLR-superscaffolder) (Same script as in previous step A.7). 
    - C.2b. Supernova pipeline
       - C.2b.1 The clean reads were assembled and scaffolded using Supernova pipelines (Zijun, version and parameters here?).
       - C.2b.2 Scaffolding using slr-superscaffolder or scaf10X? (Zijun please check what was used here, for GAGA-0220 it is used scaf10x)
@@ -41,7 +41,7 @@ The final genome assemblies were screened and filtered for putative duplicated s
 
 Next, the genome assemblies were screened for putative contaminations from other organisms using a pipeline established and optimized for the ant genomes in the GAGA project.  In brief, we compiled separate databases containing 1908 complete bacterial genome sequences, 43 complete insect genome sequences, as well as databases containing corresponding bacterial or insect CDS sequences. We divided the genome assembly in 2000 bp sliding windows (overlap 500 bp) and searched each window against the different insect and bacterial databases using mmseqs (release_12-113e3) and identified the single best hit (according to bitscore) for each sliding window against each database. For each scaffold, we calculated the ratio of windows showing higher similarity to bacterial than to eukaryotic databases and used this, along with coverage and GC content information, as lines of evidence to identify contaminant scaffolds. (ADD LINK TO GITHUB REPO)
 
-Finally, the genome assemblies were renamed and validated using again contiguity metrics, gene completeness, and consensus quality (QV) and k-mer completeness using Merqury as shown in the [summary table](GAGA_genomes_stats.xlsx). 
+Finally, the genome assemblies were renamed and validated using again contiguity metrics, gene completeness, and consensus quality (QV) and k-mer completeness using Merqury as shown in the [summary table](GAGA_genome_stats.xlsx). 
 
 
 ### Species validation and contamination checking
