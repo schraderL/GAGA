@@ -17,15 +17,7 @@ use warnings;
 
 my $idlist = $ARGV[0];
 
-my $gemomadir = "/home/projects/ku_00039/people/joeviz/GAGA_annotations/all/run_hic_batch/";
-#my $gemomadir = "/home/projects/ku_00039/people/joeviz/GAGA_annotations/all/run_firstbatch_goodmapping_gemomanompha/"; # Dir with gemoma output
-#my $gemomadir = "/home/projects/ku_00039/people/joeviz/GAGA_annotations/all/run_all_norna_nompha/"; # Dir with gemoma output
-#my $gemomadir = "/home/projects/ku_00039/people/joeviz/GAGA_annotations/all/run_secondbatch_subproject_goodmapping_gemomanompha_estesi"; # Dir with gemoma output
-
-#my $assemblydir = "/home/projects/ku_00039/people/joeviz/GAGA_annotations/Repeat_masked_assemblies/GAGA_annotations/"; # Folder with unzipped soft-masked genome assemblies classified in folders (as in the directory GAGA_annotations in ERDA)
-#my $rnadir = "/home/projects/ku_00039/people/joeviz/RNA-seq/GAGA-IDs";
-
-#my $gemomainputdir = "/home/projects/ku_00039/people/joeviz/GAGA_annotations/Dataset/Whole_genomes/"; # Folder containing the folders with the annotations used in gemoma
+my $gemomadir = "/home/projects/ku_00039/people/joeviz/GAGA_annotations/all/run_hic_batch/"; # Directory with each GAGA-ID folder, and the bam files inside, together with gemoma output generated in the previous script
 
 my $gagaidlist = "/home/projects/ku_00039/people/joeviz/GAGA_species_list.txt";
 

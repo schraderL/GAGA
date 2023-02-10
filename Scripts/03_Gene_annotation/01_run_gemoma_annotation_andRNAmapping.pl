@@ -18,7 +18,7 @@ use warnings;
 my $idlist = $ARGV[0]; # List with GAGA-IDs to generate the scripts
 my $assemblydir = "/home/projects/ku_00039/people/joeviz/GAGA_annotations/Repeat_masked_assemblies/GAGA_annotations/"; # Folder with unzipped soft-masked genome assemblies classified in folders (as in the directory GAGA_annotations in ERDA). Expected file name to finish with softMasked.fasta
 #my $rnadir = "/home/projects/ku_00039/people/joeviz/RNA-seq/GAGA-IDs";
-my $rnadir = "/home/projects/ku_00039/people/joeviz/RNA-seq_1June/GAGA-IDs";
+my $rnadir = "/home/projects/ku_00039/people/joeviz/RNA-seq_1June/GAGA-IDs"; # Directory with RNA-seq files sorted into folders for each GAGA-ID
 
 my $gemomainputdir = "/home/projects/ku_00039/people/joeviz/GAGA_annotations/Dataset/Whole_genomes/"; # Folder containing the folders with the annotations used in gemoma
 

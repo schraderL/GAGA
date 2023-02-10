@@ -4,7 +4,7 @@ General genome annotation was conducted by combining gene annotation from severa
 
 # RNA-seq available
 
-1.  First, RNA-seq is aligned to the reference repeat soft-masked genome assembly using STAR v2.7.2b default options. Then, we retrieved the publicly available gene annotations from the fruit fly Drosophila melanogaster, the red flour beetle Tribolium castaneum, the parasitoid wasp Nasonia vitripennis, the honeybee Apis mellifera, the clonal raider ant Ooceraea biroi and the Florida carpenter ant Camponotus floridanus, that can be found in the file "Gemoma_input/Whole_genomes.zip" in [here](https://sid.erda.dk/sharelink/EJZrYWKPrj). The annotations from these insect species are used to conduct homology-based gene predictions using GeMoMa v1.7.1, which also incorporates the RNA-seq evidences for splice site prediction.
+1.  First, RNA-seq is aligned to the reference repeat soft-masked genome assembly using STAR v2.7.2b default options. Then, we retrieved the publicly available gene annotations from the fruit fly Drosophila melanogaster, the red flour beetle Tribolium castaneum, the parasitoid wasp Nasonia vitripennis, the honeybee Apis mellifera, the clonal raider ant Ooceraea biroi and the Florida carpenter ant Camponotus floridanus, that can be found in the file "GeMoMa_input/Whole_genomes.zip" in [here](https://sid.erda.dk/sharelink/EJZrYWKPrj). The annotations from these insect species are used to conduct homology-based gene predictions using GeMoMa v1.7.1, which also incorporates the RNA-seq evidences for splice site prediction.
 	
 	**01_run_gemoma_annotation_andRNAmapping.pl** Script generates the submission commands for each species (using our GAGA-IDs [file](GAGA-ID_all.txt)).
 
