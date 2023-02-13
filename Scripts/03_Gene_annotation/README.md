@@ -29,6 +29,7 @@ General genome annotation was conducted by combining gene annotation from severa
 
 6. We generate an annotation with a single representative isoform per gene (i.e.: longest isoform is kept as the representative).
 
+	**06_Merge_GeneIsoforms.sh**
 
 7. Transposon-related proteins were identified and filtered using a BLASTP search against Swissprot database and the transposable element protein database from RepeatMasker. Script to filter all transposable and repeat proteins from the gene annotation:
 	
