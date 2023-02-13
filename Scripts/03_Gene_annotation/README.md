@@ -16,7 +16,8 @@ General genome annotation was conducted by combining gene annotation from severa
 **Pending from here: Zijun**
 
 3. BestORF (Molquest package, Softberry) is used to identify open reading frame (ORF) in the transcript sequences. The transcripts with incomplete ORF are filtered out.
-
+  **03_runRNAseq_prediction.sh**
+  
 4. We randomly select \~1,000 high–quality genes from GeMoMa prediction to train Augustus v3.2.2. The de novo gene prediction is then performed using Augustus with the repeat-masked genome, filtering out genes with lower length than 150bp or incomplete ORF.  
   **04.Run_augustus.sh**
 

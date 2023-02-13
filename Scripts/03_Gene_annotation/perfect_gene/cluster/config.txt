@@ -1,0 +1,6 @@
+fishInWinter.pl = /nas/GAG_02/fanw/GACP/GACP-5.0/software/common-bin/fishInWinter.pl
+hcluster.pl = /nas/GAG_02/fanw/GACP/GACP-5.0/software/common-bin/hcluster.pl
+cds2aa.pl = /nas/GAG_02/fanw/GACP/GACP-5.0/software/common-bin/cds2aa.pl
+getGene.pl = /nas/GAG_02/fanw/GACP/GACP-5.0/software/common-bin/getGene.pl
+
+
