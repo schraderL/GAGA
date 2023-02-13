@@ -8,8 +8,8 @@ We aimed to generate both long-read PacBio and single-tube long fragment read (s
    - A.1. The PacBio SMRT-Analysis package was used for processing polymerase reads, removing sequencing adapters and filtering reads with low quality and short length (parameters: minSubReadLength:500). Note this step is done in sequencing company (Novogene)
    - A.2. The clean reads are then assembled using Wtdbg2 v2.5.
    ```
-   perl -t 16 -x sq -g 300m -o GAGA_ant_id CLR_reads.fa.gz
-   perl -t 16 -x ccs -g 300m -o GAGA_ant_id Hifi_reads.fa.gz
+   perl wtdbg2.pl -t 16 -x sq -g 300m -o GAGA_ant_id CLR_reads.fa.gz
+   perl wtdbg2.pl -t 16 -x ccs -g 300m -o GAGA_ant_id Hifi_reads.fa.gz
    ```
    - A.3. The assembled contigs from Wtdbg2 were then scaffolded using SSPACE-LongRead. 
    ```
