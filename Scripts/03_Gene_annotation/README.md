@@ -19,7 +19,7 @@ General genome annotation was conducted by combining gene annotation from severa
   **03_runRNAseq_prediction.sh**
   
 4. We randomly select \~1,000 high–quality genes from GeMoMa prediction to train Augustus v3.2.2. The de novo gene prediction is then performed using Augustus with the repeat-masked genome, filtering out genes with lower length than 150bp or incomplete ORF.  
-  **04.Run_augustus.sh**
+  **04_Run_augustus.sh**
 
 5. Gene annotations from the three evidences are combined generating the final gene annotation for each genome. from which we also generate an annotation with a single representative isoform per gene (i.e.: longest isoform is kept as the representative). Transposon-related proteins were identified and filtered using a BLASTP search against Swissprot database and the transposable element protein database from RepeatMasker.
 
