@@ -71,7 +71,7 @@ We used a different pipeline for the chemosensory receptors described in [Chemos
 
 
 ## Merging all re-annotations in a single annotation file
-Once all gene re-annotations are curated and completed, we combine the GFF files generated with the initial general gene annotation, replacing curated gene models and adding newly annotated genes. Therefore, a final GFF file is generated including all isoforms, or a representative isoform per gene. We used the following pipeline to retrieve the final representative annotated GFF. To generate a representative isoform for each gene, We first compared the overlapping relationship between curated gene annotations and original annotations. We set a higher priority of curated gene model. If a new curated gene model overlapped with a model in original annotations (overlapping length >100 bp), the latter was removed. 
+Once all gene re-annotations are curated and completed, we combine the GFF files generated with the initial general gene annotation, replacing curated gene models and adding newly annotated genes. Therefore, a final GFF file is generated including all isoforms, or a representative isoform per gene. We used the following pipeline to retrieve the final representative annotated GFF. To generate a representative isoform for each gene, We first compared the overlapping relationship between curated gene annotations and original annotations. We set a higher priority of curated gene model. If a new curated gene model overlapped with a model in original annotations (overlapping length >100 bp), the latter was removed. If the genes from the same priority were overlapped, the gene with longest ORF was retained.
 
 ```
 Usage : sh pipeline_representative.sh <GAGA_ID> <prefix>
