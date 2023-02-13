@@ -43,7 +43,7 @@ The pipeline requires the following programs (edit the path in the scripts, as w
 
 # Other chemosensory gene families
 
-For the remaining chemosensory-related gene families, we used mostly the same pipeline, which changes the protein dataset for each gene family. We conducted the annotation of these gene families using the general re-annotation pipeline (they are included in the [excel table(https://docs.google.com/spreadsheets/d/1EI8pShvL_YlbxYEyrlkrod7a-a7W58lR3rWOqlQffgA/edit?usp=sharing)). Then, we curate putative chimeric models, and identify conserved members (and subfamilies such as in the case of IR and iGluRs) and classify them into complete, pseudogene or partial copies. 
+For the remaining chemosensory-related gene families, we used mostly the same pipeline, which changes the protein dataset for each gene family. We conducted the annotation of these gene families using the general re-annotation pipeline (they are included in the [excel table](https://docs.google.com/spreadsheets/d/1EI8pShvL_YlbxYEyrlkrod7a-a7W58lR3rWOqlQffgA/edit?usp=sharing)). Then, we curate putative chimeric models, and identify conserved members (and subfamilies such as in the case of IR and iGluRs) and classify them into complete, pseudogene or partial copies. 
 
 - Ionotropic receptors (IRs): [run_IR_annotation.sh](run_IR_annotation.sh)
 - CD36-SNMPs: [run_CD36SNMP_annotation.sh](run_CD36SNMP_annotation.sh)
