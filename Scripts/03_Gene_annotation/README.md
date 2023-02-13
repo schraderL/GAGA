@@ -13,9 +13,8 @@ General genome annotation was conducted by combining gene annotation from severa
 	
 	**02_run_stringtie_bam_to_gtf.pl**
 
-**Pending from here: Zijun**
 
-3. BestORF (Molquest package, Softberry) is used to identify open reading frame (ORF) in the transcript sequences. The transcripts with incomplete ORF are filtered out.
+3. BestORF (Molquest package, Softberry) is used to identify open reading frame (ORF) in the transcript sequences. Then, the identified ORF, genome assembly and the generated gtf in the Step 2 are input in the following pipeline to retrieve gene models based on RNA-seq evidences.
 
 	**03_runRNAseq_prediction.sh**
   
