@@ -67,6 +67,7 @@ Finally, when all cases are reviewed (Note again that it requires to create a fo
 
 ## Chemosensory gene families
 We used a different pipeline for the chemosensory receptors described in [Chemosensory_gene_families folder](Chemosensory_gene_families), including the olfactory (OR) and gustatory (GR) receptors, given the repetitive nature of these gene families (i.e.: many copies arranged in tandem) and fast evolution in the ants. 
+We also use homology-based searches to validate and rename, and we classify the chemosensory genes family members in the scripts descrbed in this folder. 
 
 
 

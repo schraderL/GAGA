@@ -7,9 +7,9 @@ fi
 genome=$1 # GAGA-ID or prefix name used in all genome files, for instance GAGA-0001
 prefix=$2 # Short name used as prefix in the gene models, i.e.: Aame
 
-cat */*.gff > annotpipeline.gff3 # folder containing all gff from gene re-annotation pipeline
+cat */*.gff > annotpipeline.gff3 # concatenate all newly generated gff from the re-annotation pipeline, using here from the folder containing all gff from gene re-annotation
 
-ln -s ../../../Original_annotations_to_replace/$genome\_final_annotation_repfilt.gff3 $genome.gff3 # original annotated gff
+ln -s ../../../Original_annotations_to_replace/$genome\_final_annotation_repfilt.gff3 $genome.gff3 # initial general annotated gff
 
 perl scripts_bin/extractID.pl annotpipeline.gff3 $prefix
 perl scripts_bin/Step1_geneReplace.pl $genome.gff3 annotpipeline.gff3 $prefix.mRNA.lst $prefix.gene.lst $prefix > $genome.gff3.replace.gff3
