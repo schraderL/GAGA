@@ -1,0 +1,43 @@
+#####################
+####scripts path
+#####################
+
+blast_parser = /home/xiongzj/GACP/01.repeat_finding/scripts/blast_parser.pl
+multi-process.pl = /home/xiongzj/GACP/01.repeat_finding/scripts/multi-process.pl
+qsub_sge.pl = /home/xiongzj/GACP/01.repeat_finding/scripts/qsub-sge.pl
+fastaDeal.pl = /home/xiongzj/GACP/01.repeat_finding/scripts/fastaDeal.pl
+find_repeat = /home/xiongzj/GACP/01.repeat_finding/scripts/find_repeat.pl
+denovo_program = /home/xiongzj/GACP/01.repeat_finding/scripts/denovo_repeat_find.pl
+known_program = /home/xiongzj/GACP/01.repeat_finding/scripts/find_repeat.pl
+filter_program = /home/xiongzj/GACP/01.repeat_finding/scripts/build_lib/build_library.no_pwd.pl
+stat_TE2_path = /home/xiongzj/GACP/01.repeat_finding/scripts/stat_TE2.pl
+stat_program = /home/xiongzj/GACP/01.repeat_finding/scripts/stat.pl
+change_ID = /home/xiongzj/GACP/01.repeat_finding/scripts/bin/change_ID.pl
+change_ID_path = /home/xiongzj/GACP/01.repeat_finding/scripts/change_ID.pl
+fastaDeal_path = /home/xiongzj/GACP/01.repeat_finding/scripts/fastaDeal.pl
+svg_path = /home/xiongzj/GACP/01.repeat_finding/scripts/distribution_TE_divergence.pl
+png_path = /home/xiongzj/GACP/01.repeat_finding/scripts/svg_kit/svg2xxx.pl
+
+tedna = /hwfssz1/ST_AGRIC/F13ZHQYJSY1409_ME/USER/lilinzhou/Database/RepBase25.03/RepeatMaskerLib.embl.lib
+tepep = /ldfssz1/ST_DIVERSITY/PUB/USER/fangqi/local/bio-tool/RepeatMasker-4.1.2-p1/Libraries/RepeatPeps.lib
+
+
+
+#####################
+####software path
+#####################
+
+ltr_path = /home/xiongzj/GACP/01.repeat_finding/software/LTR_Finder/
+blastall = /home/xiongzj/GACP/01.repeat_finding/software/blastall/blastall
+formatdb = /home/xiongzj/GACP/01.repeat_finding/software/blastall/formatdb
+muscle = /share/app/muscle-3.8.31/bin/muscle
+pals = /ldfssz1/ST_DIVERSITY/PUB/USER/xiongzj/local/bio-tool/piler_pals/pals
+piler_path = /ldfssz1/ST_DIVERSITY/PUB/USER/xiongzj/local/bio-tool/piler_pals/
+piler = /ldfssz1/ST_DIVERSITY/PUB/USER/xiongzj/local/bio-tool/piler_pals/piler2
+trf = /home/xiongzj/GACP/01.repeat_finding/software/trf/trf
+nseg = /home/xiongzj/GACP/01.repeat_finding/software/nseg-1.0.1/bin/nseg
+repeatmasker = /ldfssz1/ST_DIVERSITY/PUB/USER/fangqi/local/bio-tool/RepeatMasker-4.1.2-p1/RepeatMasker
+proteinmask = /ldfssz1/ST_DIVERSITY/PUB/USER/fangqi/local/bio-tool/RepeatMasker-4.1.2-p1/RepeatProteinMask
+repeatclassifer = /home/xiongzj/GACP/01.repeat_finding/software/RepeatModeler-2.0.1/RepeatClassifier
+repeatscout_path = /home/xiongzj/GACP/01.repeat_finding/software/RepeatScout-1.0.6/bin/
+repeatmodeler_path = /hwfssz4/BC_COM_FP/bc_paea/Annotation_2018/software/repeat/RepeatModeler-2.0.1/
