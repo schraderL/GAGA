@@ -17,7 +17,7 @@ We aimed to generate both long-read PacBio and single-tube long fragment read (s
    ```
    - A.4. We performed an additional round of gap filling to eliminate the gaps within scaffolds using [LR_Gapcloser](https://github.com/CAFS-bioinformatics/LR_Gapcloser) with PacBio subreads.
    - A.5. To further improve the accuracy of the genome assembly, two-step polishing was performed on the initial assembly. In the first round, [Arrow](https://github.com/skoren/ArrowGrid) software was used to map the PacBio sequences to the genome assembly. The high coverage PacBio sequencing data could efficiently correct the small indels and substitutions in the initial assembly, obtaining the consensus sequences.
-   - A.6. Because of the high error rate of PacBio raw reads, the consensus sequences were also subjected to a further polishing step using the short reads with NextPolish v1.3.0. 
+   - A.6. Because of the high error rate of PacBio raw reads, the consensus sequences were also subjected to a further polishing step using the short reads with [NextPolish v1.3.0](https://github.com/Nextomics/NextPolish) . 
    - A.7. Finally, the polished scaffolds were further scaffolded using the barcoding information from stLFR reads with [SLR-superscaffolder pipeline](https://github.com/BGI-Qingdao/SLR-superscaffolder).
 
 
