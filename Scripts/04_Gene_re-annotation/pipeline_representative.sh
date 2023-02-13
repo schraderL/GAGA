@@ -4,8 +4,8 @@ if [ $# -lt 2 ];then
         exit
 fi
 
-genome=$1
-prefix=$2
+genome=$1 # GAGA-ID or prefix name used in all genome files, for instance GAGA-0001
+prefix=$2 # Short name used as prefix in the gene models, i.e.: Aame
 
 cat */*.gff > annotpipeline.gff3 # folder containing all gff from gene re-annotation pipeline
 
