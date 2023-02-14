@@ -23,7 +23,7 @@ perl get_all_functional_annotation.pl
 
 ### Functional annotation of ortholog groups across the 163 ant GAGA genomes
 
-After conducting the orthology assessment across the protein-coding genes of our 163 ant genomes, we retrievied the consensus functional annotation for each orthogroup. Briefly, we used the previously generated functional annotation for each genome, and counted the number of genes with the same annotations in each orthogroup, retrieving the consensus functional annotation. In addition, we transferred for each orthogroup the GO and KEGG terms that were annotated at least in 1/3 of the genes in the orthogroup. 
+After conducting the [orthology assessment](../06_Analyses/Orthology) across the protein-coding genes of our 163 ant genomes, we retrieved the consensus functional annotation for each orthogroup. Briefly, we used the previously generated functional annotation for each genome, and counted the number of genes with the same annotations in each orthogroup, retrieving the consensus functional annotation. In addition, we transferred for each orthogroup the GO and KEGG terms that were annotated at least in 1/3 of the genes in the orthogroup. 
 ```
 perl get_functional_annotations_per_orthogroup.pl
 ```  
