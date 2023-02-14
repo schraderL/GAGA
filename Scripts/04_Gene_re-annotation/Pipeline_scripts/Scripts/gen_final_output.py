@@ -37,7 +37,7 @@ for i in range(len(df)):
     if '-' in str(df['Average number of genes'][i]):
         average_genes[gene_families[i]]=int(df['Average number of genes'][i].split('-')[0])+int(df['Average number of genes'][i].split('-')[1])/2
     else:
-        average_genes[gene_families[i]]= df['Average number of genes'][i]
+        average_genes[gene_families[i]]= int(df['Average number of genes'][i])
 blast = {}
 for i in range(len(df)):
     blast[gene_families[i]]=str(df['Blast'][i])

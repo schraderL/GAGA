@@ -31,7 +31,7 @@ echo This job has allocated $NPROCS nodes
 module load tools
 module load ngs
 module load anaconda3/4.4.0
-module load openjdk/15.0.1
+module load jdk/19
 module load perl
 
 # Code
@@ -43,7 +43,7 @@ cd $OUTDIR
 ###### EDIT INPUT ######
 path="/home/projects/ku_00039/people/joeviz/gene_family_pipeline/run_pipeline_Ectatomma/Gene-annotation-pipeline"
 table="/home/projects/ku_00039/people/joeviz/gene_family_pipeline/run_pipeline_Ectatomma/Gene_reannotation_full_table.xlsx"
-pipeline_output_directory="/home/projects/ku_00039/people/joeviz/gene_family_pipeline/run_pipeline_Ectatomma/run_pipeline/Ectatomma_test"
+pipeline_output_directory="/home/projects/ku_00039/people/joeviz/gene_family_pipeline/run_pipeline_Ectatomma/run_pipeline/Ectatomma"
 genome="/home/projects/ku_00039/people/joeviz/GAGA_genomes/Colab_Ectatomma/repeat_annot/Ectatomma_ruidum_Hifigenome.nextpolish_final.softMasked.fasta"
 output_directory="$OUTDIR"
 ############################

@@ -53,4 +53,4 @@ For the remaining chemosensory-related gene families, we used mostly the same pi
 - NPC2: [run_NPC2_annotation.sh](run_NPC2_annotation.sh)
 
 
-
+We provide a script to create a job array that runs the pipeline in all genomes in [scripts/create_submit_script_allgenomes.sh](scripts/create_submit_script_allgenomes.sh). The code inside can be changed to be adjusted for each gene family, and the necessary paths also have to be modified accordingly. 
