@@ -10,7 +10,7 @@ import numpy as np
 #usage: python3 orthogroups.py N0.tsv species.txt 0.8(Percentage of species included in the orthogroup as single copy)
 
 # v4 multicopy now prints all 1:N (excluding single-copy)
-# v5 print an additional file with all genes in the single copy orthogroups (also those with 2 or more copies)
+# v5 print an additional file with all genes in the single copy orthogroups (also those with 2 or more copies in few species)
 
 ortho_table= sys.argv[1] # orthogroup table
 species= sys.argv[2] # file with species ids 

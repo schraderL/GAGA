@@ -33,5 +33,5 @@ module load anaconda3/4.4.0
 
 # Code
 
-pyhton3 orthogroups_v5.py N0.tsv
+pyhton3 orthogroups_v5.py N0.tsv species_list_all.txt 0.75
 
