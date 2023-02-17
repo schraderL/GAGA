@@ -33,13 +33,18 @@ We also conducted the orthology assessment using eight outgroup non-ant high-qua
 
 ### Anthophila (bees)
 1 - Apis mellifera: https://www.ncbi.nlm.nih.gov/genome/48
+
 2 - Bombus hortorum: https://portal.darwintreeoflife.org/data/root/details/Bombus%20hortorum
+
 3 - Nomada fabriciana: https://portal.darwintreeoflife.org/data/root/details/Nomada%20fabriciana
+
 4 - Osmia bicornis: https://www.ncbi.nlm.nih.gov/genome/76072
+
 5 - Lasioglossum lativentre: https://portal.darwintreeoflife.org/data/root/details/Lasioglossum%20lativentre 
 
 ### Crabronidae (digger wasps)
 6 - Cerceris rybyensis: https://portal.darwintreeoflife.org/data/root/details/Cerceris%20rybyensis
+
 7 - Nysson spinosus: https://portal.darwintreeoflife.org/data/root/details/Nysson%20spinosus
 
 ### Ampulicidae
