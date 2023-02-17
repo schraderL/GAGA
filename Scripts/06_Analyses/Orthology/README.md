@@ -8,18 +8,22 @@ We used [OrthoFinder v2.5.4](https://github.com/davidemms/OrthoFinder) to conduc
 The resulting file ***N0.tsv***, in which each row contains the genes belonging to a single orthogroup, was used to retrieve the different types or orthologous groups: single copy, multi copies, clade/species specific or others; using the script [orthogroups_v5.py](orthogroups_v5.py).
 The script requires as input the N0.tsv output from OrthoFinder, a text file containing the list of species to retrieve the orthogroups (i.e.: it can be all species input in orthofinder, or a subset of those), and the percentage of species needed to classify the orthogroups (i.e.: 90% means that orthogroups with one copy in at least 90% of the genomes will be classified as single copy).
 ```
-pyhton3 orthogroups_v5.py N0.tsv species_list_all.txt 0.75
+pyhton3 orthogroups_v5.py N0.tsv species_list_all.txt 0.8
 ```
 See the following script to submit this step:
 
 ***[02_get_orthogroup_classification.sh](02_get_orthogroup_classification.sh)***
 
 
-Finally, we retrieve all sequences, both protein and cds, for each orthogroup that will be used in the comparative genomics analyses. Here, we use the script [get_orthogroup_sequences](). To retrieve the sequences for the specific list of orthogroups, that it can just be the single copy or all orthogroups. 
+Finally, we retrieve all sequences, both protein and cds, for each orthogroup that will be used in the comparative genomics analyses. Here, we use the script [get_orthogroup_sequences.pl](get_orthogroup_sequences.pl), to retrieve the sequences for a list of orthogroups, that it can just be the single copy or all orthogroups. Therefore the input is a table containing the orthogroup ID and genes for each species, and the output folder that will contain the protein and cds sequences for each orthogroup. Note that the script will check and fix the codon sequences that are not multiple of three. 
+```
+perl get_orthogroup_sequences.pl N0_onehogcol.tsv all_orthogroups
+```
+See the following script to submit this step:
 
 ***[03_retrieve_orthogroup_sequences.sh](03_retrieve_orthogroup_sequences.sh)***
 
-
+We also include a script that allow to get 
 
 
 ## Orthology assessment using outgroup non-ant species
@@ -41,7 +45,7 @@ We also conducted the orthology assessment using eight outgroup non-ant high-qua
 8 - Ampulex compressa: https://www.ncbi.nlm.nih.gov/genome/?term=Ampulicidae
 
 
-We re-annotated these genomes using our pipeline described in [Gene_annotation](../../03_Gene_annotation), confirmed the expected phylogeny relationships between these species and the ants based on [Peters et al. 2017](http://dx.doi.org/10.1016/j.cub.2017.01.027), and used the proteomes and phylogeny in OrthoFinder and following steps as detailed above. 
+We re-annotated these genomes using our pipeline described in [Gene_annotation](../../03_Gene_annotation), confirmed the expected phylogeny relationships between these species and the ants based on [Peters et al. 2017](http://dx.doi.org/10.1016/j.cub.2017.01.027), and used the proteomes and phylogeny in OrthoFinder and conducted the following steps as detailed above. 
 
 
 

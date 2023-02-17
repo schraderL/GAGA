@@ -32,6 +32,10 @@ module load ngs tools
 module load anaconda3/4.4.0
 
 # Code
+# Input N0_onehogcol.tsv is the N0.tsv file removing the second, third and fourth columns, therefore containing a column with the HOG id, and the genes for all species included in hte orthology assessment
 
-pyhton3 orthogroups_v5.py N0.tsv
+perl get_orthogroup_sequences.pl N0_onehogcol.tsv all_orthogroups
+
+# Other examples
+# perl get_orthogroup_sequences.pl species_all_80percsp_orthogroups_singlecopy_genes.tsv single_copy
 
