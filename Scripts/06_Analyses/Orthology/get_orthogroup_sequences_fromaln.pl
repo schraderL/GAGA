@@ -90,7 +90,7 @@ while(<File>){
 			
 
 		open (Resultsp, ">", "$outdir\/$og\.pep.fasta");
-		open (Resultsc, ">", "$outdir\/$og\.cds.fasta");
+#		open (Resultsc, ">", "$outdir\/$og\.cds.fasta");
 
 		my $i = "0";
 		foreach my $col (@subl){
@@ -116,7 +116,7 @@ while(<File>){
 		}
 
 		close Resultsp;
-		close Resultsc;
+#		close Resultsc;
 	}
 
 	$headerl++;

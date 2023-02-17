@@ -23,25 +23,26 @@ See the following script to submit this step:
 
 ***[03_retrieve_orthogroup_sequences.sh](03_retrieve_orthogroup_sequences.sh)***
 
-We also include a script that allow to get 
+
+We also include a script that allows to get a subset of orthogroups sequences that could be already aligned, or just the files with the sequences: [get_orthogroup_sequences_fromaln.pl](get_orthogroup_sequences_fromaln.pl).
 
 
 ## Orthology assessment using outgroup non-ant species
 
 We also conducted the orthology assessment using eight outgroup non-ant high-quality genomes from the Apoidea superfamily, that we used in the comparative genomics analyses. 
 
-# Anthophila (bees)
+### Anthophila (bees)
 1 - Apis mellifera: https://www.ncbi.nlm.nih.gov/genome/48
 2 - Bombus hortorum: https://portal.darwintreeoflife.org/data/root/details/Bombus%20hortorum
 3 - Nomada fabriciana: https://portal.darwintreeoflife.org/data/root/details/Nomada%20fabriciana
 4 - Osmia bicornis: https://www.ncbi.nlm.nih.gov/genome/76072
 5 - Lasioglossum lativentre: https://portal.darwintreeoflife.org/data/root/details/Lasioglossum%20lativentre 
 
-# Crabronidae (digger wasps)
+### Crabronidae (digger wasps)
 6 - Cerceris rybyensis: https://portal.darwintreeoflife.org/data/root/details/Cerceris%20rybyensis
 7 - Nysson spinosus: https://portal.darwintreeoflife.org/data/root/details/Nysson%20spinosus
 
-# Ampulicidae
+### Ampulicidae
 8 - Ampulex compressa: https://www.ncbi.nlm.nih.gov/genome/?term=Ampulicidae
 
 
