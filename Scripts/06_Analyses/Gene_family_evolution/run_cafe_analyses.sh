@@ -27,7 +27,7 @@ OUTPUT="singlelambdapoisson" # Output prefix for each CAFE run
 
 NTHREADS=8 # Number of threads for each CAFE run
 NUMRUNS=20 # Number of independent runs of CAFE to ensure convergence
-NTIME=48 # Number of hours in qsub script, use 150 for long runs estimating lambda
+NTIME=48 # Number of hours in qsub script
 
 
 #### CAFE commands - Comment/Uncomment the COMMAND line to run each step ####
