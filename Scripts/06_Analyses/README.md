@@ -2,7 +2,9 @@
 
 We include here the scripts and methods used in the comparative genomics analyses.
 
-First, we conducted the orthology assessment of the protein-coding genes in our 163 ant genomes, detailed in [Orthology](Orthology).
+The phylogenetic analyses aimed to reconstruct the species tree across our ant sequenced species and outgroups can be found in [Phylogeny](Phylogeny). 
+
+We conducted the orthology assessment of the protein-coding genes in our 163 ant genomes, detailed in [Orthology](Orthology).
 
 The selection analyses including the scripts and methods are included in [Selection](Selection).
 
