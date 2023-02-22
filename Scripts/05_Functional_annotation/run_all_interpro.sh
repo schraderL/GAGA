@@ -58,7 +58,7 @@ echo This job has allocated $NPROCS nodes
 # Load all required modules for the job
 module load ngs tools
 module load anaconda3/4.4.0
-module load openjdk/15.0.1
+module load jdk/19
 module load perl
 module load signalp/4.1g
 module load interproscan/5.52-86.0
