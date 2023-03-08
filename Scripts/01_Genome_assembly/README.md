@@ -39,7 +39,6 @@ We aimed to generate both long-read PacBio and single-tube long fragment read (s
    - C.2b. Supernova pipeline
       - C.2b.1 The clean reads were assembled using Supernova pipelines (v2.1.1).
       - C.2b.2 Scaffolding using slr-superscaffolder and scaf10X?
-      ***NOTE*** Add scripts or command for both
    - C.3. Then, both assemblies were compared to retrieve the most contiguous and complete genome assembly (see quality evaluation below).
    - C.4. In some cases, we used [ntJoin](https://github.com/bcgsc/ntJoin) to further scaffold the final genome assembly from MaSuRCa pipeline using the Supernova assembly, generating the final version. 
 
