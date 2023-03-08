@@ -43,6 +43,6 @@ General genome annotation was conducted by combining gene annotation from severa
 
 Step 2 and 3 are skipped because the absence of RNA-seq; and Step 4 is the same as above, step 5, 6 and 7 are slightly different from above.
         
-	**05_combine_gene_predictions_noRNAseq.sh**
-	**05_Merge_GeneIsoforms_noRNAseq.sh**
+	05_combine_gene_predictions_noRNAseq.sh
+	05_Merge_GeneIsoforms_noRNAseq.sh
 
