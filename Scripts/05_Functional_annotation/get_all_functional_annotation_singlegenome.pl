@@ -15,7 +15,7 @@ my ($line, $name, $nameout);
 # Protein fasta containing the annotated genes that was used as input in the functional annotation, here one representative protein sequence per gene
 my $annotdir = "/home/projects/ku_00039/people/joeviz/GAGA_genomes/Ectatomma/Final_gene_annotation/Ectatomma_ruidum_final_annotation_repfilt_addfunc.representative.pep.fasta";
 # GO file generated in the previous step of the pipeline described in github
-my $godir = "/home/projects/ku_00039/people/joeviz/GAGA_genomes/Ectatomma/functional_annotation/zijun/Ectatomma_ruidum_final_annotation_repfilt_addfunc.representative.pep.fasta.iprscan.gene.wego";
+my $godir = "/home/projects/ku_00039/people/joeviz/GAGA_genomes/Ectatomma/functional_annotation/zijun/Ectatomma_ruidum_gene_merged.wego";
 # Directory containing all functional annotation files from the previous step described in github (all_function_stat.pl)
 my $funcannotdir = "/home/projects/ku_00039/people/joeviz/GAGA_genomes/Ectatomma/functional_annotation/zijun/"; # Directory with functional annotations from Zijun
 # Annotation.xls file generated in the previous step (all_function_stat.pl)
