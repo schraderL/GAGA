@@ -16,6 +16,9 @@ We aimed to generate both long-read PacBio and single-tube long fragment read (s
    perl SSPACE-LongRead.pl -c assembled_genome.fa -p reads.fasta -b output
    ```
    - A.4. We performed an additional round of gap filling to eliminate the gaps within scaffolds using [LR_Gapcloser](https://github.com/CAFS-bioinformatics/LR_Gapcloser) with PacBio subreads.
+   ```
+   sh LR_Gapcloser.sh -i scaffolds.fasta -l input.fasta
+   ```
    ***NOTE*** Add scripts or command
    - A.5. To further improve the accuracy of the genome assembly, two-step polishing was performed on the initial assembly. In the first round, [Arrow](https://github.com/skoren/ArrowGrid) software was used to map the PacBio sequences to the genome assembly. The high coverage PacBio sequencing data could efficiently correct the small indels and substitutions in the initial assembly, obtaining the consensus sequences.
    ***NOTE*** Add scripts or command
