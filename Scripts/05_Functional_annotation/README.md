@@ -18,8 +18,7 @@ In addition, we searched for the specific protein-domain signatures in protein-c
 
 Finally, all functional annotations are combined generating a general functional annotation for each ant genome, that includes the best hit with each database, as well as the Gene ontology (GO) and KEGG terms transferred from significant hits. First, we combine homology-based and protein-domain searches, retrieving a summary table with the functional annotations and GO associated terms 
 ```
-perl bin/all_function_stat.pl -list all_gene.id -Interpro GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.iprscan.xls -kegg GAGA_id_final_anno
-tation_repfilt_addfunc.representative.pep.fasta.blast.kegg.xls -swissprot GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.blast.swissprot.xls -trembl GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.blast.trembl.xls -cog GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.blast.cog.xls  -outxls annotation.xls --outstat annotation_stat.xls &&
+perl bin/all_function_stat.pl -list all_gene.id -Interpro GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.iprscan.xls -kegg GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.blast.kegg.xls -swissprot GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.blast.swissprot.xls -trembl GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.blast.trembl.xls -cog GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.blast.cog.xls  -outxls annotation.xls --outstat annotation_stat.xls
 
 ```
 
