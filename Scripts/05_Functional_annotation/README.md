@@ -1,9 +1,7 @@
 # GAGA gene functional annotation
 
-We combined several similarity-based searches to conduct the functional annotation of the protein-coding genes annotated in all ant GAGA genomes. We first used BLASTP to retrieve the 5? best hits against the following databases with E-value 1e-5
-```
-perl auto_fun_ann.pl -queue st.q -pro_code P18Z10200N0160 -KEGG -Swissprot -Trembl -COG -GO -species animal -Interpro -seqtype pep GAGA_id.pep.fasta
-```
+We combined several similarity-based searches to conduct the functional annotation of the protein-coding genes annotated in all ant GAGA genomes. We first used BLASTP to retrieve the 5? best hits against the following databases with E-value 1e-5. 
+
 - [Swissprot](https://www.uniprot.org/)
 - [Trembl](http://www.bioinfo.pte.hu/more/TrEMBL.htm)
 - [KEGG](https://www.genome.jp/kegg/pathway.html)
@@ -18,6 +16,9 @@ In addition, we searched for the specific protein-domain signatures in protein-c
 
 Finally, all functional annotations are combined generating a general functional annotation for each ant genome, that includes the best hit with each database, as well as the Gene ontology (GO) and KEGG terms transferred from significant hits. First, we combine homology-based and protein-domain searches, retrieving a summary table with the functional annotations and GO associated terms: 
 ```
+perl bin/auto_fun_ann.pl -queue st.q -pro_code P18Z10200N0160 -KEGG -Swissprot -Trembl -COG -GO -species animal -Interpro -seqtype pep GAGA_id.pep.fasta
+```
+```
 perl bin/all_function_stat.pl -list all_gene.id -Interpro GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.iprscan.xls -kegg GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.blast.kegg.xls -swissprot GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.blast.swissprot.xls -trembl GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.blast.trembl.xls -cog GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.blast.cog.xls  -outxls annotation.xls --outstat annotation_stat.xls
 ```
 
@@ -25,7 +26,7 @@ These annotations are then combined with EggNOG to generate a summary table cont
 ```
 perl get_all_functional_annotation.pl
 ```
-
+This script is designed to find the input files using the pattern names in GAGA. We also provide a script [get_all_functional_annotation_sinbglegenome.pl script](get_all_functional_annotation_singlegenome.pl) that does the same steps, but it runs for a single genome specifically indicating the input files, rather than directories to search the files as in the previous script. 
 
 ### Functional annotation of ortholog groups across the 163 ant GAGA genomes
 
