@@ -1,10 +1,15 @@
 # GAGA gene functional annotation
 
-We combined several similarity-based searches to conduct the functional annotation of the protein-coding genes annotated in all ant GAGA genomes. We first used BLASTP to retrieve the 5? best hits against the following databases: ***Zijun check this and add the command/scripts and link to the databases you used, also e-value to filter hits***
-- Swissprot
-- Trembl
-- KEGG
-- KOG
+We combined several similarity-based searches to conduct the functional annotation of the protein-coding genes annotated in all ant GAGA genomes. We first used BLASTP to retrieve the 5? best hits against the following databases with E-value 1e-5
+```
+perl auto_fun_ann.pl -queue st.q -pro_code P18Z10200N0160 -KEGG -Swissprot -Trembl -COG -GO -species animal -Interpro -seqtype pep GAGA_id.pep.fasta
+```
+- [Swissprot](https://www.uniprot.org/)
+- [Trembl](http://www.bioinfo.pte.hu/more/TrEMBL.htm)
+- [KEGG](https://www.genome.jp/kegg/pathway.html)
+- [COG](http://www.ncbi.nlm.nih.gov/COG/)
+- [GO](http://geneontology.org/)
+
 
 In addition, we searched for the specific protein-domain signatures in protein-coding gene sequences using [InterProScan](https://www.ebi.ac.uk/interpro/download/InterProScan/). The [script run_all_interpro.sh](run_all_interpro.sh) creates a job array to run InterPro in the protein sequences for each GAGA genome.
 
