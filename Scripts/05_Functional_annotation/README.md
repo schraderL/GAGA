@@ -19,7 +19,6 @@ In addition, we searched for the specific protein-domain signatures in protein-c
 Finally, all functional annotations are combined generating a general functional annotation for each ant genome, that includes the best hit with each database, as well as the Gene ontology (GO) and KEGG terms transferred from significant hits. First, we combine homology-based and protein-domain searches, retrieving a summary table with the functional annotations and GO associated terms 
 ```
 perl bin/all_function_stat.pl -list all_gene.id -Interpro GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.iprscan.xls -kegg GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.blast.kegg.xls -swissprot GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.blast.swissprot.xls -trembl GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.blast.trembl.xls -cog GAGA_id_final_annotation_repfilt_addfunc.representative.pep.fasta.blast.cog.xls  -outxls annotation.xls --outstat annotation_stat.xls
-
 ```
 
 These annotations are then combined with EggNOG to generate a summary table containing the protein identifier, best hit from SwissProt, EggNOG, KEGG, COG, TrEMBL and InterPro, and the number of GOs. In addition, we create a table and a ".annot" file containing the GO and KEGG terms. These steps are run in the [get_all_functional_annotation.pl script](get_all_functional_annotation.pl). All input paths and files need to be specified accordingly in the script (lines 13-23).
