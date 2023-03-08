@@ -4,7 +4,7 @@ Folder with the scripts used to conduct the genome assembly and quality evaluati
 ## Genome assembly
 We aimed to generate both long-read PacBio and single-tube long fragment read (stLFR) sequencing data for all of the ant genomes generated in the project. However, stringent DNA-quality requirements and limited biomass availability were challenging, preventing us to generate PacBio reads in 19 species for which we only have stLFR short-reads (and one with 10X genomics). In addition, some species were sequenced by subprojects under the GAGA project, and WGS Illumina reads were generated instead of stLFR. The sequencing data used for each species can be checked in our [summary table](GAGA_genome_stats.xlsx). Then, we classify the genome assembly procedures into three pipelines according to the sequencing data available:  
 
-- **A: Genomes generated with both PacBio long- and stLFR short-reads NOTE: Zijun add the scripts with a prefix of the name with the step (for instance A1_filter_pacbio_reads.sh)**
+- **A: Genomes generated with both PacBio long- and stLFR short-reads**
    - A.1. The PacBio SMRT-Analysis package was used for processing polymerase reads, removing sequencing adapters and filtering reads with low quality and short length (parameters: minSubReadLength:500). Note this step is done in the sequencing company (Novogene). 
    - A.2. The clean reads are then assembled using Wtdbg2 v2.5.
    ```
@@ -37,8 +37,8 @@ We aimed to generate both long-read PacBio and single-tube long fragment read (s
       - C.2a.1 The clean reads were then assembled using MaSuRCA v3.3.0 (“JF_SIZE = 2500000000”). 
       - C.2a.2 The resulting assembly was further scaffolded using the barcoding information from stLFR reads to assemble contigs into scaffolds with [SLR-superscaffolder pipeline](https://github.com/BGI-Qingdao/SLR-superscaffolder) (Same script as in previous step A.7). 
    - C.2b. Supernova pipeline
-      - C.2b.1 The clean reads were assembled using Supernova pipelines (v2.1.1).
-      - C.2b.2 Scaffolding using slr-superscaffolder and scaf10X.
+      - C.2b.1 The clean reads were assembled using Supernova pipeline (v2.1.1). See the [github repository](https://github.com/BGI-Qingdao/stlfr2supernova_pipeline) for specific details about the pipeline. 
+      - C.2b.2 Then, a scaffolding step was conducted using [Scaf10X](https://github.com/wtsi-hpag/Scaff10X).
    - C.3. Then, both assemblies were compared to retrieve the most contiguous and complete genome assembly (see quality evaluation below).
    - C.4. In some cases, we used [ntJoin](https://github.com/bcgsc/ntJoin) to further scaffold the final genome assembly from MaSuRCa pipeline using the Supernova assembly, generating the final version. 
 
