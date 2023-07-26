@@ -48,7 +48,7 @@ We generated HiC libraries for 15 ant species, which we further used to curate, 
 
 
 ## Quality evaluation
-Genome assembly quality was evaluated using contiguity metrics, and gene completeness with BUSCO v5.1.2, for each of the above mentioned steps to ensure that the genome assembly quality improved. The scripts used can be found in [Quality_evaluation folder](Quality_evaluation). 
+Genome assembly quality was evaluated using contiguity metrics, and gene completeness with BUSCO v5.1.2 and compleasm v0.2.2, for each of the above mentioned steps to ensure that the genome assembly quality improved. The scripts used can be found in [Quality_evaluation folder](Quality_evaluation). 
 
 The final genome assemblies were screened and filtered for putative duplicated scaffolds using Funannotate “clean” pipeline v1.8.3. In addition, [purge_haplotigs](https://bitbucket.org/mroachawri/purge_haplotigs/src/master/) was used to purge haplotigs in assemblies that showed high duplication rates (Note that it was only the case in three assemblies). 
 

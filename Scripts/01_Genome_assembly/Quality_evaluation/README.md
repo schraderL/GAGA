@@ -3,7 +3,7 @@
 - Contiguity metrics: We used the following script to retrieve the reported contiguity metrics for each genome assembly. 
 'perl N50Stat_v3.pl -i inputgenome.fasta'
 
-- BUSCO evaluation: We used the script [run_all_busco_v512_andclean.sh](run_all_busco_v512_andclean.sh) to create a job array that runs BUSCO for each genome assembly. It requires to edit line 8 and add the directory containing a list of genomes with extension ".fasta".
+- BUSCO evaluation: We used the script [run_all_busco_v512_andclean.sh](run_all_busco_v512_andclean.sh) to create a job array that runs BUSCO for each genome assembly. It requires to edit line 8 and add the directory containing a list of genomes with extension ".fasta". It can also be modified to use [compleasm](https://github.com/huangnengCSU/compleasm), a modified BUSCO that uses miniprot to retrieve a faster and more accurate completeness assessment. 
 
 - Merqury consensus quality (QV) and k-mer completeness: [run_merqury.sh](run_merqury.sh).
 
