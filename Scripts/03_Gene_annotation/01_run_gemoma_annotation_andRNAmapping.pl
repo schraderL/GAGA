@@ -197,6 +197,13 @@ fi\n\n";
 	}
 
 
+	# If there is hifi RNA-seq available, we use bbmap and use the bam files also in gemome, the code would be (not implemented in this script)
+#mapPacBio.sh in=/home/projects/ku_00039/people/joeviz/GAGA_genomes/Colab_Ectatomma/rna-seq/ccs/m64293e_220221_142237.hifi_reads.fasta.gz out=rna_hifi_notsorted.bam ref=/home/projects/ku_00039/people/joeviz/GAGA_genomes/Colab_Ectatomma/repeat_annot/Ectatomma_ruidum_Hifigenome.nextpolish_final.softMasked.fasta
+#samtools sort -T tmp_aln.sorted -o rna_hifi_sorted.bam rna_hifi_notsorted.bam
+#samtools index rna_hifi_sorted.bam
+
+
+
 	# Run GeMoMa
 	my $prefixname = "$shortname{$gagaid}\_";
 
