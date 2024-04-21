@@ -10,10 +10,10 @@ use warnings;
 #####
 
 # Usage  # Also edit lines 35, 36 and 38
-# perl run_gene_annotation_filtering.pl input.gff input.proteins.fasta input.genome input.genome.hardmasked input.repeat.gff GAGA-ID
+# perl run_gene_annotation_filtering.pl input.gff input.proteins.fasta input.genome input.genome.hardmasked input.repeat.gff GAGA-ID input_allisoforms.gff
 
 # Usage with real data
-# perl run_gene_annotation_filtering.pl /home/projects/ku_00039/people/joeviz/GAGA_annotations/Final_files/GAGA-0014/GAGA-0014.annotation.merge.renamed.fixed.representative.gff3 /home/projects/ku_00039/people/joeviz/GAGA_annotations/Final_files/GAGA-0014/GAGA-0014.annotation.merge.renamed.fixed.representative.pep /home/projects/ku_00039/people/joeviz/GAGA_annotations/Repeat_masked_assemblies/GAGA_annotations/GAGA-0014/GAGA-0014_nextpolish_correct_final_dupsrm_filt.softMasked.fasta /home/projects/ku_00039/people/joeviz/GAGA_annotations/Repeat_masked_assemblies/GAGA_annotations/GAGA-0014/GAGA-0014_nextpolish_correct_final_dupsrm_filt.repeatMasked.fasta /home/projects/ku_00039/people/joeviz/GAGA_annotations/Repeat_masked_assemblies/GAGA_annotations/GAGA-0014/GAGA-0014_nextpolish_correct_final_dupsrm_filt.repeats.gff GAGA-0014
+# perl run_gene_annotation_filtering.pl /home/projects/ku_00039/people/joeviz/GAGA_annotations/Final_files/GAGA-0014/GAGA-0014.annotation.merge.renamed.fixed.representative.gff3 /home/projects/ku_00039/people/joeviz/GAGA_annotations/Final_files/GAGA-0014/GAGA-0014.annotation.merge.renamed.fixed.representative.pep /home/projects/ku_00039/people/joeviz/GAGA_annotations/Repeat_masked_assemblies/GAGA_annotations/GAGA-0014/GAGA-0014_nextpolish_correct_final_dupsrm_filt.softMasked.fasta /home/projects/ku_00039/people/joeviz/GAGA_annotations/Repeat_masked_assemblies/GAGA_annotations/GAGA-0014/GAGA-0014_nextpolish_correct_final_dupsrm_filt.repeatMasked.fasta /home/projects/ku_00039/people/joeviz/GAGA_annotations/Repeat_masked_assemblies/GAGA_annotations/GAGA-0014/GAGA-0014_nextpolish_correct_final_dupsrm_filt.repeats.gff GAGA-0014 fullgff_with_all_isoforms.gff3
 
 #Load modules in qsub script
 #module load tools
