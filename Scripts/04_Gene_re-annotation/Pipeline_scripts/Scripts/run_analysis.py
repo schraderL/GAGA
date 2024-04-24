@@ -107,7 +107,7 @@ for i in range(len(gene_families)):
             fp.close()
 
 # read InterproScan output
-tsv = pd.read_csv(interpro, sep='\t', header=None, names = list(range(0,14)))
+tsv = pd.read_csv(interpro, sep='\t', header=None, names = list(range(0,15))) # Change to 14 for older versions of interpro
 # Check if there is Pfam domain, if not check if there is InterPro domain. Also, if there are more than one ID then retrieve all of them.
 for i in range(len(InterPro)):
     name= gene_families_db[i].replace("_db.fasta","_parsed_domain.txt")

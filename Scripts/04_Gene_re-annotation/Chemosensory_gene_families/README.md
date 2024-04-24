@@ -5,7 +5,7 @@
 The annotation of the odorant receptors is conducted using [HAPpy-ABCENTH pipeline](https://github.com/biorover/HAPpy-ABCENTH). Specifically, we use ABCENTH (Annotation Based on Conserved Exons Noticed Through Homology), a gene finder designed for multigene families with extremely high sequence divergence but highly conserved exon structure, such as ant ORs. It is also designed to avoid gene fusion in tandem arrays, see the [github repository](https://github.com/biorover/HAPpy-ABCENTH) for further details.
 
 We use the [run_OR_annotation_happy_abcenth_finalpipeline.sh script](run_OR_annotation_happy_abcenth_finalpipeline.sh) to first run ABCENTH to annotate the odorant receptor genes using the HMM profiles built from manually curated OR models in five ant genomes (Harpegnathos saltator , Ooceraea biroi, Camponotus floridanus, Solenopsis invicta and Stigmatomma sp. (GAGA-0391)). The HMM files can be found in [RefHMMs_HsSrObCfSi_0.45dist.tar.g](RefHMMs_HsSrObCfSi_0.45dist.tar.gz).
-Next, the OR annotations are converted to GFF3 format, and are evaluated using homology-based searches. We use insect OR sequences to identify the OR co-receptor (ORCO), rename the OR genes, and finally we classify them as complete sequences, pseudogenes, partial or fragment annotations. The sequence datasets can be found in [Chemo_db.zip file](Chemo_db.zip).
+Next, the OR annotations are converted to GFF3 format, and are evaluated using homology-based searches. We use insect OR sequences to identify the OR co-receptor (ORCO), rename the OR genes, and finally we classify them as complete sequences, pseudogenes, partial or fragment annotations. The sequence datasets can be found in [Chemo_db.tar.gz file](Chemo_db.tar.gz).
 
 The pipeline requires the following programs:
 - HAPpy-ABCENTH
@@ -20,7 +20,7 @@ The annotation of the gustatory receptors is also conducted using [HAPpy-ABCENTH
 
 First, we used high-quality GR gene models to create a dataset that was used further to conduct the GR annotations. This dataset consists in GRs from Drosophila melanogaster, Daphnia pulex, Strigamia maritima, Ixodes scapularis, and the following ant genomes: 
 GAGA-0063 GAGA-0198 GAGA-0199 GAGA-0245 GAGA-0306 GAGA-0340 GAGA-0365 GAGA-0378 GAGA-0391 GAGA-0392 GAGA-0521 GAGA-0534 GAGA-0552 GAGA-0580 NCBI-0001 NCBI-0002. The protein sequences are in [GR_ant_genewise_db.fasta file](GR_ant_genewise_db.fasta). The species names can be found in the [GAGA species list file](GAGA_species_list.txt). 
-In addition, we used the ant annotations to create the exon HMM profiles using HAPpy-ABCENTH, that are in the [RefHMMs_ant_GRs_0.40dist.zip file](RefHMMs_ant_GRs_0.40dist.zip). 
+In addition, we used the ant annotations to create the exon HMM profiles using HAPpy-ABCENTH, that are in the [RefHMMs_ant_GRs_0.40dist_v2.tar.gz file](RefHMMs_ant_GRs_0.40dist_v2.tar.gz). 
 
 
 ***01_run_GR_annotation_abcenth.sh*** 

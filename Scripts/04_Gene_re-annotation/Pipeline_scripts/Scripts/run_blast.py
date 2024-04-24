@@ -14,8 +14,8 @@ threads = sys.argv[4]
 
 # NOTE: be sure that the database is decompressed: gzip -dc file.fasta.gz 
 
-# Generate blast database from fasta file if is not already created
-if str(path.isfile(db+'.pdb'))=='False':
+# Generate blast database from fasta file if is not already created | extension changed from pdb to phr
+if str(path.isfile(db+'.phr'))=='False': 
     os.system("makeblastdb -dbtype prot -in %s" %db)
 
 #output name = gene family name + _blast_output (for example OBP_blast_otuput)
