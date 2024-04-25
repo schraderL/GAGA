@@ -32,7 +32,7 @@ GENOME="/home/projects/ku_00039/people/joeviz/GAGA_genomes/Genome_assemblies/GAG
 OUTDIR="GAGA-0001" # Directory must not exist before, or it will fail (unless it is used --overwrite)
 
 HMMDIR="path/to/RefHMMs_ant_GRs_0.40dist" # HMM files
-ORANNOTATIONS="/home/projects/ku_00039/people/joeviz/OR_annotation/run_all_GAGA_v4/$OUTDIR/$OUTDIR\_ABCENTH_clean_OR_renamed_all.pep.fasta"  # OR annotations
+ORANNOTATION="/home/projects/ku_00039/people/joeviz/OR_annotation/run_all_GAGA_v4/$OUTDIR/$OUTDIR\_ABCENTH_clean_OR_renamed_all.pep.fasta"  # OR annotations
 
 
 HAPpy --threads 40 --annotator ABCENTH --hmm_dir $HMMDIR --genome $GENOME --output_dir $OUTDIR
@@ -76,7 +76,7 @@ module load ncbi-blast/2.11.0+
 blastp -query ABCENTH_clean.pep.fasta -db /home/projects/ku_00039/people/joeviz/OR_annotation/Chemo_db/ORco_db.fasta -outfmt "6 std qlen slen" -out ABCENTH_clean.pep.fasta.ORcoblast.txt -num_threads 40
 blastp -query ABCENTH_clean.pep.fasta -db /home/projects/ku_00039/people/joeviz/OR_annotation/Chemo_db/GR2_db.fasta -outfmt "6 std qlen slen" -out ABCENTH_clean.pep.fasta.GRblast.txt -num_threads 40 -max_target_seqs 5
 
-cat /home/projects/ku_00039/people/joeviz/OR_annotation/Chemo_db/OR_db.fasta $ORANNOTATIONS > OR_masAbcenth_db.fasta
+cat /home/projects/ku_00039/people/joeviz/OR_annotation/Chemo_db/OR_db.fasta $ORANNOTATION > OR_masAbcenth_db.fasta
 makeblastdb -in OR_masAbcenth_db.fasta -dbtype prot
 blastp -query ABCENTH_clean.pep.fasta -db OR_masAbcenth_db.fasta -outfmt "6 std qlen slen" -out ABCENTH_clean.pep.fasta.ORblast.txt -num_threads 4 -max_target_seqs 5
 
