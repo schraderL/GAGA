@@ -5,12 +5,12 @@
 
 ## Outline
 
-- [Chromosome-level synteny](#1.)
-- [Conserved microsynteny](#2.)
-- [Rearrangement breakpoint rate](#3.)
-- [Gene co-expression network analysis](#4.)
+- [Chromosome-level synteny](#Chromosome-level)
+- [Conserved microsynteny](#Conserved)
+- [Rearrangement breakpoint rate](#Rearrangement)
+- [Gene co-expression network analysis](#Gene)
 
-## 1. Chromosome-level synteny
+## Chromosome-level synteny
 
 [Lasz](https://github.com/lastz/lastz) was utilized to conduct pairwise whole genome alignments, while the [genome alignment tool](https://github.com/hillerlab/GenomeAlignmentTools) was employed to filter and chain these alignments. The Lastz pipeline accommodates various parameters based on phylogenetic distance to achieve optimal alignments.
 1. Run Lastz pipeline：
@@ -33,11 +33,11 @@
     Rscript ideogram.R # the inputs are from step2.
     ```
 
-## 2. Conserved microsynteny
+## Conserved microsynteny
 
 [Synphoni](https://github.com/nsmro/synphoni) was used to detect conserved  microsyntenic blocks.
 
-## 3. Rearrangement breakpoint rate
+## Rearrangement breakpoint rate
 
 [AGORA](https://github.com/DyogenIBENS/Agora) was used to re-construct gene order in ancestors, and identify rearrangement breakpoints.
 
@@ -59,7 +59,7 @@
     sh step3_breakpoints.sh; sh step4_timeNorm.sh
     ```
 
-## 4. Gene co-expression network analysis
+## Gene co-expression network analysis
 
 [WGCNA](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-9-559) was used in gene co-expression network analysis.
 
