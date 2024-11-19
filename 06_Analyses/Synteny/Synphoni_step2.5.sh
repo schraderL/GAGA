@@ -1,0 +1,1 @@
+/ldfssz1/ST_EARTH/Reference/ST_DIVERSITY/USER/xienianxia/miniconda3/bin/python3 /ldfssz1/ST_EARTH/Reference/ST_DIVERSITY/USER/xiongzj/xiongzj/software/Synphoni/synphoni/tools/step2.5_optimal_nmax.py myresults/bynode/ -o myresults/nmax_A1
