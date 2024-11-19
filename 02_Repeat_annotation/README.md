@@ -12,4 +12,6 @@ perl Run_repeatAnnotation.pl  -dcpu 50 -dcutf 30 -LTR_FINDER -RepeatModeler -Trf
 
 
 
-### Repeat annotation v2 -- LUKAS
+### Repeat annotation v2
+See Schrader et al. paper (GAGA TE, submitted). 
+

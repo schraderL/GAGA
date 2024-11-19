@@ -3,7 +3,7 @@
 Code repository for the Global Ant Genomics Alliance.
 
 
-Reference: The adaptive radiation and social evolution of the ants
+Reference: The adaptive radiation and social evolution of the ants. Submited to Cell. 
 
 
 

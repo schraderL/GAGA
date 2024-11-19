@@ -1,5 +1,7 @@
 # GAGA Analyses
 
+Note: In progress
+
 We include here the scripts and methods used in the comparative genomics analyses.
 
 The phylogenetic analyses aimed to reconstruct the species tree across our ant sequenced species and outgroups can be found in [Phylogeny](Phylogeny). 

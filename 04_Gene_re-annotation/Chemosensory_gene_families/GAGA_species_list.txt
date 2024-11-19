@@ -76,7 +76,7 @@ GAGA-0354	Cataglyphis aenescens	Formicinae	Caen	Cataglyphis aenescens
 GAGA-0356	Aphaenogaster exasperata	Myrmicinae	Aexa	Aphaenogaster exasperata
 GAGA-0358	Pheidole nodus	Myrmicinae	Pnod	Pheidole nodus
 GAGA-0359	Formica cf. japonica	Formicinae	Fjap	Formica japonica
-GAGA-0360	Colobopsis sp.	Formicinae	Cosp	Colobopsis minus
+GAGA-0360	Colobopsis sp.	Formicinae	Cosp	Colobopsis sp.
 GAGA-0361	Camponotus cf. fedtschenkoi	Formicinae	Cfed	Camponotus fedtschenkoi
 GAGA-0362	Camponotus sp. (prev. nicobarensis)	Formicinae	Casp	Camponotus sp.
 GAGA-0363	Iridomyrmex anceps	Dolichoderinae	Ianc	Iridomyrmex anceps
@@ -131,7 +131,7 @@ GAGA-0527	"Tetramorium ""Anergates"" atratulus"	Myrmicinae	Tatr	Tetramorium atra
 GAGA-0528	Liometopum microcephalum	Dolichoderinae	Lmic	Liometopum microcephalum
 GAGA-0530	Pheidole yeensis	Myrmicinae	Pyee	Pheidole yeensis
 GAGA-0531	Aphaenogaster cf. smythiesii	Myrmicinae	Asmy	Aphaenogaster smythiesii
-GAGA-0532	Lasius alienus	Formicinae	Lali	Lasius alienus
+GAGA-0532	Lasius alienus	Formicinae	Lali	Lasius cf. alienus
 GAGA-0533	Carebara sp. (prev. lignata)	Myrmicinae	Cas2	Carebara sp. s1
 GAGA-0534	Dorylus orientalis	Dorylinae	Dori	Dorylus orientalis
 GAGA-0535	Discothyrea kamiteta	Proceratiinae	Dkam	Discothyrea kamiteta
