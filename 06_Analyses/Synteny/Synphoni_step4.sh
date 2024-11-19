@@ -1,0 +1,1 @@
+/ldfssz1/ST_EARTH/Reference/ST_DIVERSITY/USER/xienianxia/miniconda3/bin/python3 /ldfssz1/ST_EARTH/Reference/ST_DIVERSITY/USER/xiongzj/xiongzj/software/Synphoni/synphoni/step4_OG_communities_to_blocks_graph_check.py myresults/Node1_m131.csv -g myresults/Node1_m131.gpickle -c chromdata.pickle -o myresults/Node1_m131.blocks
