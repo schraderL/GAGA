@@ -16,7 +16,7 @@
 1. Run Lastz pipeline：
 
     ```bash
-    perl lacnem.pl target.fa query.fa
+    perl step1_lacnem_v2.pl target.fa query.fa
     cd output/5.net
     ```
 
