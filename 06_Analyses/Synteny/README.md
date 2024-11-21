@@ -27,7 +27,7 @@
     sh step2_Net_filter.sh ../UCSC.target.filter.net ../../query.sizes
     ```
 
-3. Macro-synteny plot：
+3. Macro-synteny plot with ideogram.R:
 
     ```bash
     Rscript ideogram.R # the inputs are from step2.
@@ -41,19 +41,16 @@
 
 [AGORA](https://github.com/DyogenIBENS/Agora) was used to re-construct gene order in ancestors, and identify rearrangement breakpoints.
 
-1. Orthology relationship re-construction:
+1. Orthology re-construction. Please refer to [our GAGA orthology analysis](https://github.com/schraderL/GAGA/tree/main/06_Analyses/Orthology) for details
 
-    ```bash
-    orthofinder.py -f proteins/
-    ```
 
-3. running AGORA pipeline:
+2. running AGORA pipeline:
 
     ```bash
     python3 software/agora/src/agora-generic.py GAGA_phylogeny.nhx Orthogroups/orthologyGroups.%s.list genes/genesSTE.%s.list.bz2 -workingDir=output
     ```
 
-4. detect rearrangement breakpoints and calucate the breakpoint rate:
+3. detect rearrangement breakpoints and calucate the breakpoint rate:
 
     ```bash
     sh step3_breakpoints.sh; sh step4_timeNorm.sh
