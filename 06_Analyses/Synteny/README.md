@@ -35,7 +35,10 @@
 
 ## Conserved microsynteny
 
-[Synphoni](https://github.com/nsmro/synphoni) was used to detect conserved  microsyntenic blocks.
+[Synphoni](https://github.com/nsmro/synphoni) was used to detect conserved  microsyntenic blocks, in which we performed 4 steps:
+   ```bash
+    sh Synphoni_step1/step2/step2.5/step3/step4.sh
+    ```
 
 ## Rearrangement breakpoint rate
 
@@ -60,7 +63,7 @@
 
 [WGCNA](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-9-559) was used in gene co-expression network analysis.
 
-1. running WGCNA:
+1. Running WGCNA on the Monomorium pharaonis developmental transcriptome [Qu et al., 2022](https://www.nature.com/articles/s41559-022-01884-y), we plotted the general expression dynamics of gene co-expression modules across developmental stages using Figure2C.R, the expression dynamics of conserved syntenic blocks using Figure2F.R, and the co-expression networks using Figure2D.R.
 
     ```bash
     Rscript WGCNA.R 
