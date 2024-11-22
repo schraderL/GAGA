@@ -36,7 +36,7 @@
 ## Conserved microsynteny
 
 [Synphoni](https://github.com/nsmro/synphoni) was used to detect conserved  microsyntenic blocks, in which we performed 4 steps:
-1. Run Lastz pipeline：
+1. Run Synphoni pipeline：
 
     ```bash
     sh Synphoni_step1/step2/step2.5/step3/step4.sh
