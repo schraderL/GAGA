@@ -13,14 +13,14 @@
 ## Chromosome-level synteny
 
 [Lasz](https://github.com/lastz/lastz) was utilized to conduct pairwise whole genome alignments, while the [genome alignment tool](https://github.com/hillerlab/GenomeAlignmentTools) was employed to filter and chain these alignments. The Lastz pipeline accommodates various parameters based on phylogenetic distance to achieve optimal alignments.
-1. Run Lastz pipeline：
+1. Running Lastz pipeline：
 
     ```bash
     perl step1_lacnem_v2.pl target.fa query.fa
     cd output/5.net
     ```
 
-2. Filter syntenic net with length < 500kb：
+2. Filtering syntenic net with length < 500kb：
 
     ```bash
     mkdir netFilter; cd netFilter;
@@ -36,7 +36,7 @@
 ## Conserved microsynteny
 
 [Synphoni](https://github.com/nsmro/synphoni) was used to detect conserved  microsyntenic blocks, in which we performed 4 steps:
-1. Run Synphoni pipeline：
+1. Running Synphoni pipeline：
 
     ```bash
     sh Synphoni_step1/step2/step2.5/step3/step4.sh
@@ -55,7 +55,7 @@
     python3 software/agora/src/agora-generic.py GAGA_phylogeny.nhx Orthogroups/orthologyGroups.%s.list genes/genesSTE.%s.list.bz2 -workingDir=output
     ```
 
-3. detect rearrangement breakpoints and calucate the breakpoint rate:
+3. detecting rearrangement breakpoints and calucate the breakpoint rate:
 
     ```bash
     sh step3_breakpoints.sh; sh step4_timeNorm.sh
