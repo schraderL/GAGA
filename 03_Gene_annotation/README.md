@@ -41,7 +41,7 @@ General genome annotation was conducted by combining gene annotation from severa
 	
 	**01_run_gemoma_annotation_noRNAspecies_with_close_relative.pl**
 
-Step 2 and 3 are skipped because the absence of RNA-seq; Steps 4 and 7 are the same as above, and Steps 5 and 6 are similar but exluding the lines involving RNA-seq based annotations.
+Step 2 and 3 are skipped because of the absence of RNA-seq; Steps 4 and 7 are the same as above, and Steps 5 and 6 are similar but excluding the lines involving RNA-seq based annotations.
 
 	**05_combine_gene_predictions_noRNAseq.sh**
 	**06_Merge_GeneIsoforms_noRNAseq.sh**
