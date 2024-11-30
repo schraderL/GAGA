@@ -1,9 +1,10 @@
-remotes::install_github("flr/ggplotFL")
+#remotes::install_github("flr/ggplotFL")
 library(ggplot2)
 library(tidyverse)
 library(ggplotFL)
+#library(ggplotify)
 
-setwd("/Users/lukas/sciebo/Projects/GAGA/mainpaper/Figure2/data/input/")
+#setwd("/Users/lukas/sciebo/Projects/GAGA/mainpaper/Figure2/data/input/")
 fold_data<-read_table("./log2fd.lst",col_types = cols())
 module<-read_table("./4module.txt",col_types=cols())
 

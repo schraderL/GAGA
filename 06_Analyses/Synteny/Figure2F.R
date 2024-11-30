@@ -1,6 +1,7 @@
 library(tidyverse)
-library(cowplot)
 library(RColorBrewer)
+library(ggh4x)
+
 
 
 
@@ -38,7 +39,6 @@ mutate(dev_stage = reorder(dev_stage, order_x)) %>%
 mutate(symbol = fct_relevel(symbol, "CG8745", "Vitellogenin-2", "Vitellogenin-1", "CG18063")) %>% 
 mutate(tag = symbol)  
 
-library(ggh4x)
 
 scales <- list(
   # Here you have to specify all the scales, one for each facet row in your case

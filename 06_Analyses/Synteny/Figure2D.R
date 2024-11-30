@@ -6,7 +6,7 @@ library(ggraph)
 Gyne_data<-read_table("./Gyne_abundance_200samples.csv", col_types = cols())
 Worker_data<-read_table("./Worker_abundance_170samples.csv", col_types = cols())
 Metadata <- read_table("./Gyne_worker_SRA_info.1.csv",col_types = cols())
-module_input <- read_table("./purple.txt.GN.DEG.lst",col_types = cols())
+module_input <- read_table("./module4.txt.GN.DEG.lst",col_types = cols())
 
 Gyne_data_wide <- Gyne_data %>% pivot_longer(cols = !gene_ID,names_to = "library",values_to = "tpm") %>% mutate(logTPM=log2(tpm+1))
 Worker_data_wide <- Worker_data %>% pivot_longer(cols = !gene_ID,names_to = "library",values_to = "tpm") %>% mutate(logTPM=log2(tpm+1))
@@ -36,9 +36,10 @@ edge_table_input <- edge_table_filter %>% filter(from %in% module_input$Gene & t
 node_table <- data.frame(gene_ID = c(edge_table_input$from, edge_table_input$to) %>% unique())
 node_table <- node_table %>% left_join(module_input,by=c(gene_ID="Gene")) %>% select(gene_ID,Name,DEG)
 
+my_network <- graph_from_data_frame(edge_table_input,vertices = node_table,directed = F)
 my_network %>% ggraph(layout = "kk") + geom_edge_arc(strength = 0.2, width = 0.25, alpha = 0.2) + geom_node_point(alpha = 0.8, color = "white", size=6,shape = 21,aes(fill = DEG)) + scale_fill_manual(values=c("#EA8379","#299D8F")) +  geom_node_text(aes(label = Name),size=4, color="black",repel = TRUE) + theme_void() + theme(text = element_text(size = 14),legend.position = "bottom",legend.justification = 1,title = element_text(size = 12))
 
-ggsave("./purple.network.svg", height = 8, width = 6, bg = "white")
+ggsave("./Module4.network.svg", height = 8, width = 6, bg = "white")
 
 
 
