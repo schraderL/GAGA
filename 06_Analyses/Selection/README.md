@@ -1,7 +1,7 @@
 # Selective constraint analyses
 
 
-### Scripts used in the selection analyses
+Scripts used in the selection analyses
 
 
 1. The protein coding sequence (cds) for all genes in each orthogroup were aligned using PRANK.
@@ -11,7 +11,7 @@ Script to create an array of jobs to submit the PRANK alignments (edit the input
 bash 01_run_all_alignments_prank.sh
 ```
 
-Then, check if all alignments were generated succesfully, or rerun them if they failed, allowing for more memory and time in the cluster. 
+Then, check if all alignments were generated successfully, or rerun them if they failed, allowing for more memory and time in the cluster. 
 ```bash
 bash 01b_run_check_alignments_scriptrerun_prank.sh
 ```
