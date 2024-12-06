@@ -3,8 +3,7 @@
 Code repository for the Global Ant Genomics Alliance.
 
 
-Reference: The adaptive radiation and social evolution of the ants. Submited to Cell. 
-
+Vizueta et al. 2024. The adaptive radiation and social evolution of the ants. Submited to Cell. 
 
 
 - [Genome assembly and quality evaluation](01_Genome_assembly)
