@@ -7,20 +7,20 @@
 #### INPUT ####
 
 # Table with gene family counts
-INTABLE="/home/projects/ku_00039/people/joeviz/CAFE/runCAFE_withoutgroups/N0_GeneCounts_nostLFR_sfilt20_nolow.tsv" # Table with gene family counts filtering orthogroups with high variance
+INTABLE="/home/projects/ku_00039/people/joeviz/CAFE/runCAFE_withoutgroups/N0_GeneCounts_nostLFR_nolow_addTE.tsv" # Table with gene family counts filtering orthogroups with high variance
 #INTABLE="/home/projects/ku_00039/people/joeviz/CAFE/runCAFE_withoutgroups/N0_GeneCounts_nostLFR_noTEs.tsv" # Table with gene family counts without filtering 
 
 # Dated tree (species names need to be the same as in the table)
-INTREE="/home/projects/ku_00039/people/joeviz/CAFE/runCAFE_withoutgroups/GAGA_dated_phylogeny_newick_woutgroup_DatesPeters2017_CurrBio_nostLFR.tre" # Ultrametric tree
+INTREE="/home/projects/ku_00039/people/joeviz/CAFE/runCAFE_withoutgroups/GAGA_dated_phylogeny_newick_woutgroup_nostLFR.tre" # Ultrametric tree
 
 # Tree with the number of lambdas to estimate across the tree. Comment for global lambda model
-#LAMBDATREE="/home/projects/ku_00039/people/joeviz/CAFE/runCAFE_withoutgroups/GAGA_dated_phylogeny_newick_woutgroup_DatesPeters2017_CurrBio_nostLFR.tre" # Tree with lambda for multiple lambda model
+LAMBDATREE="/home/projects/ku_00039/people/joeviz/CAFE/runCAFE_withoutgroups/GAGA_dated_phylogeny_newick_woutgroup_nostLFR_lambdas.tre" # Tree with lambda for multiple lambda model
 
 # Output directory to run CAFE
-DIR="CAFE_lambda_witherrormodel" # Directory to create and run CAFE
+DIR="CAFE_2lambda_witherrormodel_finalrun" # Directory to create and run CAFE
 
 # Output name prefix for CAFE output
-OUTPUT="singlelambdapoisson" # Output prefix for each CAFE run
+OUTPUT="twolambdapoisson" # Output prefix for each CAFE run
 
 
 #### PARAMETERS ####
@@ -36,7 +36,7 @@ NTIME=48 # Number of hours in qsub script
 #COMMAND="/home/projects/ku_00039/people/joeviz/CAFE/CAFE/CAFE5/bin/cafe5 -i $INTABLE -t $INTREE -c $NTHREADS -p " # CAFE command, single lambda poisson
 
 # Step 2 - Global lambda model using a poisson distribution, with the input table filtering genes with high variance. Edit the INTABLE (line 10). 
-COMMAND="/home/projects/ku_00039/people/joeviz/CAFE/CAFE/CAFE5/bin/cafe5 -i $INTABLE -t $INTREE -c $NTHREADS -p " # CAFE command, single lambda poisson
+#COMMAND="/home/projects/ku_00039/people/joeviz/CAFE/CAFE/CAFE5/bin/cafe5 -i $INTABLE -t $INTREE -c $NTHREADS -p " # CAFE command, single lambda poisson
 
 # Step 3 - Global lambda model using a poisson distribution and estimating an error model. Using the input table filtering genes with high variance. Edit the INTABLE (line 10).  
 #COMMAND="/home/projects/ku_00039/people/joeviz/CAFE/CAFE/CAFE5/bin/cafe5 -i $INTABLE -t $INTREE -c $NTHREADS -p -e" # CAFE command, with error model
@@ -51,7 +51,7 @@ COMMAND="/home/projects/ku_00039/people/joeviz/CAFE/CAFE/CAFE5/bin/cafe5 -i $INT
 # Command if the best model is a global lambda (it used -l to indicate the lambda value)
 #COMMAND="/home/projects/ku_00039/people/joeviz/CAFE/CAFE/CAFE5/bin/cafe5 -i $INTABLE -t $INTREE -c $NTHREADS -p -l 0.0048104885261371 -e/home/projects/ku_00039/people/joeviz/CAFE/runCAFE/2set_nostlfr_withoutlep/CAFE_singlelambda_poisson_sfilt20_nofiltlow_errormodel_addruns/singlelambdapoisson_run3/Base_error_model.txt" # CAFE command, global fixed lambda with error model already calculated
 # Command if the best model is a multiple lambda (it uses -m to indicate the multiple lambda values corresponding the order to the lambda number if the phylogeny in -y). Set the file LAMBDATREE (line 17) 
-#COMMAND="/home/projects/ku_00039/people/joeviz/CAFE/CAFE/CAFE5/bin/cafe5 -i $INTABLE -t $INTREE -c $NTHREADS -m 0.003845644880218,0.0050413215441222 -y $LAMBDATREE -p -e/home/projects/ku_00039/people/joeviz/CAFE/runCAFE/2set_nostlfr_withoutlep/CAFE_singlelambda_poisson_sfilt20_nofiltlow_errormodel_addruns/singlelambdapoisson_run3/Base_error_model.txt " # CAFE command, multiple  fixed lambdas with error model already calculated
+COMMAND="/home/projects/ku_00039/people/joeviz/CAFE/CAFE/CAFE5/bin/cafe5 -i $INTABLE -t $INTREE -c $NTHREADS -m 0.0026063929999972,0.00056092063731775 -y $LAMBDATREE -p -e./base_output_p_e41/Base_error_model.txt " # CAFE command, multiple  fixed lambdas with error model already calculated
 
 
 # Other models and parameters for CAFE

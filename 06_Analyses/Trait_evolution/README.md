@@ -1,14 +1,14 @@
 # GAGA Analyses
 
-Out analyses to explore trait evolution comprise:
-
-- Ancestral state reconstructions - Example R script
-
-- PGLS - script to run across all
-We used several categorization of our trait to uncover and confirm correlations using PGLS. 
-In addition, we used pglmm to confirm the results across discrete categorizations. 
+We provide the detailed trait table in the Supplementary Table S3A of the manuscript, and the simplified table to import in R for the analyses in Table S3B. 
 
 
-### Positive selection
+## Ancestral state reconstructions
 
-The parameters are that there is a difference of 50% of clades with positive selection, or enrihcment in more than 50% of the species; or enrichment in more than 40% when test or reference have only a low number of counts (i.e.: < number of independent clades /2). also, the candidates need to be under positive selection in at least 40% of the independent clades. 
+We used the script [ancestral_reconstruction_script.R](ancestral_reconstruction_script.R) for the ancestral state reconstruction analyses. The script contains the code for the analysis for discrete and continuous characters. 
+
+
+## Phylogenetic correlations 
+
+We used the script [get_pgls_genefam_vs_traits_computerome_v2.pl](get_pgls_genefam_vs_traits_computerome_v2.pl) to conduct the Phylogenetic Generalized Least Squares (PGLS) analyses across all traits. 
+

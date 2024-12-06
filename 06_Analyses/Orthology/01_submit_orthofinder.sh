@@ -46,6 +46,6 @@ alias iqtree='/services/tools/iqtree/2.1.3/bin/iqtree2'
 
 # Folder DB contains the final annotated proteins (one representative isoform per gene) with name GAGA-ID.fasta
 
-orthofinder -f DB -S diamond_ultra_sens -t 40 -a 1 -M msa -y -o output_msa -s GAGA_final_speciestree.nwk
+orthofinder -f DB -S diamond_ultra_sens -t 40 -a 1 -M msa -y -o output_msa -s GAGA_dated_phylogeny_newick.tre
 
 

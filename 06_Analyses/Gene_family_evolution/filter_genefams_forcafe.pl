@@ -11,11 +11,9 @@ my $dirname = dirname(__FILE__);
 
 ## Input ##
 my $inputtable = "N0_GeneCounts_nostLFR.tsv"; # Input table containing gene counts that is used in CAFE
-#my $inputtable = "N0_GeneCounts_nostLFR_wLept.tsv";
 
 ## Output ##
 my $output = "N0_GeneCounts_nostLFR_sfilt20_nolow.tsv";
-#my $output = "N0_GeneCounts_nostLFR_wLept_sfilt20_nolow.tsv";
 
 ## Parameters ##
 my $filtdif = "20"; # Maximum difference between minimum and maximum gene count to retain the orthogroup. I used 20 to achieve convergence in CAFE
