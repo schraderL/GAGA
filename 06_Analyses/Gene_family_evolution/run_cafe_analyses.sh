@@ -26,7 +26,7 @@ OUTPUT="twolambdapoisson" # Output prefix for each CAFE run
 #### PARAMETERS ####
 
 NTHREADS=8 # Number of threads for each CAFE run
-NUMRUNS=20 # Number of independent runs of CAFE to ensure convergence
+NUMRUNS=50 # Number of independent runs of CAFE to ensure convergence
 NTIME=48 # Number of hours in qsub script
 
 
