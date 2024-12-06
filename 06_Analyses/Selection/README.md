@@ -1,93 +1,99 @@
-# GAGA Selection pipeline
-
-We used the following described pipeline to infer dn/ds, and positive selection using the coding alignment of each orthologous group and their respective gene trees. 
+# GAGA Selective constraint analyses
 
 
-
-the script [filter_genefams_forcafe.pl](filter_genefams_forcafe.pl).
-
-
-# Pipeline for selection analyses
+Scripts used in the selection analyses. 
 
 
-1. Retrieve orthogroups from species of interest and categorize them
+1. The protein coding sequence (cds) for all genes in each orthogroup were aligned using PRANK.
 
-python3 /home/projects/ku_00039/people/joeviz/orthofinder/orthogroups_v5.py N0.tsv species.txt 0.8(Percentage of species included in the orthogroup as single copy)
+Script to create an array of jobs to submit the PRANK alignments (edit the inputs inside the script):
+    ```bash
+    bash 01_run_all_alignments_prank.sh
+    ```
 
-# Check the orthogroups and select those interesting for analyses: 1to1, gene families, specific in group of species...
-
-
-2. Retrieve sequences from orthogroups
-
-perl get_orthogroup_sequences.pl ortologtable(Format 1 column OG, rest are gene names; Ex: tables from previous script) outputdir
-
-    2a. Retrieve already aligned sequences from orthogroups. Avoid repeating the codon/protein alignment
-perl get_orthogroup_sequences_fromaln.pl ortologtable(Format 1 column OG, rest are genes) dir_with_aln extension outputdir
-#Ej: perl get_orthogroup_sequences_fromaln.pl /home/projects/ku_00039/people/joeviz/orthofinder/run_allGAGA_final_annotations/script_orthogroups_subset/species_subset_80percsp_orthogroups_multicopy_genes.tsv all_orthogroups/orthogroups_seqs/ pep.fasta test_subset_fromaln/
+Then, check if all alignments were generated succesfully, or rerun them if they failed, allowing for more memory and time in the cluster. 
+    ```bash
+    bash 01b_run_check_alignments_scriptrerun_prank.sh
+    ```
 
 
-3. Align sequences (Maybe change the script to run independent jobs as the job array give problems in computerome2)
+2. The quality of the multiple sequence alignments (MSAs) were evaluated using Zorro.
 
-# Codon: edit directory with sequences inside the script
-bash /home/projects/ku_00039/people/joeviz/orthology_alignments/run_all_alignments_prank.sh 
+Script to create an array of jobs to submit Zorro (edit the inputs inside the script):
+    ```bash
+    bash 02_run_all_zorro.sh
+    ```
 
-# Protein 
-bash /home/projects/ku_00039/people/joeviz/orthology_alignments/run_all_alignments_prot.sh 
-
-
-    3b. Check all alignments finished, and re-run if some failed
-
-bash /home/projects/ku_00039/people/joeviz/orthology_alignments/run_check_alignments.sh
-bash /home/projects/ku_00039/people/joeviz/orthology_alignments/run_check_alignments_scriptrerun_prank.sh
-
+Then, the orthogroups with average quality below 4 in more than 75% of the unaligned sequence lengths were filtered for the selection analyses using the following scripts (edit the inputs inside the script).
+    ```bash
+    perl 02b_mask_stop_zorro_codon_alignments.pl
+    perl 02c_mask_stop_zorro_codon_alignments_part2_filterbadaln.pl
+    ```
 
 
-4. Run zorro in codon alignments
+3. The Genetic Algorithm for Recombination Detection (GARD) was used in HyPhy to screen the alignments for recombination breakpoints and to split them into separate partitions.
 
-bash /home/projects/ku_00039/people/joeviz/orthology_alignments/all_orthogroups/codon_alignments/run_all_zorro.sh
+Script to create an array of jobs to submit HyPhy GARD (edit the input and command paths inside the script):
+    ```bash
+    bash 03_run_all_hyphy_gard.sh
+    ```
 
+Then, the alignments with recombination breakpoint are split into separate partitions, using the following script:
+    ```bash
+    perl 03b_analyze_gard_v2.pl
+    ```
 
-    4b. Check if all run
-
-bash /home/projects/ku_00039/people/joeviz/orthology_alignments/all_orthogroups/codon_alignments/run_check_zorro_scriptrerun_no2seqs.sh
-
-
-5. Remove stop codons, and get zorro statistics and (NOT mask alignment)
-
-#module load ngs tools
-#module load anaconda3/4.4.0
-perl /home/projects/ku_00039/people/joeviz/orthology_alignments/all_orthogroups/codon_alignments/mask_stop_zorro_codon_alignments.pl
+The following script can be used for a specific orthogroup (HOG), instead of iterating through a whole folder of alignments [03c_analyze_gard_v2_single_HOG.pl](03c_analyze_gard_v2_single_HOG.pl).
 
 
-    5b. Check the table, and filter all those orthogroups with bad alignments
+4. A maximum likelihood tree was reconstructed for each MSA partition using iq-tree.
 
-perl /home/projects/ku_00039/people/joeviz/orthology_alignments/all_orthogroups/codon_alignments/mask_stop_zorro_codon_alignments.pl
-
-
-6. GARD here, analyze and create partitions
-
-#run GARD
-#bash /home/projects/ku_00039/people/joeviz/Suz/ortholog_alignments/run_all_hyphy_gard_nozorromasked.sh
-
-bash /home/projects/ku_00039/people/joeviz/orthology_trees/all_orthologs/run_all_hyphy_gard.sh
-
-#analyze GARD, get summary table and create partition files
-/home/projects/ku_00039/people/joeviz/Suz/ortholog_alignments/analyze_gard.pl
+Script to create the commands and run iqtree for each MSA (edit the input inside the script):
+    ```bash
+    bash 04_run_all_genetree_codon_dna_gard.sh
+    ```
 
 
-7. Run gene trees. USE DNA model with the codon alignments. Decide about using codon or protein trees. (probably protein, are faster, check topologies and support in both to decide). 
+5. The alignments for each partition (or entire orthogroup sequences when no recombination was identified) were further evaluated using HmmCleaner, a segment-filtering software that detects putative errors in MSAs. The identified putative misaligned segments were masked as gaps, and blocks with gappy regions in more than 50% of the species were removed, similar to sequences with fewer than 15 unmasked codons.
 
-bash /home/projects/ku_00039/people/joeviz/orthology_trees/run_all_genetree_codon_dna.sh
+Script to run HmmCleaner:
+    ```bash
+    bash 05_run_all_hmmcleaner_cleanaln.sh
+    ```
 
-    7b. Check if all gene trees finished ok
 
-bash /home/projects/ku_00039/people/joeviz/orthology_trees/run_check_trees.sh
-bash /home/projects/ku_00039/people/joeviz/orthology_trees/run_check_trees_scriptrerun.sh
+6. The adaptive branch-site random effects likelihood (aBSREL) model implemented in the HyPhy package was used to detect hallmarks of positive selection (PS) and infer dN/dS across all branches in each partitioned-orthogroup gene tree, using the high-confidence codon alignments.
+
+Script to create an array of jobs to submit HyPhy aBSREL (edit the input and command paths inside the script):
+    ```bash
+    
+    ```
+
+Then, the output is parsed to create summary tables including the positive selection and dN/dS for each branch:
+
+
+The following script can be used just to retrieve branches under significant positive selection providing the specific p-value or FDR. 
 
 
 
-# MOVED TO A PREVIOUS STEP #####7. Run GARD to check for recombination
-#####7b. Check results, and re-run gene trees for orthogroups with recombintation using GARD output
+The output was further used to do the Figure 3
+
+
+
+7. The using RELAX.
+
+Script to :
+    ```bash
+    
+    ```
+
+
+
+
+----
+
+
+
 
 
 8. Run Hyphy absrel, fitmg for dn/ds values, fubar... 
@@ -105,19 +111,12 @@ pyhton3 /home/projects/ku_00039/people/joeviz/../igngod/scripts/aBSREL_2_table.p
 
 Ignasi script to rename the tree, and use the script in Suz folder to submit relax
 
-10. Get GOs and do enrichments. 
-
-see scripts in ~/orthology_trees/all_orthologs/
 
 
 
 
 
-
-
-
-
-### Trait evolution pipeline
+### Identifying signatures of selection associated with phenotypic traits
 
 To understand trait evolution and retrieve gene candidates under positive selection, as well as relaxed or intensified selection associated with our analyzed traits, we followed the next steps:
 
