@@ -1,14 +1,14 @@
-# GAGA Selective constraint analyses
+# Selective constraint analyses
 
 
-Scripts used in the selection analyses. 
+### Scripts used in the selection analyses
 
 
 1. The protein coding sequence (cds) for all genes in each orthogroup were aligned using PRANK.
 
 Script to create an array of jobs to submit the PRANK alignments (edit the inputs inside the script):
 ```bash
-    bash 01_run_all_alignments_prank.sh
+bash 01_run_all_alignments_prank.sh
 ```
 
 Then, check if all alignments were generated succesfully, or rerun them if they failed, allowing for more memory and time in the cluster. 
@@ -64,62 +64,44 @@ bash 05_run_all_hmmcleaner_cleanaln.sh
 
 6. The adaptive branch-site random effects likelihood (aBSREL) model implemented in the HyPhy package was used to detect hallmarks of positive selection (PS) and infer dN/dS across all branches in each partitioned-orthogroup gene tree, using the high-confidence codon alignments.
 
-Script to create an array of jobs to submit HyPhy aBSREL (edit the input and command paths inside the script):
+Script to create the jobs to submit HyPhy aBSREL for all orthogroups (edit the input and command paths inside the script):
 ```bash
-
+bash 06_run_all_hyphy_absrel.sh
 ```
+In addition, the script [06b_run_all_hyphy_absrel_onlysinglecopy.pl](06b_run_all_hyphy_absrel_onlysinglecopy.pl) allows to run aBSREL for a subset of orthogroups provided as a list in the input file specified in line 21. 
 
-Then, the output is parsed to create summary tables including the positive selection and dN/dS for each branch:
-
-
-The following script can be used just to retrieve branches under significant positive selection providing the specific p-value or FDR. 
-
-
-
-The output was further used to do the Figure 3
-
-
-
-7. The using RELAX.
-
-Script to :
+Then, the output for each orthogroup partition is parsed to create summary tables including the positive selection and dN/dS for each branch:
 ```bash
-
+perl 06c_analyze_absrel.pl
 ```
 
 
+7. Inferring general positive selection patterns in the ant phylogeny using the output tables from HyPhy aBSREL.
 
+We used the following script to map the nodes in the gene tree to the species tree conducting a gene-tree versus species-tree reconciliation. For this analysis, we used the 8384 single-copy orthogroups with high-quality codon alignments in ≥ 80% of the sequenced ants. Each node in a gene tree was assigned to the corresponding node in the species tree that included all species present in a gene-tree clade. To avoid incorrectly assigning internal nodes in the gene tree when their evolutionary history deviated from the species tree (e.g. because of incomplete lineage sorting), reconciliations between gene tree nodes and species tree nodes were retained only when at least 60% of the species descending from the species tree node were represented in the gene tree node. The resulting reconciliation allowed us to retrieve the number of genes under positive selection across all nodes of the species tree, and the proportion of positive selection events among them.
 
-----
-
-
-
-
-
-8. Run Hyphy absrel, fitmg for dn/ds values, fubar... 
-
-/home/projects/ku_00039/people/joeviz/Suz/ortholog_alignments/run_all_hyphy_absrel.sh
-
-
-8b. Get results table. Check Ignasi scripts (/home/projects/ku_00039/people/joeviz/../igngod/scripts/aBSREL_2_table.py)
-
-
-pyhton3 /home/projects/ku_00039/people/joeviz/../igngod/scripts/aBSREL_2_table.py
-
-
-9. Hyphy relax. Rename labels with the groups and run relax
-
-Ignasi script to rename the tree, and use the script in Suz folder to submit relax
+```bash
+perl 07_analyze_absrel_omegasummary_pernode_relax2withexceptions.pl species_all_80percsp_orthogroups_singlecopy_counts.tsv Hyphy_absrel_withgard_hmmclean_50_rooted_omega_pernode_80pc1to1_fdr001_strict60_relax2_withexcept.txt 0.6 None 0.02 0.001
+```
+The inputs and further parameters are detailed inside the script (lines 11-50).
 
 
 
+8. Identifying signatures of relaxed or intensified selection associated with phenotypic traits.
+
+To assess shifts in the strength of selection on genes associated with phenotypic traits, we used the RELAX model106 implemented in HyPhy. The following script labels tips belonging to species expressing a “test” or “reference” trait in the orthogroup gene trees (using separate partitions when recombination was identified as described above), and create the jobs to submit HyPhy RELAX for all orthogroups (edit the inputs, commands and paths inside the script):
+```bash
+bash 08_run_all_hyphy_relax.sh ../Species_selection_Queen_worker_Dimorphism_HighVsLow_clades_all.txt
+
+```
+The input provided in the command line (e.g. [Species_selection_Queen_worker_Dimorphism_HighVsLow_clades_all.txt](Species_selection_Queen_worker_Dimorphism_HighVsLow_clades_all.txt)) contains the list of species with the "test" or "reference" trait to use for the analysis. 
 
 
-
-### Identifying signatures of selection associated with phenotypic traits
-
-To understand trait evolution and retrieve gene candidates under positive selection, as well as relaxed or intensified selection associated with our analyzed traits, we followed the next steps:
-
+Then, we use the following script to get gene candidates with intensified or relaxed selection associated with the analyzed trait from the RELAX analyses:
+```bash
+perl 08b_get_candidates_relax.pl runRELAX/relax/ Relax_results
+```
+Note that "runRELAX/relax/" is the output folder from hyphy RELAX containing the JSON files, and "Relax_results" is the folder to store the results from this script. 
 
 
 

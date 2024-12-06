@@ -1,4 +1,4 @@
-# GAGA Analyses
+# Trait evolution
 
 We provide the detailed trait table in the Supplementary Table S3A of the manuscript, and the simplified table to import in R for the analyses in Table S3B. 
 

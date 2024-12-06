@@ -1,4 +1,4 @@
-# GAGA Gene family evolution
+# Gene family evolution
 
 We used [CAFE](https://github.com/hahnlab/CAFE5) to analyze changes in gene family size across the ant phylogeny. This program uses a birth and death process to model gene gain and loss across the phylogenetic tree. Briefly, we used CAFE to estimate gene family evolutionary rates, both global (the whole phylogeny share the same _birth-and-death_ rate) and local (we tested different scenarios in which we model different _birth-and-death_ rates in the phylogeny, i.e.: one rate for the ants and another for the outgroups). In addition, we infered gene family counts for each orthologous group in all internal nodes of the phylogeny, allowing us to retrieve gene families that have expanded or contracted in specific lineages. 
 

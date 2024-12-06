@@ -1,4 +1,4 @@
-# GAGA Orthology assessment
+# Orthology assessment
 
 We used [OrthoFinder v2.5.4](https://github.com/davidemms/OrthoFinder) to conduct the orthology assessment across the annotated proteins from our 163 genomes, using one representative isoform per gene. Our comprehensive phylogeny, inferred using non-coding regions retrieved from the whole-genome alignments of the 163 ant genomes using Cactus, was used in OrthoFinder to increase accuracy by retrieving orthogroups at each hierarchical taxonomic level. The command to run OrthoFinder can be found in:
 
