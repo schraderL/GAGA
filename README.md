@@ -3,8 +3,7 @@
 Code repository for the Global Ant Genomics Alliance.
 
 
-Vizueta et al. 2025. Adaptive radiation and social evolution of the ants. Submited to Cell. 
-
+Vizueta et al., Adaptive radiation and social evolution of the ants, Cell (2025), https://doi.org/10.1016/j.cell.2025.05.030
 
 The deposited data associated with this paper can be accessed through https://sid.erda.dk/sharelink/fU0yBp3NH5
 
